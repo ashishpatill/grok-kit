@@ -1,0 +1,12 @@
+---
+description: Next.js + Clerk + Neon invariants
+alwaysApply: true
+---
+
+# Core
+
+- Validate auth at server boundaries; never trust client role claims
+- Keep secrets in env / vault — never commit `.env*`
+- Prefer server components by default; mark client components explicitly
+- Schema changes go through migrations
+- Run lint/typecheck before claiming done

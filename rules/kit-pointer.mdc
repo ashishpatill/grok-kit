@@ -1,0 +1,13 @@
+---
+description: Agent kit pointer — recall ICM, use playbook skills, keep context thin
+alwaysApply: true
+---
+
+# Agent Kit
+
+- Prefer `/cost-check` routing: Auto Balance default; Cost/Composer for explore; Intelligence only for Debug/architecture.
+- Before re-asking Workspace facts, recall ICM topics (`workspace-routing`, `project-*`, `preferences`).
+- Multi-hop work: use `/orchestrate-rlm` — thin parent, summary-only children, depth 1.
+- Ambiguous multi-file work: `/plan-execute` then Agent after approval.
+- End deep sessions with `/session-handoff`. Propose memory via `/memory-sync` — never silent identity writes.
+- Product MCP (database/browser/payments/deploy) stays project-scoped; do not enable globally.

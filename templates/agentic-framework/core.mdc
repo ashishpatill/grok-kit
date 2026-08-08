@@ -1,0 +1,11 @@
+---
+description: Agentic framework invariants
+alwaysApply: true
+---
+
+# Core
+
+- Keep always-on prompts tiny; put procedures in skills
+- Subagents return summaries only; depth 1 by default
+- Human-gate memory and skill mutations
+- Every eval claim needs a reproducible command
