@@ -1,0 +1,6 @@
+.DS_Store
+.cursor/rlm-state/
+.cursor/handoff.md
+PENDING_MEMORY.md
+*.log
+node_modules/

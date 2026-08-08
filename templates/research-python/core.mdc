@@ -1,0 +1,11 @@
+---
+description: Research Python invariants
+alwaysApply: true
+---
+
+# Core
+
+- Pin experiment seeds and log configs with results
+- Do not claim results without the command that produced them
+- Keep large artifacts out of git; document paths instead
+- Prefer scripts in `scripts/` over one-off notebook-only pipelines
