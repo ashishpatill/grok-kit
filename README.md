@@ -32,6 +32,7 @@ Reload the editor window after install.
 
 ## Runtime split
 
-- **IDE agent host** — interactive coding
+- **IDE agent host** — interactive coding (Cursor SoT)
 - **Hot memory pin** — short MEMORY/USER files; shares ICM long-tail
 - **Companion agent** — rare long-run work (see `docs/companion-agent.md`)
+- **Prime platform (optional)** — companion + batch eval/training only; not Lab/Compute/Inference as daily driver
