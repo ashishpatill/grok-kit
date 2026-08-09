@@ -12,7 +12,7 @@ Use a detached long-run companion only when IDE-native orchestration is not enou
 ## Stay in Cursor when
 
 - Interactive feature work, refactors, PR iteration
-- Design-oriented judgment with Grok, editor diffs, lints, browser, project MCP
+- Editor diffs, lints, browser, and project MCP in the IDE
 - Cost-sensitive daily coding
 - Harness refinement that must stay human-gated (`/refine-harness`)
 

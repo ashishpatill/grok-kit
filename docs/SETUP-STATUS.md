@@ -2,7 +2,7 @@
 
 ## Positioning
 
-**grok-kit** makes Grok stronger at design-oriented work and multi-agent orchestration inside Cursor (plan→execute, thin-parent runs, cost routing, shared memory, playbook skills).
+**grok-kit** is a personal Cursor/agent harness kit: playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install helpers.
 
 ## Done
 

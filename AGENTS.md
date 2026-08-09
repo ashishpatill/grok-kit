@@ -1,6 +1,6 @@
 # grok-kit
 
-Superpower Grok for design work and orchestrate better in Cursor. Do not bloat this file.
+Personal Cursor/agent harness kit — playbook skills, orchestration, cost routing, ICM bridge. Do not bloat this file.
 
 ## Commands of interest
 
@@ -11,7 +11,7 @@ Superpower Grok for design work and orchestrate better in Cursor. Do not bloat t
 ## Platform boundary
 
 - **Cursor** — interactive coding SoT (editor, MCP, kit skills)
-- Prefer **Grok** for design-oriented work and engineering judgment; use cost routing (`/cost-check`) for when to escalate
+- Prefer Models pool routing via `/cost-check` (Auto Balance default; escalate only when needed)
 - Optional long-run companion is rare/eval-only — do not replace Cursor for routine feature work (see `docs/companion-agent.md`)
 
 ## Rules
