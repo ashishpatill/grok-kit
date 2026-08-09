@@ -5,29 +5,33 @@
 
 ## Done
 
-- Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets (evidence: repo root)
-- Local plugin symlink + user-layer install script (`scripts/install-user-layer.sh`)
-- Companion criteria + ICM setup docs (`docs/companion-agent.md`, `docs/icm-setup.md`)
+- Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets
+- Local plugin symlink + user-layer install script
+- Companion criteria + ICM setup docs
 - Progress stubs: `GOAL_AND_LOOP.md`
-- Positioning corrected: harness kit, not design-workflow marketing (commit on this branch)
+- Positioning corrected: harness kit (not design-workflow marketing)
+- README install / setup / usage
+- Marketplace prep: LICENSE, logo, `.cursor-plugin/plugin.json`, root `plugin.json`, `docs/publish.md`
 
 ## In progress
 
-- Ship-loop PR for progress authority + positioning scrub
+- Ship-loop PR → merge; marketplace submit (Cursor form + Grok catalog PR)
 
 ## Remaining (ordered)
 
-1. Open PR against `main` (no merge unless asked)
-2. Soft-verify: reload window / skill slash commands (machine-local; see SETUP-STATUS)
-3. GitHub repo description/topics align with harness positioning
+1. Open/merge PR against `main`
+2. Submit Cursor Marketplace form (manual account step)
+3. Open Grok Build catalog PR with pinned `main` SHA
+4. Soft-verify reload / slash skills (machine-local)
 
 ## Blocked
 
 | Item | Need |
 |------|------|
-| — | — |
+| Cursor Marketplace listing | Logged-in submit at cursor.com/marketplace/publish + review |
+| Grok Build catalog listing | PR to xai-org/plugin-marketplace after main SHA known |
 
 ## Deferred
 
 - Expanding companion packaging beyond criteria doc
-- Rewriting historical commit subjects that mention old framing or banned vendors
+- Rewriting historical commit subjects with old framing
