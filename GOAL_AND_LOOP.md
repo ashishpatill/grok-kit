@@ -2,12 +2,12 @@
 
 ## Goal
 
-Ship a lean Cursor kit that superpowers **Grok** for design-oriented judgment and orchestrates better via playbook skills, thin-parent multi-agent runs, cost routing, and ICM-shared memory — without branding as a generic agent OS or naming banned third-party vendors.
+Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install — without misrepresenting purpose or naming banned third-party vendors.
 
 ## In scope
 
 - Progress authority (`GOAL_AND_LOOP.md`, `docs/STATUS.md`)
-- Kit docs/skills/agents aligned to Grok + Cursor platform boundary
+- Docs/skills/agents/plugin copy that matches what the tree actually contains
 - Vendor-neutral wording in tree (no banned product names in new content)
 - Install/symlink helpers and MCP snippets for ICM-first globals
 - PR open for review (merge only when explicitly requested)
@@ -15,6 +15,7 @@ Ship a lean Cursor kit that superpowers **Grok** for design-oriented judgment an
 ## Out of scope / frozen
 
 - Rewriting git history to scrub old commit subjects
+- Marketing as a design-workflow or “design superpower” kit
 - Installing or operating a detached companion runtime as the daily driver
 - Expanding into a full agent framework / marketplace product
 - Silent identity or User Rules mutation
@@ -27,6 +28,7 @@ Ship a lean Cursor kit that superpowers **Grok** for design-oriented judgment an
 ## Definition of done
 
 - [ ] In-scope docs and progress authority present and accurate
+- [ ] No “design work” / design-superpower framing in kit-facing copy
 - [ ] Working tree free of banned vendor names in tracked content
 - [ ] PR open against `main` (merge skipped unless user asks)
 - [ ] No secrets committed; checks diagnosed or N/A documented
