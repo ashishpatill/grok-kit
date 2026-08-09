@@ -29,7 +29,7 @@ disable-model-invocation: true
 4. Disable unused MCP (context ring → MCP segment)
 5. Avoid Fast variants, Fable/1M, Max Mode unless justified
 6. Tokens ≠ success — fix topology + verifier, don't grind longer
-7. **External batch inference** — `api.pinference.ai` (Prime CLI evals) only; Cursor Models / subscription stays default; avoid a third daily provider
+7. **External batch inference** — rare eval-only exception; Cursor Models / subscription (Grok for design judgment) stays default; avoid a third daily provider
 
 ## Audit steps
 

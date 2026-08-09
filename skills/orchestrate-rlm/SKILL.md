@@ -42,7 +42,7 @@ model: pin cheap/composer for explore; inherit only for judgment-heavy implement
 - Never re-ingest child tool dumps into the parent
 - Do not use Intelligence parent + `inherit` children for parallel explore (N× cost)
 - Skills beat subagents for repeated procedures
-- Prime `await rlm(...)` returns at **task admission** (handle), not the child answer — unlike Cursor Task summary-only returns; poll via A2A or ICM, never assume sync child output
+- External `rlm(...)`-style admission APIs may return a handle at task start, not the child answer — unlike Cursor Task summary-only returns; poll or use ICM, never assume sync child output
 
 ## Verification
 

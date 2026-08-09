@@ -38,7 +38,7 @@ fi
 # Backup and slim MCP
 MCP="$HOME/.cursor/mcp.json"
 if [[ -f "$MCP" ]]; then
-  cp -f "$MCP" "$HOME/.cursor/mcp.json.bak.agent-kit.$(date +%Y%m%d%H%M%S)"
+  cp -f "$MCP" "$HOME/.cursor/mcp.json.bak.grok-kit.$(date +%Y%m%d%H%M%S)"
 fi
 cp -f "$KIT/docs/mcp-snippets/user-mcp.icm-only.json" "$MCP"
 
@@ -62,7 +62,9 @@ done
 
 # Plugin symlink
 mkdir -p "$HOME/.cursor/plugins/local"
-ln -sfn "$KIT" "$HOME/.cursor/plugins/local/agent-kit"
+ln -sfn "$KIT" "$HOME/.cursor/plugins/local/grok-kit"
+# Remove legacy plugin names if present
+rm -f "$HOME/.cursor/plugins/local/agent-kit" "$HOME/.cursor/plugins/local/cursor-kit" 2>/dev/null || true
 
 echo "User layer installed."
 echo "- MCP slimmed to ICM (backup saved beside mcp.json)"

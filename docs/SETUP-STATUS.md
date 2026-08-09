@@ -1,10 +1,14 @@
 # Setup status (applied on this machine)
 
+## Positioning
+
+**grok-kit** makes Grok stronger at design-oriented work and multi-agent orchestration inside Cursor (plan→execute, thin-parent runs, cost routing, shared memory, playbook skills).
+
 ## Done
 
-- [x] Kit repo at `/Volumes/Developer/Workspace/cursor-kit` (branch `main`)
-- [x] Symlink `~/.cursor/plugins/local/agent-kit`
-- [x] User MCP slimmed to ICM (`serve --compact`); previous servers archived at `~/.cursor/mcp-servers.archived.json` + `mcp.json.bak.agent-kit.*`
+- [x] Kit repo at `/Volumes/Developer/Workspace/cursor-kit` (local folder name; public repo `ashishpatill/grok-kit`)
+- [x] Symlink `~/.cursor/plugins/local/grok-kit`
+- [x] User MCP slimmed to ICM (`serve --compact`); previous servers archived at `~/.cursor/mcp-servers.archived.json` + `mcp.json.bak.grok-kit.*`
 - [x] ICM binary `~/.local/bin/icm` v0.10.61; `icm init --mode mcp` + `--mode skill`
 - [x] ICM seeded from hot MEMORY/USER files; topics include `preferences`, `workspace-routing`, `project-disksense`, `models`
 - [x] Hot-memory write approval enabled

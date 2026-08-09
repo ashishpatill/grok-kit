@@ -1,6 +1,6 @@
-# Agent kit
+# grok-kit
 
-Personal agent OS kit. Do not bloat this file.
+Superpower Grok for design work and orchestrate better in Cursor. Do not bloat this file.
 
 ## Commands of interest
 
@@ -8,11 +8,11 @@ Personal agent OS kit. Do not bloat this file.
 - Agents: `verifier`, `debugger`, `researcher`
 - Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
 
-## Prime platform boundary
+## Platform boundary
 
 - **Cursor** — interactive coding SoT (editor, MCP, kit skills)
-- **Prime (optional)** — companion for long-run/autonomous eval; batch inference/training via Lab/Compute — not a daily driver
-- Do not replace Cursor with Prime Lab, Compute, or Inference for routine feature work
+- Prefer **Grok** for design-oriented work and engineering judgment; use cost routing (`/cost-check`) for when to escalate
+- Optional long-run companion is rare/eval-only — do not replace Cursor for routine feature work (see `docs/companion-agent.md`)
 
 ## Rules
 

@@ -1,11 +1,11 @@
-# Agent kit
+# grok-kit
 
-Personal agent OS kit: smarter, cheaper agent setup with ICM for shared long-tail memory.
+Personal kit to **superpower Grok for design work** and orchestrate better inside Cursor — plan→execute, thin-parent multi-agent runs, cost routing, shared memory, and playbook skills.
 
-Installed as a local IDE plugin via symlink:
+Installed as a local Cursor plugin via symlink:
 
 ```bash
-ln -sfn /Volumes/Developer/Workspace/cursor-kit ~/.cursor/plugins/local/agent-kit
+ln -sfn /Volumes/Developer/Workspace/cursor-kit ~/.cursor/plugins/local/grok-kit
 ```
 
 Reload the editor window after install.
@@ -32,7 +32,6 @@ Reload the editor window after install.
 
 ## Runtime split
 
-- **IDE agent host** — interactive coding (Cursor SoT)
+- **Cursor** — interactive coding SoT (editor, MCP, kit skills); prefer Grok for design-oriented judgment
 - **Hot memory pin** — short MEMORY/USER files; shares ICM long-tail
-- **Companion agent** — rare long-run work (see `docs/companion-agent.md`)
-- **Prime platform (optional)** — companion + batch eval/training only; not Lab/Compute/Inference as daily driver
+- **Companion agent** — rare long-run / unattended work only (see `docs/companion-agent.md`); not the daily driver
