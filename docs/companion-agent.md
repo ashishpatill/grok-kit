@@ -1,8 +1,6 @@
 # Long-run companion agent (optional)
 
-Use a detached long-run companion only when IDE-native orchestration is not enough.
-
-**Prime Agent** is one optional companion (not installed by this kit). See [Prime Agent blog](https://www.primeintellect.ai/blog/prime-agent) for upstream design.
+Use a detached long-run companion only when IDE-native orchestration is not enough. Companions are **not** installed by this kit and are not the daily driver — Cursor + grok-kit remain the interactive SoT.
 
 ## Use a companion when
 
@@ -11,19 +9,19 @@ Use a detached long-run companion only when IDE-native orchestration is not enou
 - Daemon detach/reattach + heartbeats/schedules
 - Autonomous eval runs with explicit gate commands and turn/token budgets
 
-## Stay in the IDE when
+## Stay in Cursor when
 
 - Interactive feature work, refactors, PR iteration
-- Editor diffs, lints, browser, project MCP
+- Design-oriented judgment with Grok, editor diffs, lints, browser, project MCP
 - Cost-sensitive daily coding
 - Harness refinement that must stay human-gated (`/refine-harness`)
 
-## When NOT to use Prime Agent
+## When NOT to use a companion
 
 - Default interactive coding — Cursor remains the SoT
 - Replacing ICM, User Rules, or kit skills as memory/harness authority
-- Cross-session orchestration beyond parent/sibling/child (Prime A2A is **nuclear-family only**)
-- Unsupervised harness mutation — Prime `/refine` is Continual Harness CRUD; this kit uses gated `/refine-harness` instead
+- Cross-session orchestration beyond what the parent/sibling/child Task model covers
+- Unsupervised harness mutation — this kit uses gated `/refine-harness` instead
 
 ## Handoff protocol (ICM only)
 
@@ -34,24 +32,6 @@ Use a detached long-run companion only when IDE-native orchestration is not enou
 
 Do not treat companion session JSONL or REPL state as shared memory — ICM is the cross-runtime handoff bus.
 
-## Autonomous eval pattern (Prime CLI)
+## Autonomous eval pattern
 
-For unattended runs, prefer explicit bounds and a gate:
-
-```bash
-prime-agent \
-  --autonomous \
-  --autonomous-gate "npm run check" \
-  --autonomous-max-turns 20 \
-  "Implement and verify the requested change"
-```
-
-Also available: `--autonomous-max-tokens`, `--autonomous-timeout-ms`. Gate reruns only when the workspace changed since the last attempt.
-
-## Install (when needed)
-
-```bash
-curl -fsSL https://app.primeintellect.ai/prime-agent/install.sh | sh
-```
-
-Install and run in the project directory. Keep off the daily interactive coding path.
+For unattended runs, prefer explicit bounds: a gate command, max turns/tokens, and a timeout. Rerun the gate only when the workspace changed since the last attempt. Keep companions off the daily interactive coding path.

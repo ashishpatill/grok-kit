@@ -1,11 +1,11 @@
 ---
-description: Agent kit pointer — recall ICM, use playbook skills, keep context thin
+description: grok-kit pointer — Grok for design judgment, recall ICM, playbook skills, thin context
 alwaysApply: true
 ---
 
-# Agent Kit
+# grok-kit
 
-- Prefer `/cost-check` routing: Auto Balance default; Cost/Composer for explore; Intelligence only for Debug/architecture.
+- Prefer Grok for design-oriented work; `/cost-check` for routing (Auto Balance default; Cost/Composer for explore; Intelligence only for Debug/architecture).
 - Before re-asking Workspace facts, recall ICM topics (`workspace-routing`, `project-*`, `preferences`).
 - Multi-hop work: use `/orchestrate-rlm` — thin parent, summary-only children, depth 1.
 - Ambiguous multi-file work: `/plan-execute` then Agent after approval.

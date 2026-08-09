@@ -24,9 +24,9 @@ disable-model-invocation: true
 3. Stop. Wait for human approve/reject.
 4. On approve, apply only the accepted patches.
 
-## vs Prime Continual Harness
+## Why gated
 
-Prime Agent `/refine` CRUDs harness state (prompts, skills, memory, sub-agents) from its own trajectory — powerful but unsupervised. This skill is the **gated** counterpart: ≤3 evidence-backed proposals, human approve/reject, no auto-apply, no base User Rules mutation.
+Some companion runtimes auto-mutate harness state (prompts, skills, memory, sub-agents) from their own trajectory. This skill is the **gated** counterpart: ≤3 evidence-backed proposals, human approve/reject, no auto-apply, no base User Rules mutation.
 
 ## Hard bans
 

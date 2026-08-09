@@ -3,7 +3,7 @@ name: project-bootstrap
 description: >-
   Bootstrap a repo with thin AGENTS.md, .cursor/rules/core.mdc, ignore files,
   optional mcp.json, STATE conventions, and ICM project topic. Use when setting
-  up the agent OS layer for a new or existing project.
+  up the grok-kit layer for a new or existing project.
 ---
 
 # Project Bootstrap
