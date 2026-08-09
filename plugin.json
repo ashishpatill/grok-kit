@@ -1,0 +1,19 @@
+{
+  "name": "grok-kit",
+  "version": "1.0.0",
+  "description": "Personal agent harness kit — playbook skills, thin-parent orchestration, cost routing, ICM shared memory, project bootstrap.",
+  "author": {
+    "name": "Ashish P"
+  },
+  "homepage": "https://github.com/ashishpatill/grok-kit",
+  "keywords": [
+    "harness",
+    "skills",
+    "orchestration",
+    "cost-routing",
+    "icm",
+    "memory",
+    "bootstrap",
+    "grok"
+  ]
+}
