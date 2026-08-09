@@ -1,5 +1,24 @@
 {
   "name": "grok-kit",
+  "displayName": "grok-kit",
+  "version": "1.0.0",
   "description": "Personal Cursor/agent harness kit — playbook skills, thin-parent orchestration, cost routing, ICM shared memory, project bootstrap, user-layer install.",
-  "version": "1.0.0"
+  "author": {
+    "name": "Ashish P",
+    "email": "3750312+ashishpatill@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/ashishpatill/grok-kit",
+  "repository": "https://github.com/ashishpatill/grok-kit",
+  "license": "MIT",
+  "keywords": [
+    "harness",
+    "skills",
+    "orchestration",
+    "cost-routing",
+    "icm",
+    "memory",
+    "bootstrap",
+    "grok"
+  ],
+  "logo": "assets/logo.png"
 }
