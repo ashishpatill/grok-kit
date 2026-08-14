@@ -1,51 +1,44 @@
 # grok-kit
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Repo](https://img.shields.io/badge/github-ashishpatill%2Fgrok-kit-181717?logo=github)](https://github.com/ashishpatill/grok-kit)
-[![Plugin](https://img.shields.io/badge/Cursor-local%20plugin-000000)](#quickstart)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ashishpatill/grok-kit/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/github-ashishpatill%2Fgrok-kit-181717.svg?logo=github)](https://github.com/ashishpatill/grok-kit)
 
-**A personal Cursor agent harness:** playbook skills, thin-parent orchestration, cost-aware model routing, and a shared-memory bridge—so agents stay repeatable instead of expensive and forgetful.
+Personal Cursor agent harness kit: playbook skills, thin-parent orchestration, cost-aware model routing, shared-memory bridge (ICM), and project bootstrap. Built so agent work stays repeatable instead of burning context and forgetting decisions between chats.
 
-For engineers who live in Cursor and want durable workflows—not ad-hoc prompts that burn context, misroute models, and lose decisions between chats.
+Local checkout may live at any path (for example `cursor-kit`). Plugin id is always `grok-kit`.
 
----
+## What it fixes
 
-## Why it matters
-
-Most agent setups fail the same ways: always-on rules balloon the context ring, every task spawns nested agents, expensive models run on nits, product MCP servers stay enabled globally, and yesterday’s decisions vanish when the chat ends.
-
-grok-kit attacks those failure modes with concrete kit pieces already in this repo:
+Common failure modes this kit targets:
 
 | Pain | Kit response |
 |------|----------------|
 | Ad-hoc agent chaos | Skills ladder + `/orchestrate-rlm` (thin parent, summary-only children, depth 1) |
-| Expensive model misuse | `/cost-check` router matrix (Auto **Balance** default; pin cheap for explore/verify) |
+| Expensive model misuse | `/cost-check` router matrix (Auto Balance default; pin cheap for explore/verify) |
 | Session amnesia | ICM shared memory + `/memory-sync` / `/session-handoff` (human-gated writes) |
 | Under-tooled repos | `/project-bootstrap` → thin `AGENTS.md`, rules, ignore files, stack templates |
-| Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay **project**-scoped |
+| Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay project-scoped |
 
-Cursor remains the interactive coding source of truth. An optional long-run companion is rare/eval-only—see [`docs/companion-agent.md`](docs/companion-agent.md).
+Cursor stays the interactive coding source of truth. An optional long-run companion is rare/eval-only. See [`docs/companion-agent.md`](docs/companion-agent.md).
 
----
+## What's included
 
-## Features
-
-- **Playbook skills** — slash-invoked workflows for plan→execute, orchestration, cost, bootstrap, memory, handoff, and harness refinement
-- **Specialist agents** — `verifier`, `debugger`, `researcher` with pin-cheap defaults for explore/verify
-- **Cost routing** — explicit Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
-- **Memory bridge** — ICM as long-tail store; hot MEMORY/USER stay short; no silent identity mutation
-- **MCP slim pattern** — globals = ICM; archive/restore helpers; project snippets for product servers
-- **User-layer install** — one script for agents, hooks, skill symlinks, plugin symlink, permissions stub
-- **Stack templates** — Next.js/Clerk/Neon, research-Python, agentic-framework profiles for bootstrap
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement
+- Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
+- Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
+- Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
+- MCP slim pattern: user-global = ICM; archive/restore helpers; product servers in project snippets
+- User-layer install script: agents, hooks, skill symlinks, plugin symlink, permissions stub
+- Stack templates: Next.js/Clerk/Neon, research-Python, agentic-framework profiles for bootstrap
 
 ### Skills
 
 | Skill | When to use |
 |-------|-------------|
 | `/cost-check` | Before large runs, high spend, or choosing Cost / Balance / Intelligence |
-| `/plan-execute` | Ambiguous multi-file work—plan first, then implement |
+| `/plan-execute` | Ambiguous multi-file work: plan first, then implement |
 | `/orchestrate-rlm` | Multi-hop / multi-package work; thin parent, summary-only children |
-| `/project-bootstrap` | New or under-tooled repo—`.cursor/` layer + thin AGENTS |
+| `/project-bootstrap` | New or under-tooled repo: `.cursor/` layer + thin AGENTS |
 | `/memory-sync` | Seed or update ICM from hot memory; propose (never silent) identity exports |
 | `/session-handoff` | End a deep session; write handoff + ICM `handoff-<slug>` |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
@@ -59,9 +52,7 @@ Cursor remains the interactive coding source of truth. An optional long-run comp
 | `debugger` | Localize → minimal fix → verify; stop after two failed hypotheses |
 | `researcher` | Readonly exploration; summarize-only returns; pin Composer |
 
-**Ladder:** Skill → single Agent → Plan→Agent → parallel Task (≤3–5, depth 1) → Best-of-N rare.
-
----
+Ladder: Skill → single Agent → Plan→Agent → parallel Task (≤3-5, depth 1) → Best-of-N rare.
 
 ## Quickstart
 
@@ -71,7 +62,7 @@ cd grok-kit
 ./scripts/install-user-layer.sh
 ```
 
-Then in Cursor: **Developer: Reload Window**, and try:
+In Cursor: Developer: Reload Window, then try:
 
 ```text
 /cost-check
@@ -81,15 +72,11 @@ Then in Cursor: **Developer: Reload Window**, and try:
 
 Confirm the local plugin id `grok-kit` appears under plugins / Customize, and slash skills resolve.
 
-> Local working copy may live at any path (e.g. `cursor-kit`); the install script resolves paths from its location. Plugin id is always `grok-kit`.
-
----
-
 ## Setup
 
 ### 1. Install the user layer
 
-**Option A — install script (recommended)**
+Option A: install script (recommended)
 
 ```bash
 ./scripts/install-user-layer.sh
@@ -104,7 +91,7 @@ This will:
 - Slim user MCP to ICM-only (backs up existing `~/.cursor/mcp.json` first)
 - Create a stub `~/.cursor/permissions.json` if missing
 
-**Option B — plugin symlink only**
+Option B: plugin symlink only
 
 ```bash
 mkdir -p ~/.cursor/plugins/local
@@ -125,7 +112,7 @@ icm init --mode mcp
 icm init --mode skill   # optional
 ```
 
-Keep user-global MCP ICM-only ([`docs/mcp-snippets/user-mcp.icm-only.json`](docs/mcp-snippets/user-mcp.icm-only.json)). Product MCP (database, browser, payments, deploy) belongs in the project’s `.cursor/mcp.json`—see [`docs/mcp-snippets/`](docs/mcp-snippets/).
+Keep user-global MCP ICM-only ([`docs/mcp-snippets/user-mcp.icm-only.json`](docs/mcp-snippets/user-mcp.icm-only.json)). Product MCP (database, browser, payments, deploy) belongs in the project's `.cursor/mcp.json`. See [`docs/mcp-snippets/`](docs/mcp-snippets/).
 
 Seed once (human-gated):
 
@@ -138,7 +125,7 @@ export HOT_USER_FILE="$HOME/path/to/USER.md"
 
 ### 3. Reload and smoke-test
 
-1. Command Palette → **Developer: Reload Window**
+1. Command Palette → Developer: Reload Window
 2. Customize → MCP should show `icm` only (add product servers per project as needed)
 3. Try `/cost-check`, `/plan-execute`, `/memory-sync`
 
@@ -148,12 +135,10 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 
 | Layer | Role |
 |-------|------|
-| **Cursor** | Editor, MCP, kit skills (daily driver) |
-| **Hot memory pin** | Short MEMORY/USER files |
-| **ICM** | Long-tail preferences, routing, project topics, handoffs |
-| **Companion** | Optional unattended/eval only |
-
----
+| Cursor | Editor, MCP, kit skills (daily driver) |
+| Hot memory pin | Short MEMORY/USER files |
+| ICM | Long-tail preferences, routing, project topics, handoffs |
+| Companion | Optional unattended/eval only |
 
 ## Usage
 
@@ -163,28 +148,26 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 2. Before a large or expensive run, `/cost-check`
 3. Multi-package or parallel units → `/orchestrate-rlm` with contracts (goal, paths, verify, definition of done; children return summaries only)
 4. New repo → `/project-bootstrap` (pick a template profile)
-5. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don’t auto-apply)
+5. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
 ### Orchestration ladder
 
 ```text
-Skill  →  single Agent  →  Plan→Agent  →  parallel Task (≤3–5)  →  Best-of-N (rare)
+Skill  →  single Agent  →  Plan→Agent  →  parallel Task (≤3-5)  →  Best-of-N (rare)
 ```
 
-Children stay depth **1**. Prefer built-in Explore for search; pin cheap/Composer on verify and research agents—never inherit Intelligence for those.
+Children stay depth 1. Prefer built-in Explore for search; pin cheap/Composer on verify and research agents. Never inherit Intelligence for those.
 
 ### Default routing
 
 | Scenario | Optimize For |
 |----------|----------------|
 | Clarify / Q&A / nits | Cost or Composer 2.5 |
-| Day-to-day implement | **Balance** (default) |
+| Day-to-day implement | Balance (default) |
 | Stubborn debug / novel architecture | Intelligence (only when needed) |
-| Verify / research subagents | Pin Composer — never inherit Intelligence |
+| Verify / research subagents | Pin Composer; never inherit Intelligence |
 
 Full matrix: skill [`skills/cost-check/SKILL.md`](skills/cost-check/SKILL.md).
-
----
 
 ## Architecture
 
@@ -239,9 +222,7 @@ flowchart TB
 | `scripts/` | User-layer install + ICM seed helpers |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |
 | `.cursor-plugin/plugin.json` | Cursor plugin manifest |
-| `plugin.json` | Root metadata for Grok Build–style catalogs |
-
----
+| `plugin.json` | Root metadata for Grok Build-style catalogs |
 
 ## Configuration
 
@@ -260,11 +241,9 @@ Key knobs (no secrets in the kit):
 
 Never store API keys or tokens in ICM topics, rules, or handoff files.
 
----
-
 ## FAQ / Troubleshooting
 
-**Slash skills don’t appear**  
+**Slash skills don't appear**  
 Reload the window. Confirm skill symlinks under `~/.cursor/skills/` and plugin at `~/.cursor/plugins/local/grok-kit`. Re-run `./scripts/install-user-layer.sh`.
 
 **Plugin not listed**  
@@ -279,15 +258,13 @@ cp ~/.cursor/mcp-servers.archived.json ~/.cursor/mcp.json
 ```
 
 **ICM not found**  
-Install the binary and run `icm init --mode mcp`—see [`docs/icm-setup.md`](docs/icm-setup.md).
+Install the binary and run `icm init --mode mcp`. See [`docs/icm-setup.md`](docs/icm-setup.md).
 
 **Should I run a detached companion daily?**  
 No. Stay in Cursor for interactive work. Companions are eval/unattended only ([`docs/companion-agent.md`](docs/companion-agent.md)).
 
 **Does this replace User Rules / persona?**  
-No. The kit pointer is thin; persona and policy live in User Rules. `/memory-sync` and `/refine-harness` propose changes—they do not silently rewrite identity.
-
----
+No. The kit pointer is thin; persona and policy live in User Rules. `/memory-sync` and `/refine-harness` propose changes; they do not silently rewrite identity.
 
 ## Status / Roadmap
 
@@ -297,12 +274,10 @@ Honest status (see also [`docs/STATUS.md`](docs/STATUS.md) and [`docs/publish.md
 |------|--------|
 | Local plugin via symlink / install script | Works today |
 | Skills, agents, templates, ICM docs | In repo |
-| Cursor Marketplace listing | Prep done; **manual submit** at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) + review |
-| Grok Build catalog | Prep done; **PR** to [xai-org/plugin-marketplace](https://github.com/xai-org/plugin-marketplace) with pinned `main` SHA |
+| Cursor Marketplace listing | Prep done; manual submit at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) + review |
+| Grok Build catalog | Prep done; PR to [xai-org/plugin-marketplace](https://github.com/xai-org/plugin-marketplace) with pinned `main` SHA |
 
 Not in scope: becoming a full agent framework product, unsupervised harness mutation, or marketing as a design-workflow kit.
-
----
 
 ## Contributing
 
@@ -315,8 +290,6 @@ This is a personal harness kit published for reuse. PRs that keep skills lean (b
 
 Progress / stop rules for maintainers: [`GOAL_AND_LOOP.md`](GOAL_AND_LOOP.md).
 
----
-
 ## License
 
-[MIT](LICENSE) © 2026 Ashish P
+[MIT](https://github.com/ashishpatill/grok-kit/blob/main/LICENSE) © 2026 Ashish P
