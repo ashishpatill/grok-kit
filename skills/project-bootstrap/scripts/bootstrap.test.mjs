@@ -34,7 +34,10 @@ describe("bootstrap", () => {
     assert.equal(existsSync(path.join(dir, ".cursor/rules/core.mdc")), true);
     assert.equal(existsSync(path.join(dir, ".cursorignore")), true);
     assert.match(await readFile(path.join(dir, "AGENTS.md"), "utf8"), /verify-aci/);
-    assert.match(await readFile(path.join(dir, ".gitignore"), "utf8"), /last\.json/);
+    const gitignore = await readFile(path.join(dir, ".gitignore"), "utf8");
+    assert.match(gitignore, /last\.json/);
+    assert.match(gitignore, /grok-kit-proposals\.json/);
+    assert.match(gitignore, /grok-kit-usage\.jsonl/);
 
     out = "";
     runBootstrap(["--root", dir, "--profile", "generic"], {

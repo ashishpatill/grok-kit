@@ -2,5 +2,7 @@
 .cursor/handoff.md
 .cursor/verify/last.log
 .cursor/verify/last.json
+.cursor/grok-kit-usage.jsonl
+.cursor/grok-kit-proposals.json
 PENDING_MEMORY.md
 node_modules/

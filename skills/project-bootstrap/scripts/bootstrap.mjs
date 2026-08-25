@@ -22,6 +22,8 @@ const GITIGNORE_LINES = [
   "PENDING_MEMORY.md",
   ".cursor/verify/last.log",
   ".cursor/verify/last.json",
+  ".cursor/grok-kit-usage.jsonl",
+  ".cursor/grok-kit-proposals.json",
 ];
 
 const HELP = `bootstrap — copy grok-kit project layer without overwriting rich files

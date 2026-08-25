@@ -15,6 +15,7 @@ describe("grok-kit dispatcher", () => {
       "route-task",
       "session-handoff",
       "skill-curator",
+      "learn",
       "check",
       "install",
       "seed-icm",
@@ -24,6 +25,8 @@ describe("grok-kit dispatcher", () => {
     assert.match(HELP, /verify-aci/);
     assert.match(HELP, /apply/);
     assert.match(HELP, /--i-consent/);
+    assert.match(HELP, /learn/);
+    assert.match(HELP, /--learn/);
     assert.match(HELP, /\.local\/bin\/grok-kit/);
   });
 
@@ -33,6 +36,7 @@ describe("grok-kit dispatcher", () => {
       stdout: (t) => {
         out += t;
       },
+      recordCli: () => {},
       spawnFile: async () => {
         throw new Error("should not spawn");
       },
@@ -47,6 +51,7 @@ describe("grok-kit dispatcher", () => {
       stdout: (t) => {
         out += t;
       },
+      recordCli: () => {},
       spawnFile: async () => {
         throw new Error("should not spawn");
       },
@@ -59,6 +64,7 @@ describe("grok-kit dispatcher", () => {
     const calls = [];
     const code = await runGrokKit(["watch-ci", "--fixture", "x.json"], {
       stdout: () => {},
+      recordCli: () => {},
       spawnFile: async (kind, file, args) => {
         calls.push({ kind, file, args });
         return 0;

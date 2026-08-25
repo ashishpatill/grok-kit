@@ -29,6 +29,8 @@ disable-model-invocation: true
 
 Some companion runtimes auto-mutate harness state (prompts, skills, memory, sub-agents) from their own trajectory. This skill is the **gated** counterpart: ≤3 evidence-backed proposals, human approve/reject, no auto-apply, no base User Rules mutation.
 
+`/usage-learn` is a different loop: it observes local CLI/slash **names** after `install --learn` and may adapt **only** `.cursor/grok-kit.json` feature flags + generated project-rule workflow bullets after `install --improve` or `grok-kit learn apply --i-consent`. Skill-text still goes through this skill.
+
 ## Hard bans
 
 - Unsupervised skill mutation

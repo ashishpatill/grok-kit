@@ -157,6 +157,20 @@ describe("apply", () => {
     assert.ok(text.split("\n").length < 40);
   });
 
+  it("renderProjectRule appends consented learned workflows", () => {
+    const text = renderProjectRule({
+      profile: "generic",
+      enabled: ["route-task", "verify-aci"],
+      available: ["refine-harness", "usage-learn"],
+      mcpRecommended: [],
+      prove: { verify: "true" },
+      learned: { workflows: ["Ship path: route-task → verify-aci → watch-ci"] },
+    });
+    assert.match(text, /Learned workflows/);
+    assert.match(text, /Ship path: route-task/);
+    assert.match(text, /usage-learn/);
+  });
+
   it("require-consent skips writes until project-apply is recorded", async () => {
     const dir = await tmp();
     gitInit(dir);

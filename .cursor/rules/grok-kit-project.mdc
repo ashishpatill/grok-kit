@@ -19,7 +19,7 @@ Profile: **agentic-framework**. Use **only these enabled features** — that is 
 - **orchestrate-rlm**: Multi-package/parallel units: `/orchestrate-rlm`. Compile STATE.md with `grok-kit state-tools`. Children return summaries; depth 1.
 - **skill-curator**: Kit inventory: `grok-kit skill-curator` / `/skill-curator-manual` (manual apply).
 
-Gated/available (human-approve, not always-on): `refine-harness`.
+Gated/available (human-approve, not always-on): `refine-harness`, `usage-learn`.
 
 - No extra product MCP. User-global stays ICM-only.
 - Prove-it: `node scripts/grok-kit.mjs check`

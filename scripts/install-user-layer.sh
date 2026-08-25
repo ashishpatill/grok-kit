@@ -9,19 +9,23 @@ SKIP_MCP=false
 APPLY_CWD=true
 DRY_RUN=false
 HELP=false
+LEARN=false
+IMPROVE=false
 
 usage() {
   cat <<'EOF'
 install-user-layer — copy grok-kit onto this machine (explicit consent required)
 
 Usage:
-  grok-kit install --i-consent [--skip-mcp-slim] [--no-apply-cwd] [--dry-run]
+  grok-kit install --i-consent [--skip-mcp-slim] [--no-apply-cwd] [--learn] [--improve] [--dry-run]
   ./scripts/install-user-layer.sh --i-consent
 
 Without --i-consent, prints the consent notice and exits 78 (no files written).
 On a TTY you may type I CONSENT instead of passing the flag.
 
   --i-consent       explicit consent for user layer + per-repo apply + MCP slim
+  --learn           also record local skill/workflow usage and write proposals
+  --improve         adapt grok-kit.json from usage (implies --learn); never User Rules
   --skip-mcp-slim   keep current ~/.cursor/mcp.json (still backs up nothing)
   --no-apply-cwd    do not grok-kit apply the current directory
   --dry-run         print the notice and planned actions; write nothing
@@ -46,6 +50,15 @@ while [[ $# -gt 0 ]]; do
       APPLY_CWD=false
       shift
       ;;
+    --learn)
+      LEARN=true
+      shift
+      ;;
+    --improve)
+      IMPROVE=true
+      LEARN=true
+      shift
+      ;;
     --dry-run)
       DRY_RUN=true
       shift
@@ -66,7 +79,7 @@ fi
 node "$KIT/scripts/consent.mjs" notice
 
 if [[ "$DRY_RUN" == true ]]; then
-  echo "dry-run: would install user layer; project-apply=$([[ "$APPLY_CWD" == true ]] && echo on || echo cwd-skipped); mcp-slim=$([[ "$SKIP_MCP" == true ]] && echo skip || echo on)"
+  echo "dry-run: would install user layer; project-apply=$([[ "$APPLY_CWD" == true ]] && echo on || echo cwd-skipped); mcp-slim=$([[ "$SKIP_MCP" == true ]] && echo skip || echo on); learn=$([[ "$LEARN" == true ]] && echo on || echo off); improve=$([[ "$IMPROVE" == true ]] && echo on || echo off)"
   echo "dry-run: no files written (pass --i-consent without --dry-run to apply)"
   exit 0
 fi
@@ -89,6 +102,12 @@ fi
 SCOPES="user-layer,project-apply"
 if [[ "$SKIP_MCP" != true ]]; then
   SCOPES="${SCOPES},mcp-slim"
+fi
+if [[ "$LEARN" == true ]]; then
+  SCOPES="${SCOPES},usage-learn"
+fi
+if [[ "$IMPROVE" == true ]]; then
+  SCOPES="${SCOPES},harness-improve"
 fi
 node "$KIT/scripts/consent.mjs" write --scopes "$SCOPES" --source "install --i-consent"
 
@@ -139,7 +158,7 @@ def ensure(event, command, timeout):
 
 
 ensure("stop", "./hooks/stage-memory-candidate.sh", 15)
-ensure("sessionStart", "./hooks/session-start-apply.sh", 12)
+ensure("sessionStart", "./hooks/session-start-apply.sh", 18)
 path.write_text(json.dumps(data, indent=2) + "\n")
 PY
 
@@ -206,5 +225,11 @@ echo "- User rule ~/.cursor/rules/grok-kit.mdc (per-repo apply on sessionStart, 
 echo "- Hooks: stop + sessionStart (merged into existing hooks.json)"
 echo "- Skills symlinked in ~/.cursor/skills"
 echo "- CLI: $HOME/.local/bin/grok-kit  (add ~/.local/bin to PATH if needed)"
+if [[ "$LEARN" == true ]]; then
+  echo "- Usage learn on (local log ~/.cursor/grok-kit-usage.jsonl)"
+fi
+if [[ "$IMPROVE" == true ]]; then
+  echo "- Harness improve on (sessionStart may adapt grok-kit.json; never User Rules)"
+fi
 echo "Reload the editor window. Install ICM next: docs/icm-setup.md"
 echo "Revoke: grok-kit consent revoke"

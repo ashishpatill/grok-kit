@@ -25,7 +25,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 
 ## What's included
 
-- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement, task routing, verify ACI, merge-state CI watch, rubric verify
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
 - Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
@@ -49,6 +49,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/memory-sync` | Seed or update ICM from hot memory; propose (never silent) identity exports |
 | `/session-handoff` | End a deep session; write handoff + ICM `handoff-<slug>` |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
+| `/usage-learn` | After `install --learn`: observe local skill/workflow usage; adapt `grok-kit.json` only with `--improve` or `learn apply --i-consent` |
 | `/skill-curator-manual` | Periodic skill inventory / merge proposals (manual apply) |
 
 ### Agents
@@ -107,6 +108,11 @@ Install **refuses** (exit 78) unless you pass `--i-consent` or type `I CONSENT` 
 - Slim user MCP to ICM-only (backs up existing `~/.cursor/mcp.json` first; skip with `--skip-mcp-slim`)
 - Create a stub `~/.cursor/permissions.json` if missing
 - `grok-kit apply` on the current git repo now, and on other git repos at sessionStart when they lack `.cursor/grok-kit.json`
+
+**Not included unless you pass extra flags:**
+
+- `--learn` — record local grok-kit command / slash-skill **names** (no file contents) and write `.cursor/grok-kit-proposals.json`
+- `--improve` — implies `--learn`; sessionStart may adapt **only** `.cursor/grok-kit.json` enabled features + learned workflow bullets. Never User Rules, persona, or kit `SKILL.md`
 
 Recorded at `~/.cursor/grok-kit-consent.json`. Revoke: `grok-kit consent revoke` (stops background apply; does not delete project files already written).
 
@@ -239,7 +245,7 @@ flowchart TB
 | `skills/` | Playbook skills (slash commands) |
 | `agents/` | `verifier`, `debugger`, `researcher` |
 | `rules/` | Thin always-on kit pointer (persona stays in User Rules); background apply only after install consent |
-| `hooks/` | sessionStart apply-if-missing **if consented** + optional memory-candidate staging on stop |
+| `hooks/` | sessionStart apply-if-missing **if consented** + optional usage-learn tick + stop memory stub |
 | `templates/` | Stack profiles for apply/bootstrap, including tell-proof |
 | `scripts/` | User-layer install, ICM seed, `kit-check.sh`, `grok-kit.mjs` dispatcher |
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
@@ -259,7 +265,9 @@ Key knobs (no secrets in the kit):
 | MCP archive | `~/.cursor/mcp-servers.archived.json` | Former globals for project restore |
 | Permissions | `~/.cursor/permissions.json` | Stub allowlist includes `icm` |
 | User rules | `~/.cursor/rules/grok-kit.mdc` | Installed only after `--i-consent`; per-project router |
-| Consent | `~/.cursor/grok-kit-consent.json` | User-layer + project-apply + optional MCP slim; `grok-kit consent revoke` |
+| Consent | `~/.cursor/grok-kit-consent.json` | User-layer + project-apply + optional MCP slim; `usageLearn` / `harnessImprove` only with `--learn` / `--improve`; `grok-kit consent revoke` |
+| Usage log | `~/.cursor/grok-kit-usage.jsonl` | Written only after `--learn`; command/skill names, no secrets (override `GROK_KIT_USAGE_FILE`) |
+| Proposals | `<repo>/.cursor/grok-kit-proposals.json` | ≤3 deterministic harness tweaks after `--learn` (override `GROK_KIT_PROPOSALS_FILE`) |
 | Hooks | `~/.cursor/hooks.json` | sessionStart apply-if-missing after consent + stop memory stub (merged, not overwritten) |
 | Hot pin paths | `HOT_MEMORY_FILE` / `HOT_USER_FILE` | For seed script |
 | Project MCP | `<repo>/.cursor/mcp.json` | Product servers only when needed |
@@ -289,7 +297,10 @@ Install the binary and run `icm init --mode mcp`. See [`docs/icm-setup.md`](docs
 No. Stay in Cursor for interactive work. Companions are eval/unattended only ([`docs/companion-agent.md`](docs/companion-agent.md)).
 
 **Does this replace User Rules / persona?**  
-No. The kit pointer is thin; persona and policy live in User Rules. `/memory-sync` and `/refine-harness` propose changes; they do not silently rewrite identity.
+No. The kit pointer is thin; persona and policy live in User Rules. `/memory-sync` and `/refine-harness` propose changes; they do not silently rewrite identity. `/usage-learn` may adapt `.cursor/grok-kit.json` only after `install --improve` or `grok-kit learn apply --i-consent`.
+
+**Will grok-kit watch how I work and change itself?**  
+Only if you opt in. `install --learn` logs skill/workflow **names** locally and writes proposals. `install --improve` (or a one-shot `learn apply --i-consent`) can enable optional features you already use and pin a frequent workflow onto the generated project rule. It never rewrites User Rules or kit `SKILL.md`.
 
 ## Status / Roadmap
 
@@ -302,7 +313,7 @@ Honest status (see also [`docs/STATUS.md`](docs/STATUS.md) and [`docs/publish.md
 | Cursor Marketplace listing | Prep done; manual submit at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) + review |
 | Grok Build catalog | Prep done; PR to [xai-org/plugin-marketplace](https://github.com/xai-org/plugin-marketplace) with pinned `main` SHA |
 
-Not in scope: becoming a full agent framework product, unsupervised harness mutation, or marketing as a design-workflow kit.
+Not in scope: becoming a full agent framework product, unsupervised User Rules / `SKILL.md` mutation, or marketing as a design-workflow kit. Consented `install --improve` may adapt `grok-kit.json` only.
 
 ## Contributing
 

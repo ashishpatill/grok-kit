@@ -73,6 +73,7 @@ AGENTS.md                 # created, or a grok-kit section appended
 3. If `tell-proof` is enabled, UI claims need `tell_proof_verify`. Do not auto-apply `tell_apply` patches. Enable Tell MCP with `tell mcp install cursor --project` (or `pnpm -F @tell/mcp start` in the Tell repo).
 4. Suggest ICM topic `project-<slug>` with: how to run/test, gotchas, key paths
 5. `/cost-check`: disable global product MCP not needed here
+6. Usage-learn is gated: observe only after `install --learn`; adapt `grok-kit.json` only after `--improve` or `grok-kit learn apply --i-consent`
 
 ## Core stubs
 

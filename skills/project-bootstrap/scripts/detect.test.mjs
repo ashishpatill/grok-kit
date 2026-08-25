@@ -23,6 +23,7 @@ describe("detect", () => {
     assert.ok(adaptation.enabled.includes("skill-curator"));
     assert.equal(adaptation.enabled.includes("tell-proof"), false);
     assert.ok(adaptation.available.includes("refine-harness"));
+    assert.ok(adaptation.available.includes("usage-learn"));
   });
 
   it("classifies a Tell-shaped tree as tell-proof", async () => {

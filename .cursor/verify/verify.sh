@@ -25,6 +25,7 @@ launch() {
   node "$ROOT/scripts/grok-kit.mjs" route-task --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" session-handoff --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" skill-curator --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" learn --help >/dev/null
 }
 
 drive() {

@@ -87,6 +87,16 @@ describe("consent", () => {
     }
   });
 
+  it("parses usage-learn and harness-improve without implying them by default", () => {
+    const learned = parseScopeList("usage-learn,harness-improve");
+    assert.equal(learned.usageLearn, true);
+    assert.equal(learned.harnessImprove, true);
+    assert.equal(learned.userLayer, false);
+    const defaults = parseScopeList("user-layer,project-apply,mcp-slim");
+    assert.equal(defaults.usageLearn, false);
+    assert.equal(defaults.harnessImprove, false);
+  });
+
   it("rejects unknown scopes", () => {
     assert.throws(() => parseScopeList("nope"), /unknown consent scope/);
   });

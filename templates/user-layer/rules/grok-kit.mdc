@@ -11,5 +11,6 @@ This file is installed only after `grok-kit install --i-consent`. Revoke with `g
 - Use only the **enabled** features in `.cursor/grok-kit.json` and `.cursor/rules/grok-kit-project.mdc`. That is how the kit adapts per project.
 - Always-on router: `/route-task`, `/cost-check`, `/verify-aci`, `/rubric-verify`, `/watch-ci`, `/plan-execute`, `/session-handoff`, `/memory-sync`.
 - Optional (only if enabled): `/orchestrate-rlm`, tell-proof UI prove, `/skill-curator-manual`. `/refine-harness` is human-gated — propose, never silent identity writes.
+- `/usage-learn` is opt-in (`install --learn`). It may propose ≤3 harness tweaks from local usage. Apply `grok-kit.json` changes only with `install --improve` or `grok-kit learn apply --i-consent`. Never rewrite User Rules or kit `SKILL.md`.
 - If `tell-proof` is enabled, UI claims need `tell_proof_verify` (not a screenshot). Do not auto-apply Tell patches. Tell MCP stays project-scoped.
 - Compiled CLI: `grok-kit` (`~/.local/bin/grok-kit`).

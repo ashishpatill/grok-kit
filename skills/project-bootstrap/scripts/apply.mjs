@@ -51,6 +51,8 @@ export const FEATURE_HOW = Object.freeze({
     "UI claims: `tell_proof_verify` (Tell MCP), not a screenshot. `tell_apply` returns patches — never auto-apply. Enable Tell MCP per-project (`tell mcp install cursor --project` or `pnpm -F @tell/mcp start`). Do not copy Tell's skill farm into this repo.",
   "skill-curator":
     "Kit inventory: `grok-kit skill-curator` / `/skill-curator-manual` (manual apply).",
+  "usage-learn":
+    "After `install --learn`, observe local skill/workflow usage. Improve `grok-kit.json` only with `--improve` or `grok-kit learn apply --i-consent`.",
 });
 
 function readJson(file) {
@@ -146,7 +148,7 @@ export function renderProjectRule(adaptation) {
   const proveUi = adaptation.prove.ui
     ? `\n- UI prove: \`${adaptation.prove.ui}\``
     : "";
-  return `---
+  const body = `---
 description: grok-kit adaptation for this repo (generated — re-run grok-kit apply)
 alwaysApply: true
 ---
@@ -163,6 +165,15 @@ Gated/available (human-approve, not always-on): ${available || "none"}.
 ${mcp}
 - Prove-it: \`${adaptation.prove.verify}\`${proveUi}
 - Adaptation SoT: \`.cursor/grok-kit.json\`
+`;
+  const learned = Array.isArray(adaptation.learned?.workflows)
+    ? adaptation.learned.workflows.filter(Boolean)
+    : [];
+  if (learned.length === 0) return body;
+  return `${body}
+## Learned workflows (consented \`grok-kit learn\`)
+
+${learned.map((line) => `- ${line}`).join("\n")}
 `;
 }
 
@@ -189,9 +200,12 @@ function projectRulePath(root) {
   return path.join(root, ".cursor/rules/grok-kit-project.mdc");
 }
 
-function existingNotes(root) {
+function existingExtras(root) {
   const prev = readJson(grokKitJsonPath(root));
-  return prev && typeof prev.notes === "string" ? prev.notes : undefined;
+  const extra = {};
+  if (prev && typeof prev.notes === "string") extra.notes = prev.notes;
+  if (prev?.learned) extra.learned = prev.learned;
+  return extra;
 }
 
 function mcpHasTell(root) {
@@ -358,12 +372,12 @@ export function runApply(argv, io = {}) {
   }
 
   const files = [];
-  const notes = existingNotes(root);
+  const extras = existingExtras(root);
   const manifest = buildManifest(adaptation, {
     mcpWritten: false,
-    ...(notes ? { notes } : {}),
+    ...extras,
   });
-  const rule = renderProjectRule(adaptation);
+  const rule = renderProjectRule({ ...adaptation, learned: extras.learned });
 
   if (!options.dryRun) {
     mkdirSync(path.dirname(jsonPath), { recursive: true });
