@@ -9,5 +9,5 @@ This file is installed only after `grok-kit install --i-consent`. Revoke with `g
 
 - If this is a git repo and `.cursor/grok-kit.json` is missing, `grok-kit apply --root .` is allowed. Do not dump every kit skill into always-on rules.
 - Follow `.cursor/grok-kit.json` and `.cursor/rules/grok-kit-project.mdc`. Keep those files byte-stable (KV cache). Learned workflows stay in the JSON, not in always-on rules.
-- `/cost-check` before expensive runs. Skills load on demand. `/refine-harness` is human-gated. Session start/end: `/flagship` (overview + visualise).
+- `/cost-check` before expensive runs. Skills load on demand. `/refine-harness` is human-gated. Session start/end: `/flagship` (overview + visualise). Drift: `/code-hygiene` (read, then scrap / fix / keep).
 - Observe usage only after `install --learn`. Adapt json only with `install --improve` or `grok-kit learn apply --i-consent`. Never rewrite User Rules or kit `SKILL.md`.

@@ -29,12 +29,18 @@ const INTENTS = {
     "grok-kit flagship --when now — overview + visualise.",
     "If a host canvas skill is available, render the JSON there. Otherwise show mermaid in chat.",
   ],
+  hygiene: [
+    "grok-kit hygiene — ranked drift/low-quality findings (JSON). Do not auto-delete.",
+    "Present at most 3 findings. For each: read the file, explain in plain language, offer scrap / fix / keep.",
+    "Implement only what the user chose. Then grok-kit verify-aci --phase drive (or rubric-verify).",
+    "If a host deslop or code-quality skill exists, use it only on files already approved.",
+  ],
 };
 
 const HELP = `route-task — print a compiled sequence, then leave this skill
 
 Usage:
-  grok-kit route-task <bug|feature|investigate|ship|status|list>
+  grok-kit route-task <bug|feature|investigate|ship|status|hygiene|list>
 `;
 
 export function listIntents() {

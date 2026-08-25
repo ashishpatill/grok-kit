@@ -22,6 +22,7 @@
 - Usage learn (opt-in `--learn` / `--improve`): local skill/workflow names → proposals → `grok-kit.json` adaptations only after consent
 - KV cache: always-on project rules stay byte-stable; learned workflows stay in JSON; no-op `--improve` ticks do not rewrite `.mdc` files
 - Flagship session look: `/flagship` `/overview` `/visualise` (compiler + mermaid; host canvas if available)
+- Code hygiene: `/code-hygiene` ranks stale/low-quality files; human decides scrap / fix / keep; never auto-delete
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 
 ## In progress

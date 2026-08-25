@@ -166,7 +166,7 @@ export function shortLine(payload) {
   const dirty = payload.git?.dirtyCount ?? 0;
   const profile = payload.kit?.profile || "none";
   const when = payload.when || "now";
-  return `flagship ${when} branch=${branch} dirty=${dirty} profile=${profile}. /overview for status, /visualise for the picture.`;
+  return `flagship ${when} branch=${branch} dirty=${dirty} profile=${profile}. /overview for status, /visualise for the picture, /code-hygiene for drift.`;
 }
 
 export function buildOverview(root, options = {}) {
@@ -188,7 +188,7 @@ export function buildOverview(root, options = {}) {
     next:
       when === "end"
         ? ["Fill /session-handoff if the session was deep.", "grok-kit flagship --when end"]
-        : ["grok-kit overview", "grok-kit visualise", "grok-kit flagship --when start"],
+        : ["grok-kit overview", "grok-kit visualise", "grok-kit flagship --when start", "grok-kit hygiene"],
   };
 }
 

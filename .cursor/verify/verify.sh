@@ -28,6 +28,7 @@ launch() {
   node "$ROOT/scripts/grok-kit.mjs" learn --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" overview --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" flagship --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" hygiene --help >/dev/null
 }
 
 drive() {

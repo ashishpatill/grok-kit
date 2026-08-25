@@ -25,6 +25,7 @@ const GITIGNORE_LINES = [
   ".cursor/grok-kit-usage.jsonl",
   ".cursor/grok-kit-proposals.json",
   ".cursor/overview.json",
+  ".cursor/hygiene.json",
 ];
 
 const HELP = `bootstrap — copy grok-kit project layer without overwriting rich files
@@ -61,7 +62,7 @@ const GENERIC_AGENTS = `# Project
 
 ## Skills index
 
-/route-task  /verify-aci  /rubric-verify  /watch-ci  /plan-execute  /orchestrate-rlm
+/route-task  /verify-aci  /rubric-verify  /watch-ci  /plan-execute  /orchestrate-rlm  /code-hygiene
 
 ## Gotchas
 
@@ -74,7 +75,8 @@ const KIT_SECTION = `
 ## grok-kit
 
 - Adaptation SoT: \`.cursor/grok-kit.json\` (regenerate with \`grok-kit apply\`)
-- Route work with \`/route-task\` (bug | feature | investigate | ship)
+- Route work with \`/route-task\` (bug | feature | investigate | ship | hygiene)
+- Code drift: \`/code-hygiene\` (read, then scrap / fix / keep; never auto-delete)
 - Prove: \`/verify-aci\` (\`.cursor/verify/verify.sh\` doctor/launch/drive)
 - Score the diff: \`/rubric-verify\`
 - PR merge-state: \`/watch-ci --status-once\` (not a green checkbox list)

@@ -16,6 +16,7 @@ Always-on rules sit at the **front** of the prompt. Cursor/Grok can reuse that p
 - Putting `new Date()`, session ids, or usage histograms into `alwaysApply` rules
 - Rewriting `.cursor/rules/*.mdc` on every `sessionStart`
 - Pasting full SKILL.md bodies into User Rules or AGENTS.md
+- Dumping `/overview` or `/code-hygiene` JSON into always-on `.mdc` files
 - Enabling unused product MCP globally
 
 ## Audit (from `/cost-check`)

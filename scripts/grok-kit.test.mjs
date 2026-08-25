@@ -19,6 +19,7 @@ describe("grok-kit dispatcher", () => {
       "overview",
       "visualise",
       "flagship",
+      "hygiene",
       "check",
       "install",
       "seed-icm",
@@ -26,12 +27,16 @@ describe("grok-kit dispatcher", () => {
       assert.ok(COMMANDS[name], name);
     }
     assert.ok(COMMANDS.visualize, "visualize");
+    assert.ok(COMMANDS.drift, "drift");
+    assert.ok(COMMANDS.scrap, "scrap");
+    assert.ok(COMMANDS["code-hygiene"], "code-hygiene");
     assert.match(HELP, /verify-aci/);
     assert.match(HELP, /apply/);
     assert.match(HELP, /--i-consent/);
     assert.match(HELP, /flagship/);
     assert.match(HELP, /overview/);
     assert.match(HELP, /visualise/);
+    assert.match(HELP, /hygiene/);
     assert.match(HELP, /--learn/);
     assert.match(HELP, /\.local\/bin\/grok-kit/);
   });
