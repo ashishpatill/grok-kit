@@ -34,6 +34,7 @@ Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-
 - [x] `grok-kit apply` adapts per project; tell-proof template; user + plugin auto-apply after `--i-consent`
 - [x] Consented usage-learn: observe local skill/workflow names; adapt `grok-kit.json` only after `--improve` / `learn apply --i-consent`
 - [x] Flagship session look: `/flagship` `/overview` `/visualise` (status + mermaid; host canvas if available)
+- [x] Code hygiene: `/code-hygiene` ranks drift; human decides scrap / fix / keep (never auto-delete)
 - [x] No secrets committed; checks diagnosed or N/A documented
 
 ## Loop order

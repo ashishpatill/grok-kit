@@ -55,6 +55,7 @@ describe("overview", () => {
     const line = shortLine(payload);
     assert.match(line, /flagship start/);
     assert.match(line, /\/overview/);
+    assert.match(line, /\/code-hygiene/);
 
     const vis = run(["--root", dir, "--mode", "visualise"]);
     assert.equal(vis.code, 0);

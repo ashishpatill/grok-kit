@@ -6,6 +6,7 @@
 .cursor/grok-kit-usage.jsonl
 .cursor/grok-kit-proposals.json
 .cursor/overview.json
+.cursor/hygiene.json
 PENDING_MEMORY.md
 *.log
 node_modules/

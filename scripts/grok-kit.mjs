@@ -62,6 +62,22 @@ export const COMMANDS = Object.freeze({
     file: "skills/overview/scripts/overview.mjs",
     extraArgs: ["--mode", "flagship"],
   },
+  hygiene: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  drift: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  scrap: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  "code-hygiene": {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
   "skill-curator": {
     kind: "node",
     file: "skills/skill-curator-manual/scripts/skill-curator.mjs",
@@ -104,11 +120,12 @@ Commands:
   bootstrap          copy project layer (verify ACI, ignores, core rule, rubric)
   apply              detect stack, bootstrap, write .cursor/grok-kit.json + project rule
   consent            notice | status | check | write | revoke (install consent)
-  route-task         print compiled bug|feature|investigate|ship|status sequence
+  route-task         print compiled bug|feature|investigate|ship|status|hygiene sequence
   session-handoff    init | check .cursor/handoff.md
   overview           project status (git, kit profile, handoff, recent commits)
   visualise          mermaid picture of that status (alias: visualize)
   flagship           session start/end bundle: overview + visualise
+  hygiene            ranked code drift; human decides scrap/fix/keep (aliases: drift, scrap, code-hygiene)
   skill-curator      inventory kit skills; flag overlapping descriptions
   learn              observe usage; propose/apply harness tweaks (consent)
   check              kit unit tests + offline user journey
@@ -128,6 +145,7 @@ Examples:
   grok-kit learn summarize
   grok-kit flagship --when start
   grok-kit overview --root .
+  grok-kit hygiene --root .
 `;
 
 function spawnFile(kind, file, args) {

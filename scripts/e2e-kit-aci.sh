@@ -30,6 +30,7 @@ node "$KITCLI" skill-curator --help | grep -q inventory || fail "skill-curator h
 node "$KITCLI" learn --help | grep -q i-consent || fail "learn help"
 node "$KITCLI" overview --help | grep -q flagship || fail "overview help"
 node "$KITCLI" flagship --help | grep -q visualise || fail "flagship help"
+node "$KITCLI" hygiene --help | grep -q scrap || fail "hygiene help"
 node "$KITCLI" install --help | grep -q learn || fail "install help learn"
 pass "help text"
 
@@ -303,6 +304,7 @@ names={s["name"] for s in v["skills"]}
 assert "verify-aci" in names and "watch-ci" in names, names
 assert "usage-learn" in names, names
 assert "flagship" in names and "overview" in names and "visualise" in names, names
+assert "code-hygiene" in names, names
 print("skill-curator inventory", v["skillCount"], "skills")
 PY
 pass "route-task + session-handoff + skill-curator"
@@ -313,6 +315,7 @@ python3 - <<PY
 import json
 v=json.load(open("$TMP/ov-short.json"))
 assert v["ok"] is True and "flagship" in v["line"] and "/overview" in v["line"], v
+assert "/code-hygiene" in v["line"], v
 print("overview --short")
 PY
 node "$KITCLI" visualise --root "$ROOT" >"$TMP/vis.json"
@@ -331,6 +334,44 @@ assert "flowchart" in v["mermaid"]
 print("flagship now")
 PY
 pass "overview + visualise + flagship"
+
+echo "== code hygiene (ranked drift, no deletes) =="
+node "$KITCLI" route-task hygiene >"$TMP/route-hygiene.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/route-hygiene.json"))
+assert v["intent"]=="hygiene" and v["sticky"] is False
+assert any("Do not auto-delete" in s for s in v["steps"]), v
+print("route-task hygiene compiled")
+PY
+HYG="$TMP/hyg-app"
+mkdir -p "$HYG/src" "$HYG/skills/orphan-skill/scripts"
+printf '%s\n' 'export function dead() { return 1 }' > "$HYG/src/dead.mjs"
+printf '\n' > "$HYG/src/empty.mjs"
+printf '%s\n' '---' 'name: orphan-skill' 'description: leftover compiler without tests' '---' '' '# X' > "$HYG/skills/orphan-skill/SKILL.md"
+printf '%s\n' '#!/usr/bin/env node' 'console.log("run")' > "$HYG/skills/orphan-skill/scripts/run.mjs"
+node "$KITCLI" hygiene --root "$HYG" --limit 20 >"$TMP/hyg.json"
+python3 - <<PY
+import json
+from pathlib import Path
+v=json.load(open("$TMP/hyg.json"))
+assert v["ok"] is True
+kinds={f["kind"] for f in v["findings"]}
+assert "likely-orphan" in kinds, kinds
+assert "empty-stub" in kinds, kinds
+assert "skill-no-prove" in kinds, kinds
+assert v["readLoop"]["options"]==["scrap","fix","keep"]
+assert Path("$HYG/src/dead.mjs").exists(), "hygiene must not delete"
+print("hygiene ranked", v["summary"]["findingCount"], "findings")
+PY
+node "$KITCLI" hygiene --root "$HYG" --short >"$TMP/hyg-short.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/hyg-short.json"))
+assert v["ok"] is True and "hygiene findings=" in v["line"]
+print("hygiene --short")
+PY
+pass "code hygiene"
 
 echo "== install-user-layer into a fake HOME =="
 export HOME="$TMP/home-refuse"
@@ -368,6 +409,7 @@ PY
 [[ -L "$HOME/.cursor/skills/flagship" ]] || fail "flagship skill symlink"
 [[ -L "$HOME/.cursor/skills/overview" ]] || fail "overview skill symlink"
 [[ -L "$HOME/.cursor/skills/visualise" ]] || fail "visualise skill symlink"
+[[ -L "$HOME/.cursor/skills/code-hygiene" ]] || fail "code-hygiene skill symlink"
 [[ -L "$HOME/.cursor/plugins/local/grok-kit" ]] || fail "plugin symlink"
 [[ -L "$HOME/.local/bin/grok-kit" ]] || fail "PATH grok-kit symlink"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"

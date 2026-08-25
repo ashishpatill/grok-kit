@@ -86,7 +86,7 @@ AGENTS.md                 # created, or a grok-kit section appended
 ## Run / test
 ## Conventions
 ## Skills index
-/verify-aci  /rubric-verify  /watch-ci  /route-task
+/verify-aci  /rubric-verify  /watch-ci  /route-task  /code-hygiene
 ## Gotchas
 ## ICM topic
 project-<slug>

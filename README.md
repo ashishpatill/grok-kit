@@ -19,6 +19,7 @@ Common failure modes this kit targets:
 | Under-tooled repos | `grok-kit apply` detects the stack, bootstraps a thin layer, writes `.cursor/grok-kit.json` so only the useful kit features fire |
 | "Is it green?" lies | `/watch-ci` uses GitHub merge state (conflicts → threads → failing checks); approval is a human wait |
 | Fake-done claims | `/verify-aci` (doctor/launch/drive) + cheap `/rubric-verify` instead of a review swarm |
+| Code drift / dead weight | `/code-hygiene` ranks stale and low-quality files; you read them and choose scrap, keep, or fix |
 | Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay project-scoped |
 | Prompt prefix churn | Always-on rules stay short and byte-stable so Cursor can KV-cache them. Learned workflows stay in `grok-kit.json`, not in always-on `.mdc` files |
 
@@ -39,7 +40,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 
 ## What's included
 
-- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, flagship overview/visualise, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, flagship overview/visualise, code hygiene, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
 - Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
@@ -59,12 +60,13 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/verify-aci` | Prove the artifact: project `doctor` / `launch` / one `drive` |
 | `/rubric-verify` | Score a short repo-grounded checklist against the diff |
 | `/watch-ci` | PR merge-state (status-once). Not a green checkbox list |
-| `/route-task` | Map bug / feature / investigate / ship onto kit skills. Not sticky |
+| `/route-task` | Map bug / feature / investigate / ship / hygiene onto kit skills. Not sticky |
 | `/memory-sync` | Seed or update ICM from hot memory; propose (never silent) identity exports |
 | `/session-handoff` | End a deep session; write handoff + ICM `handoff-<slug>` |
 | `/flagship` | Session start/end: overview + visualise so you stay on top of the project |
 | `/overview` | Compiled status: git, kit profile, handoff, recent commits |
 | `/visualise` | Mermaid picture of that status; host canvas if available |
+| `/code-hygiene` | Rank stale/unused/low-quality code; you decide scrap / fix / keep. Never auto-delete |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
 | `/usage-learn` | After `install --learn`: observe local skill/workflow usage; adapt `grok-kit.json` only with `--improve` or `learn apply --i-consent` |
 | `/skill-curator-manual` | Periodic skill inventory / merge proposals (manual apply) |
@@ -188,12 +190,13 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 
 ### Day-to-day
 
-1. Start with `/route-task` (bug / feature / investigate / ship) or `/plan-execute` for ambiguous work
+1. Start with `/route-task` (bug / feature / investigate / ship / hygiene) or `/plan-execute` for ambiguous work
 2. Before a large or expensive run, `/cost-check`
 3. Multi-package or parallel units → `/orchestrate-rlm` (compile STATE.md with `state-tools`; children return summaries only)
 4. New repo → `grok-kit apply --root .` (or `/project-bootstrap`). Replace `drive()` in `.cursor/verify/verify.sh`. Follow enabled features in `.cursor/grok-kit.json` only.
 5. After implement → `/verify-aci` then `/rubric-verify` (defaults to `.cursor/verify/rubric.json`; auto-diff includes untracked files). If a PR is open → `/watch-ci` `--status-once`
-6. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
+6. Drift / dead code → `/code-hygiene`: read the ranked files, then scrap, keep, or fix. The compiler never deletes.
+7. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
 ### Orchestration ladder
 

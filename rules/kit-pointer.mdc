@@ -7,6 +7,6 @@ alwaysApply: true
 
 - Enabling this plugin does **not** write `~/.cursor` or other repos. User-layer install and per-repo apply need `grok-kit install --i-consent` (TTY: type `I CONSENT`). Direct `grok-kit apply --root .` is OK when the user asked to adapt **this** repo. Until consent, do not apply in the background.
 - If `.cursor/grok-kit.json` exists, use **only its enabled features**. Do not dump every kit skill into always-on rules. Keep always-on files byte-stable (no dates, no per-session dumps) so the prompt prefix can be KV-cached.
-- `/cost-check` before expensive runs. Auto Balance default. Pin cheap for explore/verify. Skills load on demand. Session start/end: `/flagship` (overview + visualise) when the user needs project status.
+- `/cost-check` before expensive runs. Auto Balance default. Pin cheap for explore/verify. Skills load on demand. Session start/end: `/flagship` (overview + visualise) when the user needs project status. Drift: `/code-hygiene` (human decides; never auto-delete).
 - Product MCP stays project-scoped. After consented install, user-global MCP stays ICM-only.
 - Observe usage only after `install --learn`. Adapt `grok-kit.json` only with `--improve` or `grok-kit learn apply --i-consent`. Never rewrite User Rules, persona, or kit `SKILL.md`.
