@@ -13,7 +13,7 @@ export const ALWAYS_ON = Object.freeze([
   "plan-execute",
 ]);
 
-export const GATED_AVAILABLE = Object.freeze(["refine-harness"]);
+export const GATED_AVAILABLE = Object.freeze(["refine-harness", "usage-learn"]);
 
 function readJson(file) {
   try {

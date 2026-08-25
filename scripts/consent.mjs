@@ -10,6 +10,8 @@ export const SCOPE_FLAGS = Object.freeze({
   "user-layer": "userLayer",
   "project-apply": "projectApply",
   "mcp-slim": "mcpSlim",
+  "usage-learn": "usageLearn",
+  "harness-improve": "harnessImprove",
 });
 
 export const NOTICE = `grok-kit install — explicit consent required
@@ -34,13 +36,24 @@ Install with consent does the following:
    - Backup ~/.cursor/mcp.json and replace it with ICM-only
    - Product MCP (Tell, databases, deploy, browser) stays project-scoped
 
+4. Usage learn (opt-in: --learn)
+   - Record grok-kit command and slash-skill names locally (no file contents, no secrets)
+   - Infer common workflows and write .cursor/grok-kit-proposals.json
+
+5. Harness improve (opt-in: --improve, implies --learn)
+   - Adapt grok-kit.json enabled features and learned workflow bullets to match usage
+   - Never rewrite User Rules, persona, or kit SKILL.md files
+   - Skill-text changes still go through /refine-harness (human approve)
+
 This will NOT:
    - Enable Tell or other product MCP globally
    - Rewrite Cursor User Rules / persona
    - Force-push, merge, or modify remotes
    - Apply to directories that are not git work trees
+   - Improve the harness without --improve or learn apply --i-consent
 
 Non-interactive: grok-kit install --i-consent
+Optional: grok-kit install --i-consent --learn --improve
 Interactive: type I CONSENT
 This repo only (no user layer): grok-kit apply --root .
 Revoke later: grok-kit consent revoke
@@ -51,8 +64,8 @@ const HELP = `consent — show, write, or revoke grok-kit install consent
 Usage:
   consent notice
   consent status
-  consent check [--scope user-layer|project-apply|mcp-slim]
-  consent write [--scopes user-layer,project-apply,mcp-slim] [--source TEXT]
+  consent check [--scope user-layer|project-apply|mcp-slim|usage-learn|harness-improve]
+  consent write [--scopes user-layer,project-apply,mcp-slim,usage-learn,harness-improve] [--source TEXT]
   consent revoke
 
 File: ~/.cursor/grok-kit-consent.json (override GROK_KIT_CONSENT_FILE)
@@ -78,7 +91,13 @@ export function consentPath(home = process.env.HOME ?? "") {
 }
 
 export function emptyScopes() {
-  return { userLayer: false, projectApply: false, mcpSlim: false };
+  return {
+    userLayer: false,
+    projectApply: false,
+    mcpSlim: false,
+    usageLearn: false,
+    harnessImprove: false,
+  };
 }
 
 export function parseScopeList(text) {
@@ -97,6 +116,7 @@ export function parseScopeList(text) {
 
 export function allScopes(overrides = {}) {
   return {
+    ...emptyScopes(),
     userLayer: true,
     projectApply: true,
     mcpSlim: true,
@@ -122,6 +142,8 @@ export function readConsent(file = consentPath()) {
       userLayer: Boolean(scopes.userLayer),
       projectApply: Boolean(scopes.projectApply),
       mcpSlim: Boolean(scopes.mcpSlim),
+      usageLearn: Boolean(scopes.usageLearn),
+      harnessImprove: Boolean(scopes.harnessImprove),
     },
   };
 }

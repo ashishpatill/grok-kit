@@ -8,6 +8,7 @@ alwaysApply: true
 - Enabling this plugin does **not** write `~/.cursor` or other repos. User-layer install and per-repo apply run only after explicit consent: `grok-kit install --i-consent` (interactive: type `I CONSENT`). Until then, do not run `grok-kit apply` in the background. Offer the install command once. Direct `grok-kit apply --root .` is OK when the user asked to adapt **this** repo.
 - After consent (`~/.cursor/grok-kit-consent.json` has `projectApply`), if this is a git repo and `.cursor/grok-kit.json` is missing, `grok-kit apply --root .` is allowed. Use **only the enabled features** in that file. Do not dump every skill into always-on rules.
 - If `.cursor/grok-kit.json` already exists, follow it regardless of consent (do not un-apply).
+- Usage learn is off until `install --learn`. Then observe local skill/workflow names only. Adapt `grok-kit.json` / this generated project rule only after `install --improve` or `grok-kit learn apply --i-consent`. Never rewrite User Rules, persona, or kit `SKILL.md`.
 - `/cost-check` for routing (Auto Balance default; Cost/Composer for explore; Intelligence only for Debug/architecture). Prefer Models pool (Grok 4.5 / Composer 2.5) for routine.
 - Before re-asking Workspace facts, recall ICM topics (`workspace-routing`, `project-*`, `preferences`).
 - Multi-hop work: use `/orchestrate-rlm` **when enabled** — thin parent, summary-only children, depth 1. Compile STATE.md with `state-tools`.

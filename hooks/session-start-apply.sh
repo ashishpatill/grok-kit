@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # sessionStart: apply grok-kit when consented and .cursor/grok-kit.json is missing.
+# After apply, optionally tick usage-learn (observe/propose; adapt only with --improve).
 # Fail-open. Keep additional_context short. Never write project files without consent.
 
 emit() {
@@ -26,14 +27,19 @@ elif [[ -f "$PLUGIN_ROOT/scripts/grok-kit.mjs" ]]; then
   apply_cmd=(node "$PLUGIN_ROOT/scripts/grok-kit.mjs")
 fi
 
+run_kit() {
+  local seconds="$1"
+  shift
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$seconds" "${apply_cmd[@]}" "$@" 2>/dev/null || true
+  else
+    "${apply_cmd[@]}" "$@" 2>/dev/null || true
+  fi
+}
+
 out=""
 if ((${#apply_cmd[@]})); then
-  args=(apply --root "$root" --if-missing --require-git --require-consent)
-  if command -v timeout >/dev/null 2>&1; then
-    out="$(timeout 10 "${apply_cmd[@]}" "${args[@]}" 2>/dev/null || true)"
-  else
-    out="$("${apply_cmd[@]}" "${args[@]}" 2>/dev/null || true)"
-  fi
+  out="$(run_kit 10 apply --root "$root" --if-missing --require-git --require-consent)"
 fi
 
 if [[ -n "$out" ]] && command -v python3 >/dev/null 2>&1; then
@@ -70,6 +76,42 @@ print(
   if [[ -n "$parsed" ]]; then
     ctx="$parsed"
   fi
+fi
+
+learn_ctx=""
+if ((${#apply_cmd[@]})) && [[ -f "$root/.cursor/grok-kit.json" ]] \
+  && git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  learn_out="$(run_kit 4 learn tick --root "$root")"
+  if [[ -n "$learn_out" ]] && command -v python3 >/dev/null 2>&1; then
+    learn_ctx="$(printf '%s\n' "$learn_out" | python3 -c '
+import json, sys
+raw = sys.stdin.read()
+try:
+    data = json.loads(raw)
+except Exception:
+    sys.exit(0)
+if data.get("reason") == "consent-required":
+    sys.exit(0)
+top = data.get("topSkills") or []
+applied = data.get("applied") or []
+proposed = data.get("proposed") or 0
+if not top and not applied and not proposed:
+    sys.exit(0)
+parts = ["usage-learn"]
+bits = ",".join(str(x) for x in top[:4])
+if bits:
+    parts.append(f"top={bits}.")
+if applied:
+    parts.append("adapted=" + ",".join(str(x) for x in applied[:3]) + ".")
+elif data.get("hint"):
+    parts.append(str(data.get("hint")))
+print(" ".join(parts))
+' 2>/dev/null || true)"
+  fi
+fi
+
+if [[ -n "$learn_ctx" ]]; then
+  ctx="${ctx} ${learn_ctx}"
 fi
 
 emit "$ctx"

@@ -19,7 +19,8 @@
     "skill-curator"
   ],
   "available": [
-    "refine-harness"
+    "refine-harness",
+    "usage-learn"
   ],
   "mcpRecommended": [],
   "prove": {
