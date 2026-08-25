@@ -1,6 +1,6 @@
 # Status — grok-kit
 
-**Updated:** 2026-08-10
+**Updated:** 2026-08-25
 **Authority:** this file (GOAL_AND_LOOP.md for stop rules; SETUP-STATUS.md for machine install)
 
 ## Done
@@ -12,6 +12,10 @@
 - Positioning corrected: harness kit (not design-workflow marketing)
 - README install / setup / usage
 - Marketplace prep: LICENSE, logo, `.cursor-plugin/plugin.json`, root `plugin.json`, `docs/publish.md`
+- Verify ACI (`/verify-aci`, project `.cursor/verify/verify.sh`)
+- Merge-state CI watcher (`/watch-ci`, status-once default, `--fixture` offline)
+- Rubric verify (mechanical checklist + judgment leftovers)
+- Thin `/route-task` + compiled `state-tools` for `/orchestrate-rlm`
 
 ## In progress
 

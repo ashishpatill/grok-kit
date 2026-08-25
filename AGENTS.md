@@ -4,7 +4,7 @@ Personal Cursor/agent harness kit — playbook skills, orchestration, cost routi
 
 ## Commands of interest
 
-- Skills: `project-bootstrap`, `plan-execute`, `orchestrate-rlm`, `session-handoff`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`
+- Skills: `project-bootstrap`, `plan-execute`, `orchestrate-rlm`, `session-handoff`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
 - Agents: `verifier`, `debugger`, `researcher`
 - Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
 

@@ -16,14 +16,16 @@ Common failure modes this kit targets:
 | Ad-hoc agent chaos | Skills ladder + `/orchestrate-rlm` (thin parent, summary-only children, depth 1) |
 | Expensive model misuse | `/cost-check` router matrix (Auto Balance default; pin cheap for explore/verify) |
 | Session amnesia | ICM shared memory + `/memory-sync` / `/session-handoff` (human-gated writes) |
-| Under-tooled repos | `/project-bootstrap` → thin `AGENTS.md`, rules, ignore files, stack templates |
+| Under-tooled repos | `/project-bootstrap` → thin `AGENTS.md`, rules, ignore files, stack templates, `.cursor/verify/` ACI |
+| "Is it green?" lies | `/watch-ci` uses GitHub merge state (conflicts → threads → failing checks); approval is a human wait |
+| Fake-done claims | `/verify-aci` (doctor/launch/drive) + cheap `/rubric-verify` instead of a review swarm |
 | Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay project-scoped |
 
 Cursor stays the interactive coding source of truth. An optional long-run companion is rare/eval-only. See [`docs/companion-agent.md`](docs/companion-agent.md).
 
 ## What's included
 
-- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement, task routing, verify ACI, merge-state CI watch, rubric verify
 - Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
@@ -38,7 +40,11 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/cost-check` | Before large runs, high spend, or choosing Cost / Balance / Intelligence |
 | `/plan-execute` | Ambiguous multi-file work: plan first, then implement |
 | `/orchestrate-rlm` | Multi-hop / multi-package work; thin parent, summary-only children |
-| `/project-bootstrap` | New or under-tooled repo: `.cursor/` layer + thin AGENTS |
+| `/project-bootstrap` | New or under-tooled repo: `.cursor/` layer + thin AGENTS + verify ACI |
+| `/verify-aci` | Prove the artifact: project `doctor` / `launch` / one `drive` |
+| `/rubric-verify` | Score a short repo-grounded checklist against the diff |
+| `/watch-ci` | PR merge-state (status-once). Not a green checkbox list |
+| `/route-task` | Map bug / feature / investigate / ship onto kit skills. Not sticky |
 | `/memory-sync` | Seed or update ICM from hot memory; propose (never silent) identity exports |
 | `/session-handoff` | End a deep session; write handoff + ICM `handoff-<slug>` |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
@@ -48,7 +54,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 
 | Agent | Role |
 |-------|------|
-| `verifier` | Readonly acceptance checks vs plan/STATE; pin Composer |
+| `verifier` | Readonly acceptance: verify-aci + rubric judgment + watch-ci; pin Composer |
 | `debugger` | Localize → minimal fix → verify; stop after two failed hypotheses |
 | `researcher` | Readonly exploration; summarize-only returns; pin Composer |
 
@@ -68,6 +74,8 @@ In Cursor: Developer: Reload Window, then try:
 /cost-check
 /plan-execute
 /project-bootstrap
+/verify-aci
+/watch-ci
 ```
 
 Confirm the local plugin id `grok-kit` appears under plugins / Customize, and slash skills resolve.
@@ -144,11 +152,12 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 
 ### Day-to-day
 
-1. Start ambiguous work with `/plan-execute` (approve plan → Agent)
+1. Start with `/route-task` (bug / feature / investigate / ship) or `/plan-execute` for ambiguous work
 2. Before a large or expensive run, `/cost-check`
-3. Multi-package or parallel units → `/orchestrate-rlm` with contracts (goal, paths, verify, definition of done; children return summaries only)
-4. New repo → `/project-bootstrap` (pick a template profile)
-5. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
+3. Multi-package or parallel units → `/orchestrate-rlm` (compile STATE.md with `state-tools`; children return summaries only)
+4. New repo → `/project-bootstrap` (pick a template profile; replace `drive()` in `.cursor/verify/verify.sh`)
+5. After implement → `/verify-aci` then `/rubric-verify`. If a PR is open → `/watch-ci` `--status-once`
+6. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
 ### Orchestration ladder
 
@@ -192,7 +201,7 @@ flowchart TB
     AM[AGENTS.md]
     CR[.cursor/rules]
     PM[.cursor/mcp.json product servers]
-    ST[.cursor/rlm-state / handoff]
+    ST[.cursor/rlm-state / verify / handoff]
   end
 
   subgraph memory["Memory"]
@@ -219,7 +228,8 @@ flowchart TB
 | `rules/` | Thin always-on kit pointer (persona stays in User Rules) |
 | `hooks/` | Optional memory-candidate staging on session stop |
 | `templates/` | Stack profiles for `/project-bootstrap` |
-| `scripts/` | User-layer install + ICM seed helpers |
+| `scripts/` | User-layer install, ICM seed, `kit-check.sh` |
+| `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |
 | `.cursor-plugin/plugin.json` | Cursor plugin manifest |
 | `plugin.json` | Root metadata for Grok Build-style catalogs |

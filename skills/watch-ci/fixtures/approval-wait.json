@@ -1,0 +1,22 @@
+{
+  "facts": {
+    "owner": "acme",
+    "repo": "app",
+    "number": 12,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeable": "MERGEABLE",
+    "mergeStateStatus": "BLOCKED",
+    "reviewDecision": "REVIEW_REQUIRED",
+    "headRefOid": "head",
+    "headRefName": "feat",
+    "baseRefName": "main",
+    "mergedAt": null
+  },
+  "checks": [
+    { "name": "test", "kind": "passed", "reportedState": "SUCCESS" },
+    { "name": "Code Review Gate", "kind": "code-review-gate", "reportedState": "PENDING" }
+  ],
+  "threads": [],
+  "commitRollups": [{ "oid": "head", "state": "SUCCESS" }]
+}
