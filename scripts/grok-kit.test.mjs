@@ -39,7 +39,7 @@ describe("grok-kit dispatcher", () => {
 
   it("rejects unknown commands", async () => {
     let out = "";
-    const code = await runGrokKit(["poteto-mode"], {
+    const code = await runGrokKit(["sticky-mode"], {
       stdout: (t) => {
         out += t;
       },

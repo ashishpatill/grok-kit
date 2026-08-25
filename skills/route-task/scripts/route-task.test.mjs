@@ -30,7 +30,7 @@ describe("route-task", () => {
 
   it("rejects unknown intents", () => {
     let out = "";
-    const code = runRouteTask(["poteto-mode"], {
+    const code = runRouteTask(["sticky-mode"], {
       stdout: (t) => {
         out += t;
       },

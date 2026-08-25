@@ -92,17 +92,31 @@ function jaccard(a, b) {
 }
 
 export function listSkillDirs(root) {
-  const skillsRoot = path.join(root, "skills");
-  if (!existsSync(skillsRoot)) return [];
-  return readdirSync(skillsRoot)
-    .map((name) => path.join(skillsRoot, name))
-    .filter((dir) => {
-      try {
-        return statSync(dir).isDirectory() && existsSync(path.join(dir, "SKILL.md"));
-      } catch {
-        return false;
-      }
-    });
+  if (!existsSync(root)) return [];
+  const nested = path.join(root, "skills");
+  let base = root;
+  try {
+    if (existsSync(nested) && statSync(nested).isDirectory()) {
+      base = nested;
+    }
+  } catch {
+    base = root;
+  }
+  try {
+    return readdirSync(base)
+      .map((name) => path.join(base, name))
+      .filter((dir) => {
+        try {
+          return (
+            statSync(dir).isDirectory() && existsSync(path.join(dir, "SKILL.md"))
+          );
+        } catch {
+          return false;
+        }
+      });
+  } catch {
+    return [];
+  }
 }
 
 export function inventoryFromDirs(dirs) {
