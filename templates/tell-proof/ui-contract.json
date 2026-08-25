@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "shell",
+  "proof": "tell_proof_verify",
+  "screens": [
+    {
+      "id": "app-shell",
+      "must": ["primary navigation", "page title", "main landmark"]
+    },
+    {
+      "id": "empty-state",
+      "must": ["what this screen is", "one primary action"]
+    },
+    {
+      "id": "settings",
+      "must": ["save", "destructive action confirms"]
+    }
+  ],
+  "never": [
+    "treat a screenshot as proof",
+    "auto-apply tell_apply patches"
+  ]
+}

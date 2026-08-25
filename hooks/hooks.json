@@ -1,6 +1,12 @@
 {
   "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "command": "./hooks/session-start-apply.sh",
+        "timeout": 22
+      }
+    ],
     "stop": [
       {
         "command": "./hooks/stage-memory-candidate.sh",

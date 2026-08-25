@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isMainModule, resolvePath } from "./lib/is-main.mjs";
+import { recordCli } from "../skills/usage-learn/scripts/learn.mjs";
 
 const ROOT = path.resolve(
   path.dirname(resolvePath(fileURLToPath(import.meta.url))),
@@ -30,6 +31,10 @@ export const COMMANDS = Object.freeze({
     kind: "node",
     file: "skills/project-bootstrap/scripts/bootstrap.mjs",
   },
+  apply: {
+    kind: "node",
+    file: "skills/project-bootstrap/scripts/apply.mjs",
+  },
   "route-task": {
     kind: "node",
     file: "skills/route-task/scripts/route-task.mjs",
@@ -38,13 +43,60 @@ export const COMMANDS = Object.freeze({
     kind: "node",
     file: "skills/session-handoff/scripts/session-handoff.mjs",
   },
+  overview: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+  },
+  visualise: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "visualise"],
+  },
+  visualize: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "visualise"],
+  },
+  flagship: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "flagship"],
+  },
+  hygiene: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  drift: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  scrap: {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  "code-hygiene": {
+    kind: "node",
+    file: "skills/code-hygiene/scripts/hygiene.mjs",
+  },
+  rsi: {
+    kind: "node",
+    file: "skills/rsi/scripts/rsi.mjs",
+  },
   "skill-curator": {
     kind: "node",
     file: "skills/skill-curator-manual/scripts/skill-curator.mjs",
   },
+  learn: {
+    kind: "node",
+    file: "skills/usage-learn/scripts/learn.mjs",
+  },
   check: {
     kind: "bash",
     file: "scripts/kit-check.sh",
+  },
+  consent: {
+    kind: "node",
+    file: "scripts/consent.mjs",
   },
   install: {
     kind: "bash",
@@ -70,11 +122,19 @@ Commands:
   rubric-verify      score .cursor/verify/rubric.json (or --rubric)
   state-tools        check | render-spawn STATE.md
   bootstrap          copy project layer (verify ACI, ignores, core rule, rubric)
-  route-task         print compiled bug|feature|investigate|ship sequence
+  apply              detect stack, bootstrap, write .cursor/grok-kit.json + project rule
+  consent            notice | status | check | write | revoke (install consent)
+  route-task         print compiled bug|feature|investigate|ship|status|hygiene sequence
   session-handoff    init | check .cursor/handoff.md
+  overview           project status (git, kit profile, handoff, recent commits)
+  visualise          mermaid picture of that status (alias: visualize)
+  flagship           session start/end bundle: overview + visualise
+  hygiene            ranked code drift; human decides scrap/fix/keep (aliases: drift, scrap, code-hygiene)
+  rsi                review before ship: flagship + hygiene + prove-it steps
   skill-curator      inventory kit skills; flag overlapping descriptions
+  learn              observe usage; propose/apply harness tweaks (consent)
   check              kit unit tests + offline user journey
-  install            user-layer (skills, agents, PATH, ICM-only MCP)
+  install            user-layer; requires --i-consent (skills, agents, PATH, optional MCP slim)
   seed-icm           seed ICM from HOT_MEMORY_FILE / HOT_USER_FILE
 
 Examples:
@@ -83,6 +143,15 @@ Examples:
   grok-kit rubric-verify
   grok-kit route-task feature
   grok-kit bootstrap --root /path/to/app --profile generic
+  grok-kit apply --root /path/to/app
+  grok-kit install --i-consent
+  grok-kit install --i-consent --learn --improve
+  grok-kit consent status
+  grok-kit learn summarize
+  grok-kit flagship --when start
+  grok-kit overview --root .
+  grok-kit hygiene --root .
+  grok-kit rsi --root .
 `;
 
 function spawnFile(kind, file, args) {
@@ -114,7 +183,15 @@ export async function runGrokKit(argv, io = {}) {
     stdout(`unknown command: ${cmd}\n${HELP}`);
     return 64;
   }
-  return spawnImpl(spec.kind, spec.file, argv.slice(1));
+  const forwarded = [...(spec.extraArgs ?? []), ...argv.slice(1)];
+  const code = await spawnImpl(spec.kind, spec.file, forwarded);
+  try {
+    const record = io.recordCli ?? recordCli;
+    record(cmd, argv.slice(1));
+  } catch {
+    // Usage logging is fail-open and never changes the command's exit code.
+  }
+  return code;
 }
 
 export { HELP, ROOT };

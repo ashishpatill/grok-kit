@@ -100,6 +100,7 @@ export function skeleton(project, date = new Date().toISOString().slice(0, 10)) 
 
 \`\`\`bash
 grok-kit verify-aci --phase doctor
+grok-kit flagship --when end
 \`\`\`
 `;
 }

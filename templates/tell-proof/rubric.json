@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "task": "Tell UI proof for this diff",
+  "items": [
+    {
+      "id": "ui-contract",
+      "claim": "Tell UI contract exists",
+      "kind": "path-exists",
+      "path": ".cursor/verify/ui-contract.json",
+      "severity": "must"
+    },
+    {
+      "id": "no-auto-apply",
+      "claim": "project rule forbids auto-applying tell_apply",
+      "kind": "grep-worktree",
+      "path": ".cursor/rules/core.mdc",
+      "pattern": "tell_apply",
+      "severity": "must"
+    },
+    {
+      "id": "no-env-secrets",
+      "claim": "diff does not add inline API keys",
+      "kind": "diff-excludes",
+      "pattern": "(API_KEY|SECRET|TOKEN)\\s*=\\s*['\\\"][^'\\\"]+",
+      "severity": "must"
+    },
+    {
+      "id": "judgment-ui-proof",
+      "claim": "visual claims name tell_proof_verify, not a screenshot",
+      "kind": "judgment",
+      "severity": "must"
+    }
+  ]
+}

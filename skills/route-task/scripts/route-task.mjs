@@ -20,17 +20,28 @@ const INTENTS = {
     "Multi-package: write STATE.md, grok-kit state-tools check, grok-kit state-tools render-spawn, spawn depth-1 children with those contracts.",
   ],
   ship: [
+    "grok-kit rsi — flagship + hygiene + review steps. Leave rsi after the JSON.",
     "grok-kit verify-aci --phase all must be ok",
     "grok-kit rubric-verify must-items pass",
     "grok-kit watch-ci --status-once — trust class/actor. Approval is a human wait, not a CI fail.",
     "Do not merge, restack, or force-push unless the user explicitly asked to land.",
+  ],
+  status: [
+    "grok-kit flagship --when now — overview + visualise.",
+    "If a host canvas skill is available, render the JSON there. Otherwise show mermaid in chat.",
+  ],
+  hygiene: [
+    "grok-kit hygiene — ranked drift/low-quality findings (JSON). Do not auto-delete.",
+    "Present at most 3 findings. For each: read the file, explain in plain language, offer scrap / fix / keep.",
+    "Implement only what the user chose. Then grok-kit verify-aci --phase drive (or rubric-verify).",
+    "If a host deslop or code-quality skill exists, use it only on files already approved.",
   ],
 };
 
 const HELP = `route-task — print a compiled sequence, then leave this skill
 
 Usage:
-  grok-kit route-task <bug|feature|investigate|ship|list>
+  grok-kit route-task <bug|feature|investigate|ship|status|hygiene|list>
 `;
 
 export function listIntents() {

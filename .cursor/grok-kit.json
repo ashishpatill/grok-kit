@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "grok-kit apply",
+  "kitVersion": "1.2.0",
+  "profile": "agentic-framework",
+  "signals": [
+    "grok-kit"
+  ],
+  "enabled": [
+    "route-task",
+    "cost-check",
+    "verify-aci",
+    "rubric-verify",
+    "watch-ci",
+    "session-handoff",
+    "flagship",
+    "code-hygiene",
+    "rsi",
+    "memory-sync",
+    "plan-execute",
+    "orchestrate-rlm",
+    "skill-curator"
+  ],
+  "available": [
+    "refine-harness",
+    "usage-learn"
+  ],
+  "mcpRecommended": [],
+  "prove": {
+    "verify": "node scripts/grok-kit.mjs check"
+  },
+  "mcpWritten": false
+}
