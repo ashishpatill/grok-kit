@@ -18,14 +18,14 @@ export PATH="$HOME/.local/bin:$PATH"
 icm --version
 ```
 
-## Configure the IDE agent host
+## Configure the agent host (Cursor MCP; Grok Build uses project/user MCP separately)
 
 ```bash
 icm init --mode mcp
 icm init --mode skill   # optional thin ~/.cursor/rules/icm.mdc
 ```
 
-Ensure user `~/.cursor/mcp.json` includes (compact mode):
+Ensure Cursor user `~/.cursor/mcp.json` includes (compact mode):
 
 ```json
 "icm": {

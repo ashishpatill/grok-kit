@@ -2,7 +2,7 @@
 
 ## Goal
 
-Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install — without misrepresenting purpose or naming banned third-party vendors.
+Ship an accurate, lean personal harness kit for Cursor and Grok Build: playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install — without misrepresenting purpose or naming banned third-party vendors.
 
 ## In scope
 
@@ -36,6 +36,7 @@ Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-
 - [x] Flagship session look: `/flagship` `/overview` `/visualise` (status + mermaid; host canvas if available)
 - [x] Code hygiene: `/code-hygiene` ranks drift; human decides scrap / fix / keep (never auto-delete)
 - [x] Tell-proof UI contract template + `/rsi` review-before-ship
+- [x] README maps kit behavior onto Cursor and Grok Build host powers (plain-language README, no em dashes)
 - [x] No secrets committed; checks diagnosed or N/A documented
 
 ## Loop order

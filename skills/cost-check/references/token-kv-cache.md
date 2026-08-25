@@ -1,6 +1,6 @@
 # Token usage and KV cache
 
-Always-on rules sit at the **front** of the prompt. Cursor/Grok can reuse that prefix (KV cache) on later turns **only if the bytes did not change**. A timestamp, a session dump, or a rewritten always-on file misses the cache and you pay again for the whole prefix (system prompt, rules, skills, MCP schemas).
+Always-on rules sit at the **front** of the prompt. Cursor and Grok Build can reuse that prefix (KV cache) on later turns **only if the bytes did not change**. A timestamp, a session dump, or a rewritten always-on file misses the cache and you pay again for the whole prefix (system prompt, rules, skills, MCP schemas).
 
 ## What grok-kit does
 
