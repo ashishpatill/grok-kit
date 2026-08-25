@@ -20,6 +20,20 @@ Common failure modes this kit targets:
 | "Is it green?" lies | `/watch-ci` uses GitHub merge state (conflicts → threads → failing checks); approval is a human wait |
 | Fake-done claims | `/verify-aci` (doctor/launch/drive) + cheap `/rubric-verify` instead of a review swarm |
 | Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay project-scoped |
+| Prompt prefix churn | Always-on rules stay short and byte-stable so Cursor can KV-cache them. Learned workflows stay in `grok-kit.json`, not in always-on `.mdc` files |
+
+## How grok-kit cuts token usage
+
+Cursor/Grok can reuse the **start** of the prompt (KV cache) on later turns only if those bytes did not change. grok-kit is built around that:
+
+1. **Subset, not a dump.** `grok-kit apply` enables the features this repo needs. The rest of the kit loads when you type a slash skill, not on every message.
+2. **Stable always-on prefix.** Generated `.cursor/rules/grok-kit-project.mdc` has no timestamps and no per-session text. `install --improve` will not rewrite it unless enabled features actually changed. That is the KV cache fix: one cached router instead of a new prefix every chat.
+3. **MCP slim.** After `install --i-consent`, user-global MCP is ICM-only. Browser/DB/deploy/Tell schemas stay out of chats that do not need them.
+4. **Cheap default routing.** `/cost-check`: Auto Balance for implement, Cost/Composer for ask and verify, Intelligence only for stubborn debug or novel architecture. Verifier/researcher agents pin Composer.
+5. **Short returns.** `/orchestrate-rlm` children summarize (depth 1). Do not paste transcripts back into the parent.
+6. **Short memory.** ICM holds long-tail facts. Keep hot MEMORY/USER small. Do not paste identity into always-on rules.
+
+Run `/cost-check` before a large agent turn. Details: [`skills/cost-check/references/token-kv-cache.md`](skills/cost-check/references/token-kv-cache.md).
 
 Cursor stays the interactive coding source of truth. An optional long-run companion is rare/eval-only. See [`docs/companion-agent.md`](docs/companion-agent.md).
 

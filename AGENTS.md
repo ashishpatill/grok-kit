@@ -27,7 +27,7 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - Keep kit skills lean; put bulk in `references/`
 - Never store secrets in ICM topics or rules
 - Prefer Skills > Subagents > Best-of-N
-- Adaptation SoT: `.cursor/grok-kit.json` (`grok-kit apply`). Use enabled features only; do not dump the whole kit into always-on rules.
+- Adaptation SoT: `.cursor/grok-kit.json` (`grok-kit apply`). Use enabled features only; do not dump the whole kit into always-on rules. Keep always-on `.mdc` files byte-stable (KV cache).
 - User-layer install and background per-repo apply require `grok-kit install --i-consent`. Direct `grok-kit apply --root .` is this-repo-only.
 - Usage observation is opt-in (`install --learn`). Harness tweaks to `grok-kit.json` need `--improve` or `grok-kit learn apply --i-consent`. Never auto-rewrite User Rules or `SKILL.md`.
 - Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once).

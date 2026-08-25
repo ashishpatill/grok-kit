@@ -118,13 +118,28 @@ describe("learn", () => {
         await readFile(path.join(dir, ".cursor/grok-kit.json"), "utf8")
       );
       assert.ok(manifest.enabled.includes("orchestrate-rlm"));
+      assert.ok(Array.isArray(manifest.learned?.workflows));
       const gitignore = await readFile(path.join(dir, ".gitignore"), "utf8");
       assert.match(gitignore, /grok-kit-proposals\.json/);
-      const rule = await readFile(
-        path.join(dir, ".cursor/rules/grok-kit-project.mdc"),
+      const rulePath = path.join(dir, ".cursor/rules/grok-kit-project.mdc");
+      const rule = await readFile(rulePath, "utf8");
+      assert.doesNotMatch(rule, /Ship path:/);
+      assert.match(rule, /KV-cache/);
+      const beforeJson = await readFile(
+        path.join(dir, ".cursor/grok-kit.json"),
         "utf8"
       );
-      assert.match(rule, /Learned workflows/);
+      const beforeRule = rule;
+      const again = applyProposals(dir, proposals, {
+        iConsent: true,
+        now: "2026-08-26T00:00:00.000Z",
+      });
+      assert.equal(again.reason, "no-op");
+      assert.equal(
+        await readFile(path.join(dir, ".cursor/grok-kit.json"), "utf8"),
+        beforeJson
+      );
+      assert.equal(await readFile(rulePath, "utf8"), beforeRule);
     });
   });
 

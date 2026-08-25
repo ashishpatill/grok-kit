@@ -30,12 +30,14 @@ grok-kit learn propose --root .
 grok-kit learn apply --root . --i-consent   # one-shot even without --improve
 ```
 
-sessionStart runs `learn tick` after install `--learn`: refresh proposals; with `--improve`, apply **only** `grok-kit.json` feature flags + learned workflow bullets.
+sessionStart runs `learn tick` after install `--learn`: refresh proposals; with `--improve`, enable optional features in `grok-kit.json` and store workflow bullets there.
 
 ## What it may change (after consent)
 
 - Enable optional features you already use (`orchestrate-rlm`, `tell-proof`, `skill-curator`)
-- Pin your most common workflow onto `.cursor/rules/grok-kit-project.mdc`
+- Record frequent workflows on `.cursor/grok-kit.json` (`learned.workflows`)
+
+It does **not** inline those workflows into `.cursor/rules/grok-kit-project.mdc`. That always-on file stays byte-stable so the prompt prefix can be KV-cached.
 
 ## What it will not change
 
