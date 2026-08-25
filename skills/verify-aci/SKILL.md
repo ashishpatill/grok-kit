@@ -12,11 +12,11 @@ Run the **project** script. Do not invent a 10-lane visual swarm.
 ## Procedure
 
 1. Discover `.cursor/verify/verify.sh` (or `VERIFY_SCRIPT` / `scripts/verify.sh`).
-2. If missing, copy `templates/_shared/verify/verify.sh` via `/project-bootstrap` — do not skip.
-3. Run the runner next to this skill:
+2. If missing, `grok-kit bootstrap` — do not skip.
+3. Run (PATH after install; from a checkout: `node scripts/grok-kit.mjs`):
 
 ```bash
-node "$SKILL_DIR/scripts/verify-aci.mjs" --root <repo> --phase all
+grok-kit verify-aci --root . --phase all
 ```
 
 4. Trust the JSON: `ok`, `steps[]`, `logPath`. A missing `drive()` that still exits 0 is a lie — replace it with the command that proves the change.
@@ -32,8 +32,8 @@ node "$SKILL_DIR/scripts/verify-aci.mjs" --root <repo> --phase all
 
 ## After
 
-- Score the diff with `/rubric-verify` when the change is multi-file or a plan listed acceptance checks.
-- If a PR exists, `/watch-ci` `--status-once`.
+- `grok-kit rubric-verify` when the change is multi-file or a plan listed acceptance checks.
+- If a PR exists, `grok-kit watch-ci --status-once`.
 
 ## Pitfalls
 

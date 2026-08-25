@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-import path from "node:path";
-import { realpathSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { classifyPr, isTransient, EXIT } from "./policy.mjs";
 import {
   loadFixture,
@@ -9,6 +6,7 @@ import {
   resolveContext,
   WatcherQueryError,
 } from "./github.mjs";
+import { isMainModule } from "../../../scripts/lib/is-main.mjs";
 
 const HELP = `watch-ci — GitHub merge-state truth for one pull request
 
@@ -241,20 +239,7 @@ export async function runWatchCi(argv, io = {}) {
 
 export { parseArgs, HELP };
 
-function isMainModule(metaUrl) {
-  if (!process.argv[1]) return false;
-  const self = fileURLToPath(metaUrl);
-  let invoked;
-  try {
-    invoked = realpathSync(process.argv[1]);
-  } catch {
-    invoked = path.resolve(process.argv[1]);
-  }
-  return self === invoked;
-}
-
-const isMain = isMainModule(import.meta.url);
-if (isMain) {
+if (isMainModule(import.meta.url)) {
   runWatchCi(process.argv.slice(2))
     .then((code) => {
       process.exit(code);

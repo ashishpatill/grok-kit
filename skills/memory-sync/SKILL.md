@@ -29,7 +29,7 @@ description: >-
    - `project-<slug>`
    - `models`
    - `decisions-<slug>` / `errors-resolved-<slug>` as needed
-3. Prefer `scripts/seed-icm-from-memory.sh` for bulk seed
+3. Prefer `grok-kit seed-icm` (`scripts/seed-icm-from-memory.sh`) for bulk seed
 4. Propose (do not auto-apply) a slim User Rule from the identity source file (≤40 lines)
 5. Stage candidates in `PENDING_MEMORY.md` if unsure; ask user to approve
 

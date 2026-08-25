@@ -66,9 +66,14 @@ ln -sfn "$KIT" "$HOME/.cursor/plugins/local/grok-kit"
 # Remove legacy plugin names if present
 rm -f "$HOME/.cursor/plugins/local/agent-kit" "$HOME/.cursor/plugins/local/cursor-kit" 2>/dev/null || true
 
+# PATH entry so skills work in any repo, not only a grok-kit checkout
+chmod +x "$KIT/scripts/grok-kit.mjs"
+mkdir -p "$HOME/.local/bin"
+ln -sfn "$KIT/scripts/grok-kit.mjs" "$HOME/.local/bin/grok-kit"
+
 echo "User layer installed."
 echo "- MCP slimmed to ICM (backup saved beside mcp.json)"
 echo "- Agents in ~/.cursor/agents"
 echo "- Skills symlinked in ~/.cursor/skills"
-echo "- hooks.json installed"
+echo "- CLI: $HOME/.local/bin/grok-kit  (add ~/.local/bin to PATH if needed)"
 echo "Reload the editor window. Install ICM next: docs/icm-setup.md"

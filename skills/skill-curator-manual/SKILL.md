@@ -10,14 +10,17 @@ disable-model-invocation: true
 
 ## Procedure
 
-1. List skills under:
-   - `~/.cursor/skills/`
-   - `~/.agents/skills/`
-   - project `.cursor/skills/`
-   - this kit `skills/`
-2. Group by overlapping descriptions / triggers
-3. Propose merges or archives (do not delete without approval)
-4. Output a short report:
+```bash
+grok-kit skill-curator inventory
+```
+
+The JSON lists kit skills and `overlap[]` pairs (description Jaccard ≥ 0.45). Optionally `--also ~/.cursor/skills`.
+
+Then:
+
+1. Group remaining near-duplicates by hand
+2. Propose merges or archives (do not delete without approval)
+3. Output:
 
 ```markdown
 ## Keep

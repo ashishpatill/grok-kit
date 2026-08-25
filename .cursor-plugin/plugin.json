@@ -1,7 +1,7 @@
 {
   "name": "grok-kit",
   "displayName": "grok-kit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Personal Cursor/agent harness kit — playbook skills, thin-parent orchestration, cost routing, ICM shared memory, project bootstrap, verify ACI, merge-state CI watch.",
   "author": {
     "name": "Ashish P",

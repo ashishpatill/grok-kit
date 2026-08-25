@@ -5,13 +5,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 echo "== unit tests =="
-node --test \
-  skills/watch-ci/scripts/policy.test.mjs \
-  skills/watch-ci/scripts/github.test.mjs \
-  skills/watch-ci/scripts/cli.test.mjs \
-  skills/verify-aci/scripts/verify-aci.test.mjs \
-  skills/rubric-verify/scripts/rubric-verify.test.mjs \
-  skills/orchestrate-rlm/scripts/state-tools.test.mjs
+bash "$ROOT/scripts/run-unit-tests.sh"
 
 echo "== skill frontmatter =="
 node <<'NODE'
