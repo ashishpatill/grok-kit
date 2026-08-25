@@ -1,0 +1,11 @@
+---
+description: Tell + grok-kit invariants
+alwaysApply: true
+---
+
+# Core
+
+- Tell owns visual proof (`tell_proof_verify`); grok-kit owns route / ACI / PR merge-state / cost
+- Never auto-apply `tell_apply` patches — return patch text for a human
+- Do not copy Tell's skill farm into always-on rules; follow `.cursor/grok-kit.json`
+- Do not commit secrets

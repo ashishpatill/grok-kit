@@ -1,10 +1,9 @@
 ---
 name: project-bootstrap
 description: >-
-  Bootstrap a repo with thin AGENTS.md, .cursor/rules/core.mdc, ignore files,
-  verify ACI (doctor/launch/drive), optional mcp.json, STATE conventions, and
-  ICM project topic. Use when setting up the grok-kit layer for a new or existing
-  project.
+  Detect a repo, adapt grok-kit to it, and bootstrap a thin project layer
+  (AGENTS.md, core rule, verify ACI, grok-kit.json). Use when setting up the
+  kit for a new or existing project, or when .cursor/grok-kit.json is missing.
 ---
 
 # Project Bootstrap
@@ -12,29 +11,46 @@ description: >-
 ## When to Use
 
 - New repo or existing project lacking `.cursor/` layer
+- Any git repo missing `.cursor/grok-kit.json` (auto-apply / sessionStart)
 - Applying this kit's stack profiles
 
-## Profiles (pick one)
+## Default: adapt, then bootstrap
 
-| Profile | Template dir |
-|---------|----------------|
-| `nextjs-clerk-neon` | `templates/nextjs-clerk-neon/` |
-| `research-python` | `templates/research-python/` |
-| `agentic-framework` | `templates/agentic-framework/` |
-| `generic` | use core stubs below |
+Do not hand-copy files. Do not dump every kit skill into always-on rules.
 
-## Procedure
+```bash
+grok-kit apply --root <repo>
+```
 
-1. Detect stack (or ask). Pick a profile.
-2. Run the compiler (do not hand-copy files):
+`apply` detects the stack, picks a profile, runs `bootstrap` (skips rich files),
+and writes the adaptation source of truth:
+
+```text
+.cursor/grok-kit.json                 # profile, enabled features, MCP hint
+.cursor/rules/grok-kit-project.mdc    # generated always-on router for THIS repo
+```
+
+`--detect-only` prints the plan. `--if-missing` no-ops when `grok-kit.json` exists
+(sessionStart hook). `--write-mcp` copies Tell MCP into `.cursor/mcp.json` only
+when recommended **and** Tell is not already present. Never enable Tell globally.
+
+Low-level (profile already known):
 
 ```bash
 grok-kit bootstrap --root <repo> --profile <profile>
 ```
 
-`--dry-run` prints the plan. Existing rich `AGENTS.md` / `verify.sh` are skipped unless `--force-verify`.
+## Profiles (pick one, or let apply detect)
 
-The script writes:
+| Profile | When |
+|---------|------|
+| `tell-proof` | Tell monorepo (`@tell/mcp` / `tell_proof_verify`) |
+| `nextjs-clerk-neon` | Next.js + Clerk |
+| `research-python` | Python without a JS UI |
+| `agentic-framework` | grok-kit itself / harness repos |
+| `generic` | everything else (Next/React still get a `tell-proof` **feature flag**) |
+
+## What bootstrap writes (skip if present)
 
 ```text
 AGENTS.md                 # created, or a grok-kit section appended
@@ -47,7 +63,11 @@ AGENTS.md                 # created, or a grok-kit section appended
 .gitignore                # ACI log + rlm-state lines
 ```
 
-3. Replace `drive()` in `.cursor/verify/verify.sh` with this repo's prove-it command.
+## After apply
+
+1. Replace `drive()` in `.cursor/verify/verify.sh` with this repo's prove-it command.
+2. Follow **enabled** features in `.cursor/grok-kit.json` only.
+3. If `tell-proof` is enabled, UI claims need `tell_proof_verify`. Do not auto-apply `tell_apply` patches. Enable Tell MCP with `tell mcp install cursor --project` (or `pnpm -F @tell/mcp start` in the Tell repo).
 4. Suggest ICM topic `project-<slug>` with: how to run/test, gotchas, key paths
 5. `/cost-check`: disable global product MCP not needed here
 
@@ -82,12 +102,14 @@ alwaysApply: true
 
 ## Pitfalls
 
-- Duplicating CLAUDE.md wholesale into always-on rules
-- Enabling database/browser/deploy product MCP globally
+- Duplicating CLAUDE.md / Tell's 40 skills into always-on rules
+- Enabling database/browser/deploy/Tell product MCP globally
 - Nested AGENTS.md essay farms
+- Treating "use every grok-kit skill" as always-on — adaptation is the subset in `grok-kit.json`
 
 ## Verification
 
+- `.cursor/grok-kit.json` present; project rule lists this repo's enabled features
 - `core.mdc` present and short
 - Ignore files present
 - `.cursor/verify/verify.sh` exists; `drive()` is this repo's prove-it command (not the template fail-closed stub)

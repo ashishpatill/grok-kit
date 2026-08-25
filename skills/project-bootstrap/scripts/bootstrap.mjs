@@ -6,12 +6,15 @@ import { isMainModule } from "../../../scripts/lib/is-main.mjs";
 
 const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 
-const PROFILES = new Set([
+export const PROFILE_NAMES = Object.freeze([
   "generic",
   "nextjs-clerk-neon",
   "research-python",
   "agentic-framework",
+  "tell-proof",
 ]);
+
+const PROFILES = new Set(PROFILE_NAMES);
 
 const GITIGNORE_LINES = [
   ".cursor/rlm-state/",
@@ -26,7 +29,7 @@ const HELP = `bootstrap — copy grok-kit project layer without overwriting rich
 Usage:
   bootstrap [--root DIR] [--profile NAME] [--dry-run] [--force-verify]
 
-Profiles: generic, nextjs-clerk-neon, research-python, agentic-framework
+Profiles: generic, nextjs-clerk-neon, research-python, agentic-framework, tell-proof
 `;
 
 const GENERIC_CORE = `---
@@ -67,10 +70,15 @@ project-<slug>
 const KIT_SECTION = `
 ## grok-kit
 
+- Adaptation SoT: \`.cursor/grok-kit.json\` (regenerate with \`grok-kit apply\`)
 - Route work with \`/route-task\` (bug | feature | investigate | ship)
 - Prove: \`/verify-aci\` (\`.cursor/verify/verify.sh\` doctor/launch/drive)
 - Score the diff: \`/rubric-verify\`
 - PR merge-state: \`/watch-ci --status-once\` (not a green checkbox list)
+`;
+
+const TELL_PROOF_SECTION = `
+- UI prove: \`tell_proof_verify\` (Tell MCP). Never auto-apply \`tell_apply\` patches.
 `;
 
 export function parseArgs(argv) {
@@ -190,7 +198,12 @@ export function planBootstrap(root, options) {
   } else {
     const current = readFileSync(agentsPath, "utf8");
     if (!/verify-aci/.test(current)) {
-      steps.push({ rel: "AGENTS.md", action: "append", contents: KIT_SECTION });
+      const extra = options.profile === "tell-proof" ? TELL_PROOF_SECTION : "";
+      steps.push({
+        rel: "AGENTS.md",
+        action: "append",
+        contents: `${KIT_SECTION}${extra}`,
+      });
     } else {
       steps.push({ rel: "AGENTS.md", action: "skip" });
     }
@@ -258,7 +271,7 @@ export function runBootstrap(argv, io = {}) {
   return 0;
 }
 
-export { HELP, KIT, GITIGNORE_LINES, KIT_SECTION };
+export { HELP, KIT, GITIGNORE_LINES, KIT_SECTION, TELL_PROOF_SECTION, PROFILES };
 
 if (isMainModule(import.meta.url)) {
   process.exit(runBootstrap(process.argv.slice(2)));

@@ -1,0 +1,13 @@
+---
+description: grok-kit user router — apply per project, use enabled features only
+alwaysApply: true
+---
+
+# grok-kit (user)
+
+- If this is a git repo and `.cursor/grok-kit.json` is missing, run `grok-kit apply --root .` then follow that file. Do not dump every kit skill into always-on rules.
+- Use only the **enabled** features in `.cursor/grok-kit.json` and `.cursor/rules/grok-kit-project.mdc`. That is how the kit adapts per project.
+- Always-on router: `/route-task`, `/cost-check`, `/verify-aci`, `/rubric-verify`, `/watch-ci`, `/plan-execute`, `/session-handoff`, `/memory-sync`.
+- Optional (only if enabled): `/orchestrate-rlm`, tell-proof UI prove, `/skill-curator-manual`. `/refine-harness` is human-gated — propose, never silent identity writes.
+- If `tell-proof` is enabled, UI claims need `tell_proof_verify` (not a screenshot). Do not auto-apply Tell patches. Tell MCP stays project-scoped.
+- Compiled CLI: `grok-kit` (`~/.local/bin/grok-kit`).

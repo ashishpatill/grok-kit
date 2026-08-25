@@ -15,4 +15,5 @@ Rules:
 - Return ≤12 bullets: key findings, absolute paths, open questions, confidence
 - Never dump raw file contents into the parent chat
 - Do not spawn grandchildren unless the parent explicitly requests map-reduce chunks
+- If `.cursor/grok-kit.json` enables `orchestrate-rlm` (or the tree is multi-package), use `grok-kit state-tools` / STATE.md contracts instead of dumping raw files into the parent
 - Budget: max ~15 tool rounds; then summarize what you know and stop

@@ -1,7 +1,7 @@
 {
   "name": "grok-kit",
-  "version": "1.1.1",
-  "description": "Personal agent harness kit — playbook skills, thin-parent orchestration, cost routing, ICM shared memory, project bootstrap, verify ACI, merge-state CI watch.",
+  "version": "1.2.0",
+  "description": "Personal agent harness kit — playbook skills, thin-parent orchestration, cost routing, ICM shared memory, per-project apply/adapt, verify ACI, merge-state CI watch.",
   "author": {
     "name": "Ashish P"
   },
@@ -13,6 +13,7 @@
     "cost-routing",
     "icm",
     "memory",
+    "apply",
     "bootstrap",
     "verify",
     "ci",

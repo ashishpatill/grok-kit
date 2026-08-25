@@ -16,7 +16,8 @@
 - Merge-state CI watcher (`/watch-ci`, status-once default, `--fixture` offline)
 - Rubric verify (mechanical checklist + judgment leftovers)
 - Thin `/route-task` + compiled `state-tools` for `/orchestrate-rlm`
-- Dogfood on grok-kit: `~/.local/bin/grok-kit` PATH install, compiled bootstrap / route-task / session-handoff / skill-curator, rubric auto-diff includes untracked files
+- Dogfood on grok-kit: `~/.local/bin/grok-kit` PATH install, compiled bootstrap / apply / route-task / session-handoff / skill-curator, rubric auto-diff includes untracked files
+- `grok-kit apply`: per-repo detection + thin generated project rule; tell-proof profile; user-level rule + sessionStart auto-apply
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 
 ## In progress
