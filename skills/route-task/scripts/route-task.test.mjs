@@ -22,10 +22,23 @@ describe("route-task", () => {
       },
     });
     const json = JSON.parse(out);
-    assert.deepEqual(json.intents, ["bug", "feature", "investigate", "ship"]);
+    assert.deepEqual(json.intents, [
+      "bug",
+      "feature",
+      "investigate",
+      "ship",
+      "status",
+      "hygiene",
+    ]);
     const feature = sequenceFor("feature");
     assert.equal(feature.sticky, false);
     assert.match(feature.steps.join("\n"), /verify-aci/);
+    const hygiene = sequenceFor("hygiene");
+    assert.equal(hygiene.sticky, false);
+    assert.match(hygiene.steps.join("\n"), /grok-kit hygiene/);
+    assert.match(hygiene.steps.join("\n"), /Do not auto-delete/);
+    const ship = sequenceFor("ship");
+    assert.match(ship.steps.join("\n"), /grok-kit rsi/);
   });
 
   it("rejects unknown intents", () => {

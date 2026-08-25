@@ -30,11 +30,13 @@ disable-model-invocation: true
 5. Avoid Fast variants, Fable/1M, Max Mode unless justified
 6. Tokens ≠ success — fix topology + verifier, don't grind longer
 7. **External batch inference** — rare eval-only exception; Cursor Models / subscription stays default; avoid a third daily provider
+8. Always-on rules must stay **byte-stable** (no timestamps, no per-session dumps). Changing them misses the KV cache and you re-pay the whole prompt prefix. Details: `references/token-kv-cache.md`.
 
 ## Audit steps
 
 1. Open context ring — note Rules / Skills / MCP sizes
 2. List enabled MCP servers — disable product servers not needed for this repo
-3. Confirm parent Optimize For matches the matrix
-4. Confirm custom subagents pin cheap models for explore/verify
-5. Report recommended changes in ≤8 bullets
+3. Confirm always-on `.mdc` files have no dates or session dumps (KV cache)
+4. Confirm parent Optimize For matches the matrix
+5. Confirm custom subagents pin cheap models for explore/verify
+6. Report recommended changes in ≤8 bullets

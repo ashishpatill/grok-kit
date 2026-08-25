@@ -10,11 +10,33 @@
       "severity": "must"
     },
     {
+      "id": "install-consent",
+      "claim": "user-layer install requires explicit --i-consent",
+      "kind": "grep-worktree",
+      "path": "scripts/install-user-layer.sh",
+      "pattern": "--i-consent",
+      "severity": "must"
+    },
+    {
       "id": "path-install",
       "claim": "install puts grok-kit on PATH so other repos can run it",
       "kind": "grep-worktree",
       "path": "scripts/install-user-layer.sh",
       "pattern": ".local/bin/grok-kit",
+      "severity": "must"
+    },
+    {
+      "id": "apply-script",
+      "claim": "grok-kit apply detects and writes adaptation SoT",
+      "kind": "path-exists",
+      "path": "skills/project-bootstrap/scripts/apply.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "kit-adapted",
+      "claim": "this repo is adapted via grok-kit.json",
+      "kind": "path-exists",
+      "path": ".cursor/grok-kit.json",
       "severity": "must"
     },
     {
@@ -65,7 +87,7 @@
       "id": "cli-help",
       "claim": "dispatcher help runs",
       "kind": "command",
-      "command": "node scripts/grok-kit.mjs --help | grep -q route-task",
+      "command": "node scripts/grok-kit.mjs --help | grep -q apply",
       "severity": "must"
     },
     {

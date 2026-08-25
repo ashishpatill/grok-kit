@@ -20,9 +20,16 @@ launch() {
   node "$ROOT/scripts/grok-kit.mjs" rubric-verify --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" state-tools --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" bootstrap --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" apply --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" consent --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" route-task --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" session-handoff --help >/dev/null
   node "$ROOT/scripts/grok-kit.mjs" skill-curator --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" learn --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" overview --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" flagship --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" hygiene --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" rsi --help >/dev/null
 }
 
 drive() {

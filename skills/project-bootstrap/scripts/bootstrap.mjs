@@ -6,12 +6,15 @@ import { isMainModule } from "../../../scripts/lib/is-main.mjs";
 
 const KIT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
 
-const PROFILES = new Set([
+export const PROFILE_NAMES = Object.freeze([
   "generic",
   "nextjs-clerk-neon",
   "research-python",
   "agentic-framework",
+  "tell-proof",
 ]);
+
+const PROFILES = new Set(PROFILE_NAMES);
 
 const GITIGNORE_LINES = [
   ".cursor/rlm-state/",
@@ -19,6 +22,10 @@ const GITIGNORE_LINES = [
   "PENDING_MEMORY.md",
   ".cursor/verify/last.log",
   ".cursor/verify/last.json",
+  ".cursor/grok-kit-usage.jsonl",
+  ".cursor/grok-kit-proposals.json",
+  ".cursor/overview.json",
+  ".cursor/hygiene.json",
 ];
 
 const HELP = `bootstrap — copy grok-kit project layer without overwriting rich files
@@ -26,7 +33,7 @@ const HELP = `bootstrap — copy grok-kit project layer without overwriting rich
 Usage:
   bootstrap [--root DIR] [--profile NAME] [--dry-run] [--force-verify]
 
-Profiles: generic, nextjs-clerk-neon, research-python, agentic-framework
+Profiles: generic, nextjs-clerk-neon, research-python, agentic-framework, tell-proof
 `;
 
 const GENERIC_CORE = `---
@@ -55,7 +62,7 @@ const GENERIC_AGENTS = `# Project
 
 ## Skills index
 
-/route-task  /verify-aci  /rubric-verify  /watch-ci  /plan-execute  /orchestrate-rlm
+/route-task  /verify-aci  /rubric-verify  /watch-ci  /plan-execute  /orchestrate-rlm  /code-hygiene
 
 ## Gotchas
 
@@ -67,10 +74,16 @@ project-<slug>
 const KIT_SECTION = `
 ## grok-kit
 
-- Route work with \`/route-task\` (bug | feature | investigate | ship)
+- Adaptation SoT: \`.cursor/grok-kit.json\` (regenerate with \`grok-kit apply\`)
+- Route work with \`/route-task\` (bug | feature | investigate | ship | hygiene)
+- Code drift: \`/code-hygiene\` (read, then scrap / fix / keep; never auto-delete)
 - Prove: \`/verify-aci\` (\`.cursor/verify/verify.sh\` doctor/launch/drive)
 - Score the diff: \`/rubric-verify\`
 - PR merge-state: \`/watch-ci --status-once\` (not a green checkbox list)
+`;
+
+const TELL_PROOF_SECTION = `
+- UI prove: \`tell_proof_verify\` (Tell MCP). Never auto-apply \`tell_apply\` patches.
 `;
 
 export function parseArgs(argv) {
@@ -119,6 +132,12 @@ function readKit(rel) {
   return readFileSync(path.join(KIT, rel), "utf8");
 }
 
+function profileTemplate(profile, name, sharedRel) {
+  const specific = path.join(KIT, "templates", profile, name);
+  if (existsSync(specific)) return readFileSync(specific, "utf8");
+  return readKit(sharedRel);
+}
+
 function planWrite(rel, contents, exists, force) {
   if (exists && !force) return { rel, action: "skip" };
   return { rel, action: exists ? "overwrite" : "create", contents };
@@ -129,7 +148,11 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/verify.sh",
-      readKit("templates/_shared/verify/verify.sh"),
+      profileTemplate(
+        options.profile,
+        "verify.sh",
+        "templates/_shared/verify/verify.sh"
+      ),
       existsSync(path.join(root, ".cursor/verify/verify.sh")),
       options.forceVerify
     )
@@ -137,7 +160,11 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/feature-map.json",
-      readKit("templates/_shared/verify/feature-map.example.json"),
+      profileTemplate(
+        options.profile,
+        "feature-map.json",
+        "templates/_shared/verify/feature-map.example.json"
+      ),
       existsSync(path.join(root, ".cursor/verify/feature-map.json")),
       false
     )
@@ -145,11 +172,31 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/rubric.json",
-      readKit("templates/_shared/rubric/checklist.example.json"),
+      profileTemplate(
+        options.profile,
+        "rubric.json",
+        "templates/_shared/rubric/checklist.example.json"
+      ),
       existsSync(path.join(root, ".cursor/verify/rubric.json")),
       false
     )
   );
+  const uiContract = path.join(
+    KIT,
+    "templates",
+    options.profile,
+    "ui-contract.json"
+  );
+  if (existsSync(uiContract)) {
+    steps.push(
+      planWrite(
+        ".cursor/verify/ui-contract.json",
+        readFileSync(uiContract, "utf8"),
+        existsSync(path.join(root, ".cursor/verify/ui-contract.json")),
+        false
+      )
+    );
+  }
   const core =
     options.profile === "generic"
       ? GENERIC_CORE
@@ -190,7 +237,12 @@ export function planBootstrap(root, options) {
   } else {
     const current = readFileSync(agentsPath, "utf8");
     if (!/verify-aci/.test(current)) {
-      steps.push({ rel: "AGENTS.md", action: "append", contents: KIT_SECTION });
+      const extra = options.profile === "tell-proof" ? TELL_PROOF_SECTION : "";
+      steps.push({
+        rel: "AGENTS.md",
+        action: "append",
+        contents: `${KIT_SECTION}${extra}`,
+      });
     } else {
       steps.push({ rel: "AGENTS.md", action: "skip" });
     }
@@ -258,7 +310,7 @@ export function runBootstrap(argv, io = {}) {
   return 0;
 }
 
-export { HELP, KIT, GITIGNORE_LINES, KIT_SECTION };
+export { HELP, KIT, GITIGNORE_LINES, KIT_SECTION, TELL_PROOF_SECTION, PROFILES };
 
 if (isMainModule(import.meta.url)) {
   process.exit(runBootstrap(process.argv.slice(2)));

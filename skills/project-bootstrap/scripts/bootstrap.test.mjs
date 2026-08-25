@@ -31,10 +31,16 @@ describe("bootstrap", () => {
     assert.equal(first.ok, true);
     assert.equal(existsSync(path.join(dir, ".cursor/verify/verify.sh")), true);
     assert.equal(existsSync(path.join(dir, ".cursor/verify/rubric.json")), true);
+    assert.equal(existsSync(path.join(dir, ".cursor/verify/ui-contract.json")), false);
     assert.equal(existsSync(path.join(dir, ".cursor/rules/core.mdc")), true);
     assert.equal(existsSync(path.join(dir, ".cursorignore")), true);
     assert.match(await readFile(path.join(dir, "AGENTS.md"), "utf8"), /verify-aci/);
-    assert.match(await readFile(path.join(dir, ".gitignore"), "utf8"), /last\.json/);
+    const gitignore = await readFile(path.join(dir, ".gitignore"), "utf8");
+    assert.match(gitignore, /last\.json/);
+    assert.match(gitignore, /grok-kit-proposals\.json/);
+    assert.match(gitignore, /grok-kit-usage\.jsonl/);
+    assert.match(gitignore, /overview\.json/);
+    assert.match(gitignore, /hygiene\.json/);
 
     out = "";
     runBootstrap(["--root", dir, "--profile", "generic"], {
@@ -47,6 +53,30 @@ describe("bootstrap", () => {
     assert.equal(verify.action, "skip");
     const agents = second.steps.find((s) => s.rel === "AGENTS.md");
     assert.equal(agents.action, "skip");
+  });
+
+  it("loads tell-proof core.mdc from templates", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "boot-tell-"));
+    runBootstrap(["--root", dir, "--profile", "tell-proof"], {
+      stdout: () => {},
+    });
+    const core = await readFile(path.join(dir, ".cursor/rules/core.mdc"), "utf8");
+    assert.match(core, /tell_proof_verify/);
+    const agents = await readFile(path.join(dir, "AGENTS.md"), "utf8");
+    assert.match(agents, /tell_apply/);
+    const contract = await readFile(
+      path.join(dir, ".cursor/verify/ui-contract.json"),
+      "utf8"
+    );
+    assert.match(contract, /app-shell/);
+    const verify = await readFile(path.join(dir, ".cursor/verify/verify.sh"), "utf8");
+    assert.match(verify, /tell_proof_verify/);
+    const map = JSON.parse(
+      await readFile(path.join(dir, ".cursor/verify/feature-map.json"), "utf8")
+    );
+    assert.ok(map.surfaces.ui);
+    const rubric = await readFile(path.join(dir, ".cursor/verify/rubric.json"), "utf8");
+    assert.match(rubric, /ui-contract/);
   });
 
   it("loads agentic-framework core.mdc from templates", async () => {
