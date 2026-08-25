@@ -10,12 +10,12 @@ description: >-
 Default is **one shot**. Do not start a sleep loop unless the user asked to watch.
 
 ```bash
-node "$SKILL_DIR/scripts/watch-ci.mjs" --status-once
-node "$SKILL_DIR/scripts/watch-ci.mjs" --fixture path/to/snapshot.json
-node "$SKILL_DIR/scripts/watch-ci.mjs" --watch --timeout 900
+grok-kit watch-ci --status-once
+grok-kit watch-ci --fixture path/to/snapshot.json
+grok-kit watch-ci --watch --timeout 900
 ```
 
-JSON stdout. `--pretty` for humans.
+JSON stdout. `--pretty` for humans. Auto-detects the current-branch PR.
 
 ## Verdicts (read `class` + `actor`)
 

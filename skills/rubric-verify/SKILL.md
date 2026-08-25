@@ -11,12 +11,14 @@ Cheap, repo-grounded, mechanical first. Not a multi-model debate.
 
 ## Procedure
 
-1. Write or reuse a checklist (`templates/_shared/rubric/checklist.example.json`). Items must cite paths, commands, or diff patterns from **this** repo — not generic style nits.
+1. Write or reuse `.cursor/verify/rubric.json` (`templates/_shared/rubric/checklist.example.json`). Items must cite paths, commands, or diff patterns from **this** repo — not generic style nits.
 2. Run:
 
 ```bash
-node "$SKILL_DIR/scripts/rubric-verify.mjs" --rubric <file.json> [--diff patch] [--root <repo>]
+grok-kit rubric-verify [--rubric <file.json>] [--diff patch] [--root .]
 ```
+
+Default rubric is `.cursor/verify/rubric.json`. Auto-diff includes untracked files.
 
 3. Mechanical kinds (`path-exists`, `diff-path`, `diff-excludes`, `grep-worktree`, `command`) are scored by the script.
 4. `judgment` items go to the `verifier` agent (Composer). Escalate a second model only for a one-way door where must-items disagree with a human.

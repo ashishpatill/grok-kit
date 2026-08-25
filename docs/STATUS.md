@@ -16,6 +16,7 @@
 - Merge-state CI watcher (`/watch-ci`, status-once default, `--fixture` offline)
 - Rubric verify (mechanical checklist + judgment leftovers)
 - Thin `/route-task` + compiled `state-tools` for `/orchestrate-rlm`
+- Dogfood on grok-kit: `~/.local/bin/grok-kit` PATH install, compiled bootstrap / route-task / session-handoff / skill-curator, rubric auto-diff includes untracked files
 
 ## In progress
 

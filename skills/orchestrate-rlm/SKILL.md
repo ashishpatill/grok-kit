@@ -23,26 +23,13 @@ description: >-
 2. Compile — do not freehand child prompts:
 
 ```bash
-node "$SKILL_DIR/scripts/state-tools.mjs" check .cursor/rlm-state/STATE.md
-node "$SKILL_DIR/scripts/state-tools.mjs" render-spawn .cursor/rlm-state/STATE.md
+grok-kit state-tools check .cursor/rlm-state/STATE.md
+grok-kit state-tools render-spawn .cursor/rlm-state/STATE.md
 ```
 
-3. For each `contracts[]` string, spawn a Task/subagent. The compiled contract looks like:
-
-```text
-goal: <one sentence>
-context:
-  - absolute paths
-  - constraints / non-goals
-  - verify command
-  - definition of done
-return: ≤N bullets + paths + open risks (no raw dumps)
-model: pin cheap/composer for explore; inherit only for judgment-heavy implement
-```
-
+3. For each `contracts[]` string, spawn a Task/subagent. Depth **1**.
 4. Parent merges summaries into STATE.md
-5. Run `/verify-aci` plus listed gate commands (`test` / `lint`)
-6. Depth **1** — children must not spawn grandchildren unless map-reduce was requested
+5. `grok-kit verify-aci` plus listed gate commands
 
 ## Pitfalls
 

@@ -4,8 +4,8 @@
   "surfaces": {
     "unit": {
       "doctor": "node -e \"if (Number(process.versions.node.split('.')[0]) < 18) process.exit(1)\"",
-      "launch": "test -f skills/watch-ci/scripts/watch-ci.mjs",
-      "drive": "node --test skills/watch-ci/scripts/policy.test.mjs skills/watch-ci/scripts/github.test.mjs skills/watch-ci/scripts/cli.test.mjs skills/verify-aci/scripts/verify-aci.test.mjs skills/rubric-verify/scripts/rubric-verify.test.mjs skills/orchestrate-rlm/scripts/state-tools.test.mjs"
+      "launch": "node scripts/grok-kit.mjs --help >/dev/null",
+      "drive": "bash scripts/run-unit-tests.sh"
     },
     "main": {
       "useProjectScript": true

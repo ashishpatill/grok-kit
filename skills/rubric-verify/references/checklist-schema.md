@@ -21,3 +21,5 @@
 ```
 
 Keep ≤12 items. Prefer must-items the script can fail closed.
+
+Default file: `.cursor/verify/rubric.json`. Auto-diff includes untracked files.

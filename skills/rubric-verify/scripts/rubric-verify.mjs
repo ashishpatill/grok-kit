@@ -1,18 +1,25 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { isMainModule } from "../../../scripts/lib/is-main.mjs";
+
+const DEFAULT_RUBRIC = ".cursor/verify/rubric.json";
 
 const HELP = `rubric-verify — score a short repo-grounded checklist against a diff
 
 Usage:
-  rubric-verify --rubric FILE.json [--diff FILE.patch] [--root DIR] [--dry-run]
+  rubric-verify [--rubric FILE.json] [--diff FILE.patch] [--root DIR] [--dry-run]
+
+Default --rubric is <root>/.cursor/verify/rubric.json.
+Without --diff, the auto-diff is git staged + unstaged + untracked files
+(so new files still participate in diff-path / diff-excludes).
+diff-excludes scans added lines only.
 
 Item kinds:
   path-exists     worktree path exists
   diff-path       unified diff mentions a path/pattern
-  diff-excludes   unified diff must NOT match a pattern
+  diff-excludes   added lines must NOT match a pattern
   grep-worktree   file contents match (or --negate)
   command         run a command (skipped with --dry-run)
   judgment        left for a cheap verifier — not auto-scored
@@ -61,6 +68,8 @@ function parseArgs(argv) {
   return out;
 }
 
+const UNTRACKED_CAP = 512_000;
+
 function runCommand(argv, cwd) {
   return new Promise((resolve) => {
     const child = spawn(argv[0], argv.slice(1), {
@@ -84,12 +93,54 @@ function runCommand(argv, cwd) {
   });
 }
 
+export async function collectWorktreeDiff(root) {
+  const cached = await runCommand(["git", "diff", "--cached"], root);
+  const unstaged = await runCommand(["git", "diff"], root);
+  const listed = await runCommand(
+    ["git", "ls-files", "--others", "--exclude-standard"],
+    root
+  );
+  const chunks = [cached.stdout, unstaged.stdout];
+  const files =
+    listed.code === 0 ? listed.stdout.split("\n").filter(Boolean) : [];
+  for (const rel of files) {
+    const abs = path.join(root, rel);
+    if (!existsSync(abs)) continue;
+    let raw;
+    try {
+      raw = readFileSync(abs);
+    } catch {
+      continue;
+    }
+    if (raw.length > UNTRACKED_CAP || raw.includes(0)) {
+      chunks.push(
+        `diff --git a/${rel} b/${rel}\n+++ b/${rel}\n[skipped binary or large untracked]\n`
+      );
+      continue;
+    }
+    const lined = raw
+      .toString("utf8")
+      .split("\n")
+      .map((line) => `+${line}`)
+      .join("\n");
+    chunks.push(`diff --git a/${rel} b/${rel}\n+++ b/${rel}\n${lined}\n`);
+  }
+  return chunks.join("\n");
+}
+
 function asRegex(pattern) {
   try {
     return new RegExp(pattern);
   } catch {
     return null;
   }
+}
+
+function addedDiffLines(diffText) {
+  return String(diffText)
+    .split("\n")
+    .filter((line) => line.startsWith("+") && !line.startsWith("+++"))
+    .join("\n");
 }
 
 function matches(haystack, pattern) {
@@ -153,7 +204,7 @@ async function scoreItem(item, ctx) {
       };
     }
     case "diff-excludes": {
-      const hit = matches(ctx.diffText, item.pattern ?? "");
+      const hit = matches(addedDiffLines(ctx.diffText), item.pattern ?? "");
       return {
         ...base,
         status: hit ? "fail" : "pass",
@@ -215,13 +266,23 @@ export async function runRubricVerify(argv, io = {}) {
     stdout(HELP);
     return 0;
   }
-  if (!options.rubric) {
-    stdout(`${JSON.stringify({ ok: false, error: "--rubric is required" })}\n`);
+  const rubricPath = options.rubric
+    ? path.resolve(options.rubric)
+    : path.join(options.root, DEFAULT_RUBRIC);
+  if (!existsSync(rubricPath)) {
+    stdout(
+      `${JSON.stringify({
+        ok: false,
+        error: "missing-rubric",
+        path: rubricPath,
+        next: "Pass --rubric FILE.json or run grok-kit bootstrap.",
+      })}\n`
+    );
     return 64;
   }
   let rubric;
   try {
-    rubric = JSON.parse(readFileSync(path.resolve(options.rubric), "utf8"));
+    rubric = JSON.parse(readFileSync(rubricPath, "utf8"));
   } catch (error) {
     stdout(
       `${JSON.stringify({ ok: false, error: `invalid rubric: ${error.message}` })}\n`
@@ -239,9 +300,7 @@ export async function runRubricVerify(argv, io = {}) {
   if (options.diff) {
     diffText = readFileSync(path.resolve(options.diff), "utf8");
   } else {
-    const unstaged = await runCommand(["git", "diff"], options.root);
-    const staged = await runCommand(["git", "diff", "--cached"], options.root);
-    diffText = `${staged.stdout}\n${unstaged.stdout}`;
+    diffText = await collectWorktreeDiff(options.root);
   }
 
   const verdict = await scoreRubric({
@@ -254,22 +313,9 @@ export async function runRubricVerify(argv, io = {}) {
   return verdict.ok ? 0 : 1;
 }
 
-export { HELP, parseArgs };
+export { HELP, parseArgs, DEFAULT_RUBRIC };
 
-function isMainModule(metaUrl) {
-  if (!process.argv[1]) return false;
-  const self = fileURLToPath(metaUrl);
-  let invoked;
-  try {
-    invoked = realpathSync(process.argv[1]);
-  } catch {
-    invoked = path.resolve(process.argv[1]);
-  }
-  return self === invoked;
-}
-
-const isMain = isMainModule(import.meta.url);
-if (isMain) {
+if (isMainModule(import.meta.url)) {
   runRubricVerify(process.argv.slice(2))
     .then((code) => process.exit(code))
     .catch((error) => {

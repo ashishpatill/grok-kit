@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-import { readFileSync, realpathSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
+import { isMainModule } from "../../../scripts/lib/is-main.mjs";
 
 const HELP = `state-tools — compile RLM STATE.md instead of narrating Task prompts
 
@@ -112,20 +111,7 @@ export function runStateTools(argv, io = {}) {
 
 export { HELP };
 
-function isMainModule(metaUrl) {
-  if (!process.argv[1]) return false;
-  const self = fileURLToPath(metaUrl);
-  let invoked;
-  try {
-    invoked = realpathSync(process.argv[1]);
-  } catch {
-    invoked = path.resolve(process.argv[1]);
-  }
-  return self === invoked;
-}
-
-const isMain = isMainModule(import.meta.url);
-if (isMain) {
+if (isMainModule(import.meta.url)) {
   try {
     process.exit(runStateTools(process.argv.slice(2)));
   } catch (error) {

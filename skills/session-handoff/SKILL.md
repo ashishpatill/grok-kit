@@ -15,31 +15,21 @@ description: >-
 
 ## Procedure
 
-1. Write gitignored `.cursor/handoff.md`:
-
-```markdown
-# Handoff — <project> — <date>
-
-## Goal
-## Done
-## Decisions
-## Next steps (ordered)
-## Key paths
-## Open risks
-## Verify commands
+```bash
+grok-kit session-handoff init --project <slug>
+# fill .cursor/handoff.md (replace "(describe)")
+grok-kit session-handoff check
 ```
 
+1. Fill Goal / Done / Decisions / Next steps / Key paths / Open risks / Verify commands.
 2. If ICM is available, store a compact summary under topic `handoff-<slug>` (no secrets).
 3. Tell the user to `@.cursor/handoff.md` or recall ICM in the next chat.
 4. Optionally propose durable facts via `/memory-sync` (staged, not auto-applied).
+
+`check` fails while `(describe)` remains, if required headings are missing, or if inline secrets appear.
 
 ## Pitfalls
 
 - Dumping full transcripts
 - Storing API keys or tokens
 - Skipping verify commands
-
-## Verification
-
-- handoff.md exists and is ≤~80 lines
-- Next-step list is actionable

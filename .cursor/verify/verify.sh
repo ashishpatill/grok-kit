@@ -14,11 +14,15 @@ doctor() {
 }
 
 launch() {
-  test -f skills/watch-ci/scripts/watch-ci.mjs
-  test -f skills/verify-aci/scripts/verify-aci.mjs
-  test -f skills/rubric-verify/scripts/rubric-verify.mjs
-  test -f skills/orchestrate-rlm/scripts/state-tools.mjs
-  test -f skills/route-task/SKILL.md
+  node "$ROOT/scripts/grok-kit.mjs" --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" verify-aci --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" watch-ci --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" rubric-verify --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" state-tools --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" bootstrap --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" route-task --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" session-handoff --help >/dev/null
+  node "$ROOT/scripts/grok-kit.mjs" skill-curator --help >/dev/null
 }
 
 drive() {

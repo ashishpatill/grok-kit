@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { spawnSync } from "node:child_process";
 import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { runRubricVerify, scoreRubric } from "./rubric-verify.mjs";
+
+function git(cwd, args) {
+  const result = spawnSync("git", args, { cwd, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+}
 
 describe("scoreRubric", () => {
   it("scores mechanical items and leaves judgment unscored", async () => {
@@ -45,6 +51,26 @@ describe("scoreRubric", () => {
     });
     assert.equal(verdict.ok, false);
     assert.equal(verdict.score.mustFail, 1);
+  });
+
+  it("diff-excludes ignores removed lines", async () => {
+    const verdict = await scoreRubric({
+      root: process.cwd(),
+      dryRun: true,
+      diffText: `diff --git a/old.js b/old.js\n--- a/old.js\n+++ b/old.js\n-${["API", "_KEY"].join("")}=${JSON.stringify("gone")}\n+const ok = true;\n`,
+      rubric: {
+        schemaVersion: 1,
+        items: [
+          {
+            id: "secrets",
+            kind: "diff-excludes",
+            pattern: "(API_KEY|SECRET|TOKEN)\\s*=\\s*['\\\"][^'\\\"]+",
+            severity: "must",
+          },
+        ],
+      },
+    });
+    assert.equal(verdict.ok, true);
   });
 });
 
@@ -90,5 +116,73 @@ describe("runRubricVerify CLI", () => {
     const json = JSON.parse(out);
     assert.equal(code, 0);
     assert.equal(json.ok, true);
+  });
+
+  it("defaults to .cursor/verify/rubric.json", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "rubric-default-"));
+    await mkdir(path.join(dir, ".cursor", "verify"), { recursive: true });
+    await writeFile(path.join(dir, "keep.txt"), "ok");
+    await writeFile(
+      path.join(dir, ".cursor", "verify", "rubric.json"),
+      JSON.stringify({
+        schemaVersion: 1,
+        items: [
+          {
+            id: "keep",
+            kind: "path-exists",
+            path: "keep.txt",
+            severity: "must",
+          },
+        ],
+      })
+    );
+    let out = "";
+    const code = await runRubricVerify(["--root", dir, "--diff", "/dev/null"], {
+      stdout: (t) => {
+        out += t;
+      },
+    });
+    assert.equal(code, 0, out);
+    assert.equal(JSON.parse(out).ok, true);
+  });
+
+  it("auto-diff includes untracked files so secret excludes still fire", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "rubric-untracked-"));
+    git(dir, ["init", "-q"]);
+    git(dir, ["config", "user.email", "e2e@example.com"]);
+    git(dir, ["config", "user.name", "E2E"]);
+    await writeFile(path.join(dir, "README.md"), "# app\n");
+    git(dir, ["add", "README.md"]);
+    git(dir, ["-c", "commit.gpgsign=false", "commit", "-qm", "init"]);
+    await writeFile(
+      path.join(dir, "leak.js"),
+      `const ${["API", "_KEY"].join("")}=${JSON.stringify("sk-live")};\n`
+    );
+    const rubricPath = path.join(dir, "rubric.json");
+    await writeFile(
+      rubricPath,
+      JSON.stringify({
+        schemaVersion: 1,
+        items: [
+          {
+            id: "secrets",
+            kind: "diff-excludes",
+            pattern: "(API_KEY|SECRET|TOKEN)\\s*=\\s*['\\\"][^'\\\"]+",
+            severity: "must",
+          },
+        ],
+      })
+    );
+    let out = "";
+    const code = await runRubricVerify(
+      ["--rubric", rubricPath, "--root", dir],
+      {
+        stdout: (t) => {
+          out += t;
+        },
+      }
+    );
+    assert.equal(code, 1, out);
+    assert.equal(JSON.parse(out).ok, false);
   });
 });

@@ -29,8 +29,8 @@ description: >-
 1. User approves plan
 2. Switch to Agent; implement against checklist
 3. If assumptions invalidate → re-Plan (do not grind stale todos)
-4. Prove with `/verify-aci` (doctor/launch/drive). Score the diff with `/rubric-verify` when the change is multi-file.
-5. If a PR is open: `watch-ci --status-once` (merge-state, not a green checkbox list). Optional cheap `/verifier` for leftover `judgment` items.
+4. Prove with `grok-kit verify-aci` (doctor/launch/drive). Score the diff with `grok-kit rubric-verify` when the change is multi-file.
+5. If a PR is open: `grok-kit watch-ci --status-once` (merge-state, not a green checkbox list). Optional cheap `/verifier` for leftover `judgment` items.
 
 ## Pitfalls
 

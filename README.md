@@ -30,7 +30,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
 - MCP slim pattern: user-global = ICM; archive/restore helpers; product servers in project snippets
-- User-layer install script: agents, hooks, skill symlinks, plugin symlink, permissions stub
+- User-layer install script: agents, hooks, skill symlinks, plugin symlink, `~/.local/bin/grok-kit` dispatcher
 - Stack templates: Next.js/Clerk/Neon, research-Python, agentic-framework profiles for bootstrap
 
 ### Skills
@@ -66,6 +66,10 @@ Ladder: Skill → single Agent → Plan→Agent → parallel Task (≤3-5, depth
 git clone https://github.com/ashishpatill/grok-kit.git
 cd grok-kit
 ./scripts/install-user-layer.sh
+# grok-kit → ~/.local/bin/grok-kit (add ~/.local/bin to PATH if needed)
+grok-kit check
+# or from the checkout:
+node scripts/grok-kit.mjs check
 ```
 
 In Cursor: Developer: Reload Window, then try:
@@ -96,6 +100,7 @@ This will:
 - Install stop-hook + `~/.cursor/hooks.json`
 - Symlink each skill into `~/.cursor/skills/`
 - Symlink the plugin to `~/.cursor/plugins/local/grok-kit`
+- Symlink `~/.local/bin/grok-kit` so skills work in any repo
 - Slim user MCP to ICM-only (backs up existing `~/.cursor/mcp.json` first)
 - Create a stub `~/.cursor/permissions.json` if missing
 
@@ -156,7 +161,7 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 2. Before a large or expensive run, `/cost-check`
 3. Multi-package or parallel units → `/orchestrate-rlm` (compile STATE.md with `state-tools`; children return summaries only)
 4. New repo → `/project-bootstrap` (pick a template profile; replace `drive()` in `.cursor/verify/verify.sh`)
-5. After implement → `/verify-aci` then `/rubric-verify`. If a PR is open → `/watch-ci` `--status-once`
+5. After implement → `/verify-aci` then `/rubric-verify` (defaults to `.cursor/verify/rubric.json`; auto-diff includes untracked files). If a PR is open → `/watch-ci` `--status-once`
 6. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
 ### Orchestration ladder
@@ -228,7 +233,7 @@ flowchart TB
 | `rules/` | Thin always-on kit pointer (persona stays in User Rules) |
 | `hooks/` | Optional memory-candidate staging on session stop |
 | `templates/` | Stack profiles for `/project-bootstrap` |
-| `scripts/` | User-layer install, ICM seed, `kit-check.sh` |
+| `scripts/` | User-layer install, ICM seed, `kit-check.sh`, `grok-kit.mjs` dispatcher |
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |
 | `.cursor-plugin/plugin.json` | Cursor plugin manifest |
