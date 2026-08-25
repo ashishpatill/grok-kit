@@ -34,6 +34,10 @@ export const LOG_COMMANDS = Object.freeze([
   "route-task",
   "session-handoff",
   "skill-curator",
+  "overview",
+  "visualise",
+  "visualize",
+  "flagship",
 ]);
 
 const COMMAND_FEATURE = Object.freeze({
@@ -46,6 +50,10 @@ const COMMAND_FEATURE = Object.freeze({
   "route-task": "route-task",
   "session-handoff": "session-handoff",
   "skill-curator": "skill-curator",
+  overview: "flagship",
+  visualise: "flagship",
+  visualize: "flagship",
+  flagship: "flagship",
   "cost-check": "cost-check",
   "plan-execute": "plan-execute",
   "orchestrate-rlm": "orchestrate-rlm",
@@ -62,7 +70,7 @@ const OPTIONAL_FEATURES = Object.freeze([
 const MAX_LINES = 2000;
 const KEEP_LINES = 1500;
 const SESSION_GAP_MS = 4 * 60 * 60 * 1000;
-const INTENTS = new Set(["bug", "feature", "investigate", "ship"]);
+const INTENTS = new Set(["bug", "feature", "investigate", "ship", "status"]);
 const PHASES = new Set(["doctor", "launch", "drive", "all"]);
 const IGNORE_LINES = Object.freeze([
   ".cursor/grok-kit-usage.jsonl",

@@ -158,7 +158,7 @@ def ensure(event, command, timeout):
 
 
 ensure("stop", "./hooks/stage-memory-candidate.sh", 15)
-ensure("sessionStart", "./hooks/session-start-apply.sh", 18)
+ensure("sessionStart", "./hooks/session-start-apply.sh", 22)
 path.write_text(json.dumps(data, indent=2) + "\n")
 PY
 

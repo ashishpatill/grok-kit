@@ -38,6 +38,7 @@ describe("bootstrap", () => {
     assert.match(gitignore, /last\.json/);
     assert.match(gitignore, /grok-kit-proposals\.json/);
     assert.match(gitignore, /grok-kit-usage\.jsonl/);
+    assert.match(gitignore, /overview\.json/);
 
     out = "";
     runBootstrap(["--root", dir, "--profile", "generic"], {

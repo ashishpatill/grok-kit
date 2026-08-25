@@ -13,6 +13,7 @@
     "rubric-verify",
     "watch-ci",
     "session-handoff",
+    "flagship",
     "memory-sync",
     "plan-execute",
     "orchestrate-rlm",

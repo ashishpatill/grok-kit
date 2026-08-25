@@ -31,12 +31,14 @@ Profiles: ${PROFILE_NAMES.join(", ")}
 `;
 
 export const FEATURE_HOW = Object.freeze({
-  "route-task": "`/route-task` (bug|feature|investigate|ship), then leave the skill.",
+  "route-task": "`/route-task` (bug|feature|investigate|ship|status), then leave the skill.",
   "cost-check": "`/cost-check` before expensive runs. Auto Balance default.",
   "verify-aci": "`grok-kit verify-aci` (doctor / launch / drive).",
   "rubric-verify": "`grok-kit rubric-verify`.",
   "watch-ci": "`grok-kit watch-ci --status-once` (merge-state, not a green list).",
   "session-handoff": "`/session-handoff` at the end of a deep session.",
+  "flagship":
+    "Session start/end: `/flagship`. Status: `/overview`. Picture: `/visualise`. Host canvas if available. Do not inline the dump into always-on rules.",
   "memory-sync": "`/memory-sync` for durable facts. Propose; never silent identity writes.",
   "plan-execute": "`/plan-execute` for ambiguous multi-file work, then Agent after approval.",
   "orchestrate-rlm":

@@ -24,6 +24,7 @@ const GITIGNORE_LINES = [
   ".cursor/verify/last.json",
   ".cursor/grok-kit-usage.jsonl",
   ".cursor/grok-kit-proposals.json",
+  ".cursor/overview.json",
 ];
 
 const HELP = `bootstrap — copy grok-kit project layer without overwriting rich files

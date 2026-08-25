@@ -28,6 +28,8 @@ node "$KITCLI" route-task --help | grep -q feature || fail "route-task help"
 node "$KITCLI" session-handoff --help | grep -q init || fail "session-handoff help"
 node "$KITCLI" skill-curator --help | grep -q inventory || fail "skill-curator help"
 node "$KITCLI" learn --help | grep -q i-consent || fail "learn help"
+node "$KITCLI" overview --help | grep -q flagship || fail "overview help"
+node "$KITCLI" flagship --help | grep -q visualise || fail "flagship help"
 node "$KITCLI" install --help | grep -q learn || fail "install help learn"
 pass "help text"
 
@@ -300,9 +302,35 @@ v=json.load(open("$TMP/curator.json"))
 names={s["name"] for s in v["skills"]}
 assert "verify-aci" in names and "watch-ci" in names, names
 assert "usage-learn" in names, names
+assert "flagship" in names and "overview" in names and "visualise" in names, names
 print("skill-curator inventory", v["skillCount"], "skills")
 PY
 pass "route-task + session-handoff + skill-curator"
+
+echo "== overview / visualise / flagship =="
+node "$KITCLI" overview --root "$ROOT" --short >"$TMP/ov-short.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/ov-short.json"))
+assert v["ok"] is True and "flagship" in v["line"] and "/overview" in v["line"], v
+print("overview --short")
+PY
+node "$KITCLI" visualise --root "$ROOT" >"$TMP/vis.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/vis.json"))
+assert v["mode"]=="visualise" and "flowchart" in v["mermaid"], v
+print("visualise mermaid")
+PY
+node "$KITCLI" flagship --root "$ROOT" --when now >"$TMP/flag.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/flag.json"))
+assert v["ok"] is True and v["kit"]["profile"]=="agentic-framework", v
+assert "flowchart" in v["mermaid"]
+print("flagship now")
+PY
+pass "overview + visualise + flagship"
 
 echo "== install-user-layer into a fake HOME =="
 export HOME="$TMP/home-refuse"
@@ -337,6 +365,9 @@ PY
 [[ -L "$HOME/.cursor/skills/rubric-verify" ]] || fail "rubric-verify skill symlink"
 [[ -L "$HOME/.cursor/skills/route-task" ]] || fail "route-task skill symlink"
 [[ -L "$HOME/.cursor/skills/usage-learn" ]] || fail "usage-learn skill symlink"
+[[ -L "$HOME/.cursor/skills/flagship" ]] || fail "flagship skill symlink"
+[[ -L "$HOME/.cursor/skills/overview" ]] || fail "overview skill symlink"
+[[ -L "$HOME/.cursor/skills/visualise" ]] || fail "visualise skill symlink"
 [[ -L "$HOME/.cursor/plugins/local/grok-kit" ]] || fail "plugin symlink"
 [[ -L "$HOME/.local/bin/grok-kit" ]] || fail "PATH grok-kit symlink"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"

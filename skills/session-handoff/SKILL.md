@@ -24,7 +24,8 @@ grok-kit session-handoff check
 1. Fill Goal / Done / Decisions / Next steps / Key paths / Open risks / Verify commands.
 2. If ICM is available, store a compact summary under topic `handoff-<slug>` (no secrets).
 3. Tell the user to `@.cursor/handoff.md` or recall ICM in the next chat.
-4. Optionally propose durable facts via `/memory-sync` (staged, not auto-applied).
+4. Run `grok-kit flagship --when end` so they see overview + visualise before leaving.
+5. Optionally propose durable facts via `/memory-sync` (staged, not auto-applied).
 
 `check` fails while `(describe)` remains, if required headings are missing, or if inline secrets appear.
 

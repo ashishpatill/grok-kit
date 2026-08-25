@@ -4,5 +4,6 @@
 .cursor/verify/last.json
 .cursor/grok-kit-usage.jsonl
 .cursor/grok-kit-proposals.json
+.cursor/overview.json
 PENDING_MEMORY.md
 node_modules/

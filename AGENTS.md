@@ -4,7 +4,7 @@ Personal Cursor/agent harness kit — playbook skills, orchestration, cost routi
 
 ## Commands of interest
 
-- Skills: `project-bootstrap` (`grok-kit apply` adapts per repo), `plan-execute`, `orchestrate-rlm`, `session-handoff`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `usage-learn`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
+- Skills: `project-bootstrap` (`grok-kit apply` adapts per repo), `plan-execute`, `orchestrate-rlm`, `session-handoff`, `flagship`, `overview`, `visualise`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `usage-learn`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
 - Agents: `verifier`, `debugger`, `researcher`
 - Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
 
@@ -30,5 +30,5 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - Adaptation SoT: `.cursor/grok-kit.json` (`grok-kit apply`). Use enabled features only; do not dump the whole kit into always-on rules. Keep always-on `.mdc` files byte-stable (KV cache).
 - User-layer install and background per-repo apply require `grok-kit install --i-consent`. Direct `grok-kit apply --root .` is this-repo-only.
 - Usage observation is opt-in (`install --learn`). Harness tweaks to `grok-kit.json` need `--improve` or `grok-kit learn apply --i-consent`. Never auto-rewrite User Rules or `SKILL.md`.
-- Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once).
+- Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once). Session start/end: `/flagship` (overview + visualise).
 - After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).
