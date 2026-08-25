@@ -21,6 +21,9 @@ node "$KITCLI" rubric-verify --help | grep -q judgment || fail "rubric-verify he
 node "$KITCLI" state-tools --help | grep -q render-spawn || fail "state-tools help"
 node "$KITCLI" bootstrap --help | grep -q profile || fail "bootstrap help"
 node "$KITCLI" apply --help | grep -q if-missing || fail "apply help"
+node "$KITCLI" apply --help | grep -q require-consent || fail "apply help consent"
+node "$KITCLI" consent --help | grep -q notice || fail "consent help"
+node "$KITCLI" install --help | grep -q i-consent || fail "install help"
 node "$KITCLI" route-task --help | grep -q feature || fail "route-task help"
 node "$KITCLI" session-handoff --help | grep -q init || fail "session-handoff help"
 node "$KITCLI" skill-curator --help | grep -q inventory || fail "skill-curator help"
@@ -224,10 +227,11 @@ python3 -c "import json; v=json.load(open('$TMP/notgit.json')); assert v['reason
 [[ ! -e "$NAKED/.cursor/grok-kit.json" ]] || fail "require-git wrote on non-git"
 pass "apply + tell-proof"
 
-echo "== sessionStart hook apply-if-missing =="
+echo "== sessionStart hook requires consent =="
 HOOK="$TMP/hookgit"
 mkdir -p "$HOOK"
 git -C "$HOOK" init -q
+export GROK_KIT_CONSENT_FILE="$TMP/no-consent.json"
 (
   cd "$HOOK"
   CURSOR_PLUGIN_ROOT="$ROOT" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook1.json"
@@ -236,15 +240,31 @@ python3 - <<PY
 import json
 from pathlib import Path
 ctx=json.load(open("$TMP/hook1.json"))
-assert "additional_context" in ctx and "grok-kit" in ctx["additional_context"], ctx
+assert "additional_context" in ctx, ctx
+assert "install --i-consent" in ctx["additional_context"], ctx
+assert not (Path("$HOOK") / ".cursor/grok-kit.json").exists()
+print("sessionStart blocked without consent")
+PY
+export GROK_KIT_CONSENT_FILE="$TMP/yes-consent.json"
+node "$KITCLI" consent write --scopes user-layer,project-apply --source e2e >/dev/null
+(
+  cd "$HOOK"
+  CURSOR_PLUGIN_ROOT="$ROOT" GROK_KIT_CONSENT_FILE="$TMP/yes-consent.json" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook2.json"
+)
+python3 - <<PY
+import json
+from pathlib import Path
+ctx=json.load(open("$TMP/hook2.json"))
+assert "applied" in ctx["additional_context"] or "already adapted" in ctx["additional_context"], ctx
 assert (Path("$HOOK") / ".cursor/grok-kit.json").is_file()
-print("sessionStart applied")
+print("sessionStart applied after consent")
 PY
 (
   cd "$HOOK"
-  CURSOR_PLUGIN_ROOT="$ROOT" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook2.json"
+  CURSOR_PLUGIN_ROOT="$ROOT" GROK_KIT_CONSENT_FILE="$TMP/yes-consent.json" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook3.json"
 )
-python3 -c "import json; ctx=json.load(open('$TMP/hook2.json')); assert 'already adapted' in ctx['additional_context']"
+python3 -c "import json; ctx=json.load(open('$TMP/hook3.json')); assert 'already adapted' in ctx['additional_context']"
+unset GROK_KIT_CONSENT_FILE
 pass "sessionStart hook"
 
 echo "== route-task / session-handoff / skill-curator =="
@@ -281,12 +301,31 @@ PY
 pass "route-task + session-handoff + skill-curator"
 
 echo "== install-user-layer into a fake HOME =="
+export HOME="$TMP/home-refuse"
+mkdir -p "$HOME"
+set +e
+bash "$ROOT/scripts/install-user-layer.sh" >"$TMP/refuse.log" 2>"$TMP/refuse.err"
+refuse_rc=$?
+set -e
+[[ $refuse_rc -eq 78 ]] || fail "install without consent exit $refuse_rc"
+[[ ! -e "$HOME/.cursor/agents/verifier.md" ]] || fail "install wrote agents without consent"
+grep -q i-consent "$TMP/refuse.err" "$TMP/refuse.log" || fail "refuse should mention --i-consent"
+
 export HOME="$TMP/home"
 mkdir -p "$HOME"
 # stub a prior mcp so the installer backs it up
 mkdir -p "$HOME/.cursor"
 echo '{"mcpServers":{"old":{}}}' > "$HOME/.cursor/mcp.json"
-bash "$ROOT/scripts/install-user-layer.sh" >"$TMP/install.log"
+bash "$ROOT/scripts/install-user-layer.sh" --i-consent --no-apply-cwd >"$TMP/install.log"
+[[ -f "$HOME/.cursor/grok-kit-consent.json" ]] || fail "consent file"
+python3 - <<PY
+import json
+c=json.load(open("$HOME/.cursor/grok-kit-consent.json"))
+assert c["scopes"]["userLayer"] is True
+assert c["scopes"]["projectApply"] is True
+assert c["scopes"]["mcpSlim"] is True
+print("consent recorded")
+PY
 [[ -L "$HOME/.cursor/skills/verify-aci" ]] || fail "verify-aci skill symlink"
 [[ -L "$HOME/.cursor/skills/watch-ci" ]] || fail "watch-ci skill symlink"
 [[ -L "$HOME/.cursor/skills/rubric-verify" ]] || fail "rubric-verify skill symlink"
@@ -295,7 +334,7 @@ bash "$ROOT/scripts/install-user-layer.sh" >"$TMP/install.log"
 [[ -L "$HOME/.local/bin/grok-kit" ]] || fail "PATH grok-kit symlink"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"
 [[ -f "$HOME/.cursor/rules/grok-kit.mdc" ]] || fail "user grok-kit rule"
-grep -q "grok-kit apply" "$HOME/.cursor/rules/grok-kit.mdc" || fail "user rule should mention apply"
+grep -q "install --i-consent" "$HOME/.cursor/rules/grok-kit.mdc" || fail "user rule should mention consent"
 grep -q sessionStart "$HOME/.cursor/hooks.json" || fail "sessionStart hook"
 grep -q verify-aci "$HOME/.cursor/agents/verifier.md" || fail "verifier should mention verify-aci"
 grep -q tell_proof_verify "$HOME/.cursor/agents/verifier.md" || fail "verifier should mention tell_proof_verify"
@@ -309,7 +348,7 @@ data = json.loads(p.read_text())
 data["hooks"]["preToolUse"] = [{"command": "./hooks/keep-me.sh", "timeout": 5}]
 p.write_text(json.dumps(data, indent=2) + "\n")
 PY
-bash "$ROOT/scripts/install-user-layer.sh" >/dev/null
+bash "$ROOT/scripts/install-user-layer.sh" --i-consent --no-apply-cwd >/dev/null
 python3 - <<PY
 import json
 h=json.load(open("$HOME/.cursor/hooks.json"))

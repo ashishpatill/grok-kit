@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# sessionStart: apply grok-kit when .cursor/grok-kit.json is missing.
-# Fail-open. Keep additional_context short.
+# sessionStart: apply grok-kit when consented and .cursor/grok-kit.json is missing.
+# Fail-open. Keep additional_context short. Never write project files without consent.
 
 emit() {
   local text="$1"
@@ -11,11 +11,11 @@ emit() {
   fi
 }
 
-ctx="grok-kit: if this is a git repo without .cursor/grok-kit.json, run grok-kit apply --root ."
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="${CURSOR_PLUGIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 root="${CURSOR_PROJECT_DIR:-$PWD}"
+
+ctx="grok-kit: no project or user-layer writes until you consent. Run: grok-kit install --i-consent (or: node ${PLUGIN_ROOT}/scripts/grok-kit.mjs install --i-consent). This repo only: grok-kit apply --root ."
 
 apply_cmd=()
 if command -v grok-kit >/dev/null 2>&1; then
@@ -28,7 +28,7 @@ fi
 
 out=""
 if ((${#apply_cmd[@]})); then
-  args=(apply --root "$root" --if-missing --require-git)
+  args=(apply --root "$root" --if-missing --require-git --require-consent)
   if command -v timeout >/dev/null 2>&1; then
     out="$(timeout 10 "${apply_cmd[@]}" "${args[@]}" 2>/dev/null || true)"
   else
@@ -44,13 +44,20 @@ try:
     data = json.loads(raw)
 except Exception:
     sys.exit(0)
-profile = data.get("profile") or "?"
-enabled = data.get("enabled") or []
-skipped = data.get("skipped")
 reason = data.get("reason") or ""
 if reason == "not-a-git-repo":
     print("grok-kit: not a git workspace; skip apply.")
     raise SystemExit
+if reason == "consent-required":
+    print(
+        "grok-kit: install consent not recorded. User-layer and per-repo apply are off. "
+        "Run grok-kit install --i-consent after reading the notice. "
+        "This repo only: grok-kit apply --root ."
+    )
+    raise SystemExit
+profile = data.get("profile") or "?"
+enabled = data.get("enabled") or []
+skipped = data.get("skipped")
 bits = ",".join(str(x) for x in enabled[:12])
 prefix = "already adapted" if skipped else "applied"
 extra = " UI prove: tell_proof_verify." if "tell-proof" in enabled else ""

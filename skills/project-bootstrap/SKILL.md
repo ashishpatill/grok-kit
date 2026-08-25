@@ -11,7 +11,8 @@ description: >-
 ## When to Use
 
 - New repo or existing project lacking `.cursor/` layer
-- Any git repo missing `.cursor/grok-kit.json` (auto-apply / sessionStart)
+- Any git repo missing `.cursor/grok-kit.json` **after** `grok-kit install --i-consent` (sessionStart)
+- The user explicitly asked to adapt this repo (`grok-kit apply --root .`)
 - Applying this kit's stack profiles
 
 ## Default: adapt, then bootstrap
@@ -31,8 +32,10 @@ and writes the adaptation source of truth:
 ```
 
 `--detect-only` prints the plan. `--if-missing` no-ops when `grok-kit.json` exists
-(sessionStart hook). `--write-mcp` copies Tell MCP into `.cursor/mcp.json` only
-when recommended **and** Tell is not already present. Never enable Tell globally.
+(sessionStart hook). `--require-consent` (used by sessionStart) skips writes unless
+the user ran `grok-kit install --i-consent`. `--write-mcp` copies Tell MCP into
+`.cursor/mcp.json` only when recommended **and** Tell is not already present.
+Never enable Tell globally.
 
 Low-level (profile already known):
 

@@ -12,7 +12,7 @@ Run the **project** script. Do not invent a 10-lane visual swarm.
 ## Procedure
 
 1. Discover `.cursor/verify/verify.sh` (or `VERIFY_SCRIPT` / `scripts/verify.sh`).
-2. If missing, `grok-kit apply --root .` (or `grok-kit bootstrap`) — do not skip.
+2. If missing, ask the user to `grok-kit apply --root .` (this repo) or `grok-kit install --i-consent` (user layer + future repos). Do not apply in the background without consent.
 3. Run (PATH after install; from a checkout: `node scripts/grok-kit.mjs`):
 
 ```bash

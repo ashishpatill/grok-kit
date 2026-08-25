@@ -10,6 +10,14 @@
       "severity": "must"
     },
     {
+      "id": "install-consent",
+      "claim": "user-layer install requires explicit --i-consent",
+      "kind": "grep-worktree",
+      "path": "scripts/install-user-layer.sh",
+      "pattern": "--i-consent",
+      "severity": "must"
+    },
+    {
       "id": "path-install",
       "claim": "install puts grok-kit on PATH so other repos can run it",
       "kind": "grep-worktree",

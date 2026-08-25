@@ -4,8 +4,8 @@
 
 ```bash
 ln -sfn /Volumes/Developer/Workspace/cursor-kit ~/.cursor/plugins/local/grok-kit
-# or
-./scripts/install-user-layer.sh
+# or (writes ~/.cursor only after explicit consent)
+./scripts/install-user-layer.sh --i-consent
 ```
 
 Then **Developer: Reload Window**.

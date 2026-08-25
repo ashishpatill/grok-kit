@@ -11,6 +11,7 @@ describe("grok-kit dispatcher", () => {
       "state-tools",
       "bootstrap",
       "apply",
+      "consent",
       "route-task",
       "session-handoff",
       "skill-curator",
@@ -22,6 +23,7 @@ describe("grok-kit dispatcher", () => {
     }
     assert.match(HELP, /verify-aci/);
     assert.match(HELP, /apply/);
+    assert.match(HELP, /--i-consent/);
     assert.match(HELP, /\.local\/bin\/grok-kit/);
   });
 

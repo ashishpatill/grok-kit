@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { parseArgs, renderProjectRule, runApply } from "./apply.mjs";
+import { writeConsent } from "../../../scripts/consent.mjs";
 
 async function tmp() {
   return mkdtemp(path.join(tmpdir(), "apply-"));
@@ -156,9 +157,30 @@ describe("apply", () => {
     assert.ok(text.split("\n").length < 40);
   });
 
-  it("parseArgs resolves --root", () => {
-    const options = parseArgs(["--root", ".", "--if-missing"]);
-    assert.equal(options.ifMissing, true);
-    assert.equal(path.isAbsolute(options.root), true);
+  it("require-consent skips writes until project-apply is recorded", async () => {
+    const dir = await tmp();
+    gitInit(dir);
+    const prev = process.env.GROK_KIT_CONSENT_FILE;
+    process.env.GROK_KIT_CONSENT_FILE = path.join(dir, "no-consent.json");
+    try {
+      const blocked = run(["--root", dir, "--require-git", "--require-consent"]);
+      assert.equal(blocked.code, 0);
+      assert.equal(blocked.json.reason, "consent-required");
+      assert.equal(existsSync(path.join(dir, ".cursor/grok-kit.json")), false);
+
+      const file = path.join(dir, "consent.json");
+      writeConsent({
+        file,
+        scopes: { userLayer: true, projectApply: true, mcpSlim: false },
+        source: "test",
+      });
+      process.env.GROK_KIT_CONSENT_FILE = file;
+      const allowed = run(["--root", dir, "--require-git", "--require-consent"]);
+      assert.equal(allowed.code, 0, allowed.json && JSON.stringify(allowed.json));
+      assert.equal(existsSync(path.join(dir, ".cursor/grok-kit.json")), true);
+    } finally {
+      if (prev === undefined) delete process.env.GROK_KIT_CONSENT_FILE;
+      else process.env.GROK_KIT_CONSENT_FILE = prev;
+    }
   });
 });

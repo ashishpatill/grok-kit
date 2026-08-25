@@ -50,6 +50,10 @@ export const COMMANDS = Object.freeze({
     kind: "bash",
     file: "scripts/kit-check.sh",
   },
+  consent: {
+    kind: "node",
+    file: "scripts/consent.mjs",
+  },
   install: {
     kind: "bash",
     file: "scripts/install-user-layer.sh",
@@ -75,11 +79,12 @@ Commands:
   state-tools        check | render-spawn STATE.md
   bootstrap          copy project layer (verify ACI, ignores, core rule, rubric)
   apply              detect stack, bootstrap, write .cursor/grok-kit.json + project rule
+  consent            notice | status | check | write | revoke (install consent)
   route-task         print compiled bug|feature|investigate|ship sequence
   session-handoff    init | check .cursor/handoff.md
   skill-curator      inventory kit skills; flag overlapping descriptions
   check              kit unit tests + offline user journey
-  install            user-layer (skills, agents, PATH, ICM-only MCP)
+  install            user-layer; requires --i-consent (skills, agents, PATH, optional MCP slim)
   seed-icm           seed ICM from HOT_MEMORY_FILE / HOT_USER_FILE
 
 Examples:
@@ -89,6 +94,8 @@ Examples:
   grok-kit route-task feature
   grok-kit bootstrap --root /path/to/app --profile generic
   grok-kit apply --root /path/to/app
+  grok-kit install --i-consent
+  grok-kit consent status
 `;
 
 function spawnFile(kind, file, args) {

@@ -66,7 +66,7 @@ Ladder: Skill → single Agent → Plan→Agent → parallel Task (≤3-5, depth
 ```bash
 git clone https://github.com/ashishpatill/grok-kit.git
 cd grok-kit
-./scripts/install-user-layer.sh
+./scripts/install-user-layer.sh --i-consent
 # grok-kit → ~/.local/bin/grok-kit (add ~/.local/bin to PATH if needed)
 grok-kit check
 # or from the checkout:
@@ -92,21 +92,27 @@ Confirm the local plugin id `grok-kit` appears under plugins / Customize, and sl
 Option A: install script (recommended)
 
 ```bash
-./scripts/install-user-layer.sh
+./scripts/install-user-layer.sh --i-consent
+# or: grok-kit install --i-consent
 ```
 
-This will:
+Install **refuses** (exit 78) unless you pass `--i-consent` or type `I CONSENT` on a TTY. That consent covers:
 
 - Copy agents into `~/.cursor/agents/`
-- Copy user rule `~/.cursor/rules/grok-kit.mdc` (auto-apply + adapt)
+- Copy user rule `~/.cursor/rules/grok-kit.mdc` (per-repo apply on later sessions)
 - Merge stop + sessionStart hooks into `~/.cursor/hooks.json` (preserves other events)
 - Symlink each skill into `~/.cursor/skills/`
 - Symlink the plugin to `~/.cursor/plugins/local/grok-kit`
 - Symlink `~/.local/bin/grok-kit` so skills work in any repo
-- Slim user MCP to ICM-only (backs up existing `~/.cursor/mcp.json` first)
+- Slim user MCP to ICM-only (backs up existing `~/.cursor/mcp.json` first; skip with `--skip-mcp-slim`)
 - Create a stub `~/.cursor/permissions.json` if missing
+- `grok-kit apply` on the current git repo now, and on other git repos at sessionStart when they lack `.cursor/grok-kit.json`
 
-Option B: plugin symlink only
+Recorded at `~/.cursor/grok-kit-consent.json`. Revoke: `grok-kit consent revoke` (stops background apply; does not delete project files already written).
+
+Enabling the Cursor plugin **without** this install does not write `~/.cursor` or other repos. sessionStart will ask you to run `grok-kit install --i-consent`.
+
+Option B: plugin symlink only (no user-layer consent, no auto-apply)
 
 ```bash
 mkdir -p ~/.cursor/plugins/local
@@ -232,8 +238,8 @@ flowchart TB
 |------|---------|
 | `skills/` | Playbook skills (slash commands) |
 | `agents/` | `verifier`, `debugger`, `researcher` |
-| `rules/` | Thin always-on kit pointer (persona stays in User Rules); tells agents to `grok-kit apply` when a repo is unadapted |
-| `hooks/` | sessionStart apply-if-missing + optional memory-candidate staging on stop |
+| `rules/` | Thin always-on kit pointer (persona stays in User Rules); background apply only after install consent |
+| `hooks/` | sessionStart apply-if-missing **if consented** + optional memory-candidate staging on stop |
 | `templates/` | Stack profiles for apply/bootstrap, including tell-proof |
 | `scripts/` | User-layer install, ICM seed, `kit-check.sh`, `grok-kit.mjs` dispatcher |
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
@@ -252,8 +258,9 @@ Key knobs (no secrets in the kit):
 | User MCP | `~/.cursor/mcp.json` | ICM-only by default after install |
 | MCP archive | `~/.cursor/mcp-servers.archived.json` | Former globals for project restore |
 | Permissions | `~/.cursor/permissions.json` | Stub allowlist includes `icm` |
-| User rules | `~/.cursor/rules/grok-kit.mdc` | Auto-apply + per-project adaptation router |
-| Hooks | `~/.cursor/hooks.json` | sessionStart apply-if-missing + stop memory stub (merged, not overwritten) |
+| User rules | `~/.cursor/rules/grok-kit.mdc` | Installed only after `--i-consent`; per-project router |
+| Consent | `~/.cursor/grok-kit-consent.json` | User-layer + project-apply + optional MCP slim; `grok-kit consent revoke` |
+| Hooks | `~/.cursor/hooks.json` | sessionStart apply-if-missing after consent + stop memory stub (merged, not overwritten) |
 | Hot pin paths | `HOT_MEMORY_FILE` / `HOT_USER_FILE` | For seed script |
 | Project MCP | `<repo>/.cursor/mcp.json` | Product servers only when needed |
 
@@ -262,7 +269,7 @@ Never store API keys or tokens in ICM topics, rules, or handoff files.
 ## FAQ / Troubleshooting
 
 **Slash skills don't appear**  
-Reload the window. Confirm skill symlinks under `~/.cursor/skills/` and plugin at `~/.cursor/plugins/local/grok-kit`. Re-run `./scripts/install-user-layer.sh`.
+Reload the window. Confirm skill symlinks under `~/.cursor/skills/` and plugin at `~/.cursor/plugins/local/grok-kit`. Re-run `./scripts/install-user-layer.sh --i-consent`.
 
 **Plugin not listed**  
 Check the symlink target points at this clone. Legacy names `agent-kit` / `cursor-kit` under `plugins/local/` are removed by the install script.
