@@ -9,6 +9,7 @@ export const ALWAYS_ON = Object.freeze([
   "rubric-verify",
   "watch-ci",
   "session-handoff",
+  "flagship",
   "memory-sync",
   "plan-execute",
 ]);

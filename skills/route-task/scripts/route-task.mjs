@@ -25,12 +25,16 @@ const INTENTS = {
     "grok-kit watch-ci --status-once — trust class/actor. Approval is a human wait, not a CI fail.",
     "Do not merge, restack, or force-push unless the user explicitly asked to land.",
   ],
+  status: [
+    "grok-kit flagship --when now — overview + visualise.",
+    "If a host canvas skill is available, render the JSON there. Otherwise show mermaid in chat.",
+  ],
 };
 
 const HELP = `route-task — print a compiled sequence, then leave this skill
 
 Usage:
-  grok-kit route-task <bug|feature|investigate|ship|list>
+  grok-kit route-task <bug|feature|investigate|ship|status|list>
 `;
 
 export function listIntents() {

@@ -22,7 +22,7 @@ describe("route-task", () => {
       },
     });
     const json = JSON.parse(out);
-    assert.deepEqual(json.intents, ["bug", "feature", "investigate", "ship"]);
+    assert.deepEqual(json.intents, ["bug", "feature", "investigate", "ship", "status"]);
     const feature = sequenceFor("feature");
     assert.equal(feature.sticky, false);
     assert.match(feature.steps.join("\n"), /verify-aci/);

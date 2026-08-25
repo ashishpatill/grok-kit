@@ -43,6 +43,25 @@ export const COMMANDS = Object.freeze({
     kind: "node",
     file: "skills/session-handoff/scripts/session-handoff.mjs",
   },
+  overview: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+  },
+  visualise: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "visualise"],
+  },
+  visualize: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "visualise"],
+  },
+  flagship: {
+    kind: "node",
+    file: "skills/overview/scripts/overview.mjs",
+    extraArgs: ["--mode", "flagship"],
+  },
   "skill-curator": {
     kind: "node",
     file: "skills/skill-curator-manual/scripts/skill-curator.mjs",
@@ -85,8 +104,11 @@ Commands:
   bootstrap          copy project layer (verify ACI, ignores, core rule, rubric)
   apply              detect stack, bootstrap, write .cursor/grok-kit.json + project rule
   consent            notice | status | check | write | revoke (install consent)
-  route-task         print compiled bug|feature|investigate|ship sequence
+  route-task         print compiled bug|feature|investigate|ship|status sequence
   session-handoff    init | check .cursor/handoff.md
+  overview           project status (git, kit profile, handoff, recent commits)
+  visualise          mermaid picture of that status (alias: visualize)
+  flagship           session start/end bundle: overview + visualise
   skill-curator      inventory kit skills; flag overlapping descriptions
   learn              observe usage; propose/apply harness tweaks (consent)
   check              kit unit tests + offline user journey
@@ -104,6 +126,8 @@ Examples:
   grok-kit install --i-consent --learn --improve
   grok-kit consent status
   grok-kit learn summarize
+  grok-kit flagship --when start
+  grok-kit overview --root .
 `;
 
 function spawnFile(kind, file, args) {
@@ -135,7 +159,8 @@ export async function runGrokKit(argv, io = {}) {
     stdout(`unknown command: ${cmd}\n${HELP}`);
     return 64;
   }
-  const code = await spawnImpl(spec.kind, spec.file, argv.slice(1));
+  const forwarded = [...(spec.extraArgs ?? []), ...argv.slice(1)];
+  const code = await spawnImpl(spec.kind, spec.file, forwarded);
   try {
     const record = io.recordCli ?? recordCli;
     record(cmd, argv.slice(1));

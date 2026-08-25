@@ -4,7 +4,7 @@
     "sessionStart": [
       {
         "command": "./hooks/session-start-apply.sh",
-        "timeout": 18
+        "timeout": 22
       }
     ],
     "stop": [

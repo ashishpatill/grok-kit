@@ -6,3 +6,4 @@ PENDING_MEMORY.md
 node_modules/
 .cursor/grok-kit-usage.jsonl
 .cursor/grok-kit-proposals.json
+.cursor/overview.json

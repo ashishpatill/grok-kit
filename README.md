@@ -39,7 +39,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 
 ## What's included
 
-- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, flagship overview/visualise, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
 - Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
@@ -62,6 +62,9 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/route-task` | Map bug / feature / investigate / ship onto kit skills. Not sticky |
 | `/memory-sync` | Seed or update ICM from hot memory; propose (never silent) identity exports |
 | `/session-handoff` | End a deep session; write handoff + ICM `handoff-<slug>` |
+| `/flagship` | Session start/end: overview + visualise so you stay on top of the project |
+| `/overview` | Compiled status: git, kit profile, handoff, recent commits |
+| `/visualise` | Mermaid picture of that status; host canvas if available |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
 | `/usage-learn` | After `install --learn`: observe local skill/workflow usage; adapt `grok-kit.json` only with `--improve` or `learn apply --i-consent` |
 | `/skill-curator-manual` | Periodic skill inventory / merge proposals (manual apply) |

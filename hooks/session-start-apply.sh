@@ -114,5 +114,28 @@ if [[ -n "$learn_ctx" ]]; then
   ctx="${ctx} ${learn_ctx}"
 fi
 
+flag_ctx=""
+if ((${#apply_cmd[@]})) && [[ -f "$root/.cursor/grok-kit.json" ]] \
+  && git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  flag_out="$(run_kit 4 flagship --root "$root" --when start --short)"
+  if [[ -n "$flag_out" ]] && command -v python3 >/dev/null 2>&1; then
+    flag_ctx="$(printf '%s\n' "$flag_out" | python3 -c '
+import json, sys
+raw = sys.stdin.read()
+try:
+    data = json.loads(raw)
+except Exception:
+    sys.exit(0)
+line = data.get("line") or ""
+if line:
+    print(line)
+' 2>/dev/null || true)"
+  fi
+fi
+
+if [[ -n "$flag_ctx" ]]; then
+  ctx="${ctx} ${flag_ctx}"
+fi
+
 emit "$ctx"
 exit 0
