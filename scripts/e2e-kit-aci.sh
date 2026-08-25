@@ -172,6 +172,7 @@ bash "$ROOT/scripts/install-user-layer.sh" >"$TMP/install.log"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"
 grep -q verify-aci "$HOME/.cursor/agents/verifier.md" || fail "verifier should mention verify-aci"
 node "$HOME/.cursor/skills/watch-ci/scripts/watch-ci.mjs" --fixture "$ROOT/skills/watch-ci/fixtures/ready.json" >"$TMP/from-home.json"
+[[ -s "$TMP/from-home.json" ]] || fail "watch-ci via skill symlink produced no stdout (isMain/symlink bug)"
 python3 -c "import json; assert json.load(open('$TMP/from-home.json'))['kind']=='ready'"
 pass "user-layer install + skills runnable from ~/.cursor/skills"
 

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { describe, it } from "node:test";
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdtemp, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -112,5 +113,18 @@ describe("runWatchCi", () => {
       }
     );
     assert.equal(code, 5);
+  });
+
+  it("enters CLI main when invoked through a skill symlink", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "watch-ci-link-"));
+    const link = path.join(dir, "watch-ci.mjs");
+    await symlink(path.join(here, "watch-ci.mjs"), link);
+    const fixture = path.join(here, "../fixtures/ready.json");
+    const result = spawnSync(process.execPath, [link, "--fixture", fixture], {
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+    const verdict = JSON.parse(result.stdout);
+    assert.equal(verdict.kind, "ready");
   });
 });

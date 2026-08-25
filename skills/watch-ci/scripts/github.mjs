@@ -363,9 +363,12 @@ export async function readSnapshotFromGh(opts) {
     ]);
     const list = Array.isArray(rawChecks) ? rawChecks : [];
     checks = list.map((row) => classifyGhCheck(row));
-  } catch {
+  } catch (error) {
+    const detail =
+      error instanceof WatcherQueryError ? error.failure.detail : String(error);
     checks = parseStatusCheckRollup(view.statusCheckRollup);
-    checksRead = checks.length > 0 ? "ok" : "failed";
+    // Repos with no check runs make `gh pr checks` exit 1. That is empty, not unread.
+    checksRead = /no checks reported/i.test(detail) || checks.length > 0 ? "ok" : "failed";
   }
 
   let threads = [];
