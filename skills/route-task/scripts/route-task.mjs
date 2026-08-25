@@ -20,6 +20,7 @@ const INTENTS = {
     "Multi-package: write STATE.md, grok-kit state-tools check, grok-kit state-tools render-spawn, spawn depth-1 children with those contracts.",
   ],
   ship: [
+    "grok-kit rsi — flagship + hygiene + review steps. Leave rsi after the JSON.",
     "grok-kit verify-aci --phase all must be ok",
     "grok-kit rubric-verify must-items pass",
     "grok-kit watch-ci --status-once — trust class/actor. Approval is a human wait, not a CI fail.",

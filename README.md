@@ -40,7 +40,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 
 ## What's included
 
-- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, flagship overview/visualise, code hygiene, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
+- Playbook skills: plan→execute, orchestration, cost, bootstrap, memory, handoff, flagship overview/visualise, code hygiene, rsi review-before-ship, harness refinement, usage learn, task routing, verify ACI, merge-state CI watch, rubric verify
 - Specialist agents: `verifier`, `debugger`, `researcher` (pin cheap for explore/verify)
 - Cost routing: Optimize For matrix; prefer Cursor Models pool (Grok 4.5 / Composer 2.5) for routine work
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
@@ -67,6 +67,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/overview` | Compiled status: git, kit profile, handoff, recent commits |
 | `/visualise` | Mermaid picture of that status; host canvas if available |
 | `/code-hygiene` | Rank stale/unused/low-quality code; you decide scrap / fix / keep. Never auto-delete |
+| `/rsi` | Review before ship: flagship + hygiene + rubric + verify-aci + watch-ci |
 | `/refine-harness` | After a trajectory: ≤3 evidence-backed harness patches, human approve |
 | `/usage-learn` | After `install --learn`: observe local skill/workflow usage; adapt `grok-kit.json` only with `--improve` or `learn apply --i-consent` |
 | `/skill-curator-manual` | Periodic skill inventory / merge proposals (manual apply) |
@@ -196,7 +197,8 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 4. New repo → `grok-kit apply --root .` (or `/project-bootstrap`). Replace `drive()` in `.cursor/verify/verify.sh`. Follow enabled features in `.cursor/grok-kit.json` only.
 5. After implement → `/verify-aci` then `/rubric-verify` (defaults to `.cursor/verify/rubric.json`; auto-diff includes untracked files). If a PR is open → `/watch-ci` `--status-once`
 6. Drift / dead code → `/code-hygiene`: read the ranked files, then scrap, keep, or fix. The compiler never deletes.
-7. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
+7. Before ship → `/rsi` (flagship + hygiene + prove-it). Merge only if asked.
+8. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
 ### Orchestration ladder
 
@@ -266,7 +268,7 @@ flowchart TB
 | `agents/` | `verifier`, `debugger`, `researcher` |
 | `rules/` | Thin always-on kit pointer (persona stays in User Rules); background apply only after install consent |
 | `hooks/` | sessionStart apply-if-missing **if consented** + optional usage-learn tick + stop memory stub |
-| `templates/` | Stack profiles for apply/bootstrap, including tell-proof |
+| `templates/` | Stack profiles for apply/bootstrap, including tell-proof UI contract |
 | `scripts/` | User-layer install, ICM seed, `kit-check.sh`, `grok-kit.mjs` dispatcher |
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |

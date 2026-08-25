@@ -20,6 +20,7 @@ describe("grok-kit dispatcher", () => {
       "visualise",
       "flagship",
       "hygiene",
+      "rsi",
       "check",
       "install",
       "seed-icm",
@@ -37,6 +38,7 @@ describe("grok-kit dispatcher", () => {
     assert.match(HELP, /overview/);
     assert.match(HELP, /visualise/);
     assert.match(HELP, /hygiene/);
+    assert.match(HELP, /rsi/);
     assert.match(HELP, /--learn/);
     assert.match(HELP, /\.local\/bin\/grok-kit/);
   });

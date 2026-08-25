@@ -11,6 +11,7 @@ export const ALWAYS_ON = Object.freeze([
   "session-handoff",
   "flagship",
   "code-hygiene",
+  "rsi",
   "memory-sync",
   "plan-execute",
 ]);

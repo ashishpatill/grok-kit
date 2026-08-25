@@ -31,6 +31,7 @@ node "$KITCLI" learn --help | grep -q i-consent || fail "learn help"
 node "$KITCLI" overview --help | grep -q flagship || fail "overview help"
 node "$KITCLI" flagship --help | grep -q visualise || fail "flagship help"
 node "$KITCLI" hygiene --help | grep -q scrap || fail "hygiene help"
+node "$KITCLI" rsi --help | grep -q ship || fail "rsi help"
 node "$KITCLI" install --help | grep -q learn || fail "install help learn"
 pass "help text"
 
@@ -221,7 +222,36 @@ assert "tell-proof" in manifest["enabled"]
 rule = (root / ".cursor/rules/grok-kit-project.mdc").read_text()
 assert "alwaysApply: true" in rule and "tell_proof_verify" in rule
 assert not (root / ".cursor/mcp.json").exists()
+assert (root / ".cursor/verify/ui-contract.json").is_file()
+assert "tell_proof_verify" in (root / ".cursor/verify/verify.sh").read_text()
+assert "ui-contract" in (root / ".cursor/verify/rubric.json").read_text()
 print("apply tell-proof without clobber or MCP write")
+PY
+git -C "$TELL" init -q
+git -C "$TELL" config user.email "e2e@example.com"
+git -C "$TELL" config user.name "E2E"
+git -C "$TELL" add AGENTS.md packages .cursor
+git -C "$TELL" commit -qm "tell-proof dogfood"
+node "$KITCLI" verify-aci --root "$TELL" --phase doctor >/dev/null
+node "$KITCLI" verify-aci --root "$TELL" --phase launch >/dev/null
+set +e
+node "$KITCLI" verify-aci --root "$TELL" --phase drive >"$TMP/tell-drive.json"
+tell_drive=$?
+set -e
+[[ $tell_drive -eq 1 ]] || fail "tell-proof drive should fail closed, got $tell_drive"
+node "$KITCLI" rsi --root "$TELL" --short >"$TMP/tell-rsi.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/tell-rsi.json"))
+assert v["ok"] is True and "flagship" in v["line"] and "hygiene findings=" in v["line"], v
+print("rsi --short on tell-proof app")
+PY
+node "$KITCLI" flagship --root "$TELL" --when now --short >"$TMP/tell-flag.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/tell-flag.json"))
+assert v["ok"] is True and "tell-proof" in v["line"], v
+print("flagship on tell-proof app")
 PY
 node "$KITCLI" apply --root "$TELL" --if-missing >"$TMP/tell-skip.json"
 python3 -c "import json; v=json.load(open('$TMP/tell-skip.json')); assert v['skipped'] is True and v['reason']=='already-adapted'"
@@ -305,6 +335,7 @@ assert "verify-aci" in names and "watch-ci" in names, names
 assert "usage-learn" in names, names
 assert "flagship" in names and "overview" in names and "visualise" in names, names
 assert "code-hygiene" in names, names
+assert "rsi" in names, names
 print("skill-curator inventory", v["skillCount"], "skills")
 PY
 pass "route-task + session-handoff + skill-curator"
@@ -410,6 +441,7 @@ PY
 [[ -L "$HOME/.cursor/skills/overview" ]] || fail "overview skill symlink"
 [[ -L "$HOME/.cursor/skills/visualise" ]] || fail "visualise skill symlink"
 [[ -L "$HOME/.cursor/skills/code-hygiene" ]] || fail "code-hygiene skill symlink"
+[[ -L "$HOME/.cursor/skills/rsi" ]] || fail "rsi skill symlink"
 [[ -L "$HOME/.cursor/plugins/local/grok-kit" ]] || fail "plugin symlink"
 [[ -L "$HOME/.local/bin/grok-kit" ]] || fail "PATH grok-kit symlink"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"

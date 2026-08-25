@@ -41,12 +41,13 @@ export const FEATURE_HOW = Object.freeze({
     "Session start/end: `/flagship`. Status: `/overview`. Picture: `/visualise`. Host canvas if available. Do not inline the dump into always-on rules.",
   "code-hygiene":
     "Ranked drift: `/code-hygiene`. Read, then scrap / fix / keep. Never auto-delete. Do not dump findings into always-on rules.",
+  rsi: "`/rsi` before ship: flagship + hygiene + rubric + verify-aci + watch-ci. Leave the skill. Merge only if asked.",
   "memory-sync": "`/memory-sync` for durable facts. Propose; never silent identity writes.",
   "plan-execute": "`/plan-execute` for ambiguous multi-file work, then Agent after approval.",
   "orchestrate-rlm":
     "`/orchestrate-rlm` for multi-unit work. `grok-kit state-tools` compiles STATE.md. Children summarize; depth 1.",
   "tell-proof":
-    "UI prove: `tell_proof_verify` (not a screenshot). Never auto-apply `tell_apply`. Tell MCP stays project-scoped.",
+    "UI prove: `tell_proof_verify` against `.cursor/verify/ui-contract.json` (not a screenshot). Never auto-apply `tell_apply`. Tell MCP stays project-scoped.",
   "skill-curator": "`grok-kit skill-curator` / `/skill-curator-manual` (manual apply).",
   "usage-learn":
     "Observe usage after `install --learn`. Adapt `grok-kit.json` only with `--improve` or `learn apply --i-consent`.",
