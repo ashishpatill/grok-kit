@@ -26,6 +26,7 @@
 - Tell-proof UI contract (`.cursor/verify/ui-contract.json`) + `/rsi` review-before-ship
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 - README maps how grok-kit uses Cursor (skills, agents, rules, MCP, hooks, plugin, Optimize For) and Grok Build (same plugin tree, `grok plugin install`, CLI, no plugin-root MCP dump)
+- README "What grok-kit is good at" explains the harness in plain language (commands, subset load, consent, cheap models, dual-host, prove-then-stop) without naming other kits
 
 ## In progress
 

@@ -9,23 +9,53 @@ This is not a second IDE and not a model. Cursor is where I write code. Grok Bui
 
 You can clone this anywhere (local folder names like `cursor-kit` are fine). The plugin id is always `grok-kit`.
 
-[Install](#install) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [FAQ](#faq)
+[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [FAQ](#faq)
 
 ## Why it exists
 
 Agent chats go sideways when every session is a new personality, the expensive model does the busywork, MCP schemas eat the context window, and "it's green" means a screenshot.
 
-This kit is opinionated about that:
-
-- Skills load when you type them, not on every message.
-- Always-on rules stay short and do not change every chat, so the host can reuse the prompt prefix (KV cache).
-- Review agents pin Composer. Intelligence is for stubborn debug, not "did CI pass?"
-- `grok-kit apply` turns on only what *this* repo needs.
-- User-global MCP is ICM only. Browser, DB, deploy, and Tell stay in the project.
-- `/watch-ci` reads GitHub merge state, not a pretty checkbox list.
-- `/code-hygiene` ranks drift. You decide scrap, keep, or fix. Nothing auto-deletes.
+grok-kit exists so Cursor and Grok Build stay cheap, stable, and honest. It is a harness: a small set of skills, a CLI, and a few short rules that make the host you already have actually follow a loop.
 
 Official Cursor Marketplace and xAI catalog listings are still a manual step (`docs/publish.md`). A clone works in both hosts today.
+
+## What grok-kit is good at
+
+grok-kit is good at a few jobs. It does them with commands you can rerun, not with a giant always-on prompt.
+
+### Playbooks become commands
+
+A long skill that only tells the agent a story is easy to skip. grok-kit compiles the important loops into a CLI. `grok-kit verify-aci` runs doctor, launch, and one real drive. `grok-kit watch-ci` asks whether GitHub will merge the PR, not whether a checkbox looks green. `grok-kit apply` looks at this repo and writes a small config for it.
+
+You can run the same command tomorrow. The JSON is the answer. That is the proof, not a screenshot and not a promise in chat.
+
+### It loads only what you asked for
+
+Skills sit on disk until you type `/cost-check` or `/rsi`. Always-on rules stay a few short files. `grok-kit apply` turns on a subset for *this* repo. The rest wait.
+
+That keeps the prompt small. Cursor and Grok Build can reuse the start of the prompt on the next turn only if those bytes did not change. grok-kit never puts dates, session dumps, or learned workflows into that prefix. If those files change every chat, you pay the whole start again.
+
+### It asks before it writes
+
+Turning the plugin on does not rewrite your home folder or other repos. User-layer install needs `--i-consent`. Background apply needs that same consent. Memory and harness tweaks are proposals. They do not silently edit your persona or skill files.
+
+`/code-hygiene` ranks drift. You choose scrap, keep, or fix. Nothing auto-deletes. `/rsi` reviews before ship and does not merge. `/route-task` maps an intent onto skills, prints the steps, and leaves. It is not a sticky mode that stays on for the rest of the chat.
+
+### Cheap work uses a cheap model
+
+Day-to-day implement uses Auto Balance. Questions and nits use Cost or Composer 2.5. The `verifier` and `researcher` agents pin Composer. They never inherit Intelligence. Intelligence is for stuck debug or novel architecture, not "did CI pass?"
+
+User-global MCP is ICM (shared local memory) only. Browser, database, deploy, and Tell stay in the project that needs them, so their schemas do not sit in every chat.
+
+### Same kit in the editor and in the terminal
+
+One clone is a Cursor plugin and a Grok Build plugin. After install, `grok-kit` is on PATH. Apply, verify, hygiene, and rsi work with the editor closed. You do not keep two harnesses in sync.
+
+### Prove the change, then stop
+
+One golden path for the claim, not ten parallel demos. Replace `drive()` in `.cursor/verify/verify.sh` with the command that proves *this* repo. A missing drive that still exits 0 is a lie. Children of `/orchestrate-rlm` return summaries only, depth 1. Durable facts go through `/memory-sync` as proposals. End a deep session with `/session-handoff`.
+
+The loop is small on purpose: route the task, spend the right model, prove it, then stop.
 
 ## Install
 
@@ -170,7 +200,7 @@ Full matrix: [`skills/cost-check/SKILL.md`](skills/cost-check/SKILL.md).
 
 ## Tokens
 
-Cursor and Grok Build can reuse the *start* of the prompt on later turns only if those bytes did not change. grok-kit is built around that:
+The plain version of this is [What grok-kit is good at](#what-grok-kit-is-good-at). The short version: Cursor and Grok Build can reuse the *start* of the prompt on later turns only if those bytes did not change. grok-kit is built around that:
 
 1. Subset, not a dump. `grok-kit apply` enables what this repo needs. The rest loads when you invoke a skill.
 2. Stable always-on prefix. Generated `.cursor/rules/grok-kit-project.mdc` has no timestamps and no per-session text. `install --improve` will not rewrite it unless enabled features actually changed.
@@ -272,6 +302,8 @@ cp ~/.cursor/mcp-servers.archived.json ~/.cursor/mcp.json
 **Does this replace User Rules / persona?** No. Persona stays in User Rules. `/memory-sync` and `/refine-harness` propose. They do not silently rewrite identity.
 
 **Will grok-kit watch how I work and change itself?** Only if you opt in. `install --learn` logs skill and workflow names locally. `install --improve` (or `learn apply --i-consent`) can enable optional features you already use. It never rewrites User Rules or kit `SKILL.md`.
+
+**Why not put every skill in always-on rules?** Because the host then re-pays the whole prompt on every chat. grok-kit keeps that prefix tiny and stable, and compiles the real loops into commands. The longer explanation is [What grok-kit is good at](#what-grok-kit-is-good-at).
 
 ## Status
 
