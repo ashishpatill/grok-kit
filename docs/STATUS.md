@@ -17,17 +17,17 @@
 - Rubric verify (mechanical checklist + judgment leftovers)
 - Thin `/route-task` + compiled `state-tools` for `/orchestrate-rlm`
 - Dogfood on grok-kit: `~/.local/bin/grok-kit` PATH install, compiled bootstrap / route-task / session-handoff / skill-curator, rubric auto-diff includes untracked files
+- PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 
 ## In progress
 
-- Ship-loop PR → merge; marketplace submit (Cursor form + Grok catalog PR)
+- Marketplace submit (Cursor form + Grok catalog PR)
 
 ## Remaining (ordered)
 
-1. Open/merge PR against `main`
-2. Submit Cursor Marketplace form (manual account step)
-3. Open Grok Build catalog PR with pinned `main` SHA
-4. Soft-verify reload / slash skills (machine-local)
+1. Submit Cursor Marketplace form (manual account step)
+2. Open Grok Build catalog PR with pinned `main` SHA
+3. Soft-verify reload / slash skills (machine-local)
 
 ## Blocked
 
