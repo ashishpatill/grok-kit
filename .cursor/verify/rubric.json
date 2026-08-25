@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "task": "ACI + merge-state + rubric skills for grok-kit",
+  "items": [
+    {
+      "id": "watch-ci-policy",
+      "claim": "watch-ci policy tests exist",
+      "kind": "path-exists",
+      "path": "skills/watch-ci/scripts/policy.test.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "verify-runner",
+      "claim": "verify-aci runner exists",
+      "kind": "path-exists",
+      "path": "skills/verify-aci/scripts/verify-aci.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "no-sticky-mode",
+      "claim": "kit does not add a sticky dispatcher skill named poteto-mode",
+      "kind": "path-exists",
+      "path": "skills/route-task/SKILL.md",
+      "severity": "must"
+    },
+    {
+      "id": "judgment-lean-skills",
+      "claim": "new skills stay lean with bulk in references/",
+      "kind": "judgment",
+      "severity": "must"
+    }
+  ]
+}

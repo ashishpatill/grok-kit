@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "task": "short goal for this diff",
+  "items": [
+    {
+      "id": "touched-expected-paths",
+      "claim": "diff includes the files the plan named",
+      "kind": "diff-path",
+      "pattern": "src/",
+      "severity": "must"
+    },
+    {
+      "id": "no-env-secrets",
+      "claim": "diff does not add inline API keys",
+      "kind": "diff-excludes",
+      "pattern": "(API_KEY|SECRET|TOKEN)\\s*=\\s*['\\\"][^'\\\"]+",
+      "severity": "must"
+    },
+    {
+      "id": "verify-script",
+      "claim": "project ACI exists",
+      "kind": "path-exists",
+      "path": ".cursor/verify/verify.sh",
+      "severity": "should"
+    },
+    {
+      "id": "judgment-boundaries",
+      "claim": "change stays inside the plan's non-goals",
+      "kind": "judgment",
+      "severity": "must"
+    }
+  ]
+}
