@@ -8,7 +8,7 @@ import {
 import path from "node:path";
 import { isMainModule } from "../../../scripts/lib/is-main.mjs";
 import { hasScope, readConsent } from "../../../scripts/consent.mjs";
-import { renderProjectRule } from "../../project-bootstrap/scripts/apply.mjs";
+import { renderProjectRule, writeIfChanged } from "../../project-bootstrap/scripts/apply.mjs";
 
 const HELP = `learn — observe common grok-kit skills/workflows; improve only with consent
 
@@ -359,13 +359,21 @@ export function applyProposals(root, proposals, options = {}) {
     workflows: workflows.slice(-5),
     proposalIds: applied,
   };
+  if (applied.length === 0) {
+    return {
+      ok: true,
+      skipped: true,
+      reason: "no-op",
+      applied,
+      enabled,
+      learned: prev.learned ?? { workflows: [] },
+    };
+  }
   const next = { ...prev, enabled, learned };
   if (!options.dryRun) {
-    mkdirSync(path.dirname(jsonPath), { recursive: true });
-    writeFileSync(jsonPath, `${JSON.stringify(next, null, 2)}\n`);
+    writeIfChanged(jsonPath, `${JSON.stringify(next, null, 2)}\n`);
     const rulePath = path.join(root, ".cursor/rules/grok-kit-project.mdc");
-    mkdirSync(path.dirname(rulePath), { recursive: true });
-    writeFileSync(
+    writeIfChanged(
       rulePath,
       renderProjectRule({
         profile: prev.profile ?? "generic",
@@ -373,7 +381,6 @@ export function applyProposals(root, proposals, options = {}) {
         available: prev.available ?? [],
         mcpRecommended: prev.mcpRecommended ?? [],
         prove: prev.prove ?? {},
-        learned,
       })
     );
     ensureGitignore(root);

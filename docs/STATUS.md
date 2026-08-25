@@ -20,6 +20,7 @@
 - `grok-kit apply`: per-repo detection + thin generated project rule; tell-proof profile
 - Install consent: `--i-consent` / `I CONSENT` before user-layer, MCP slim, or background project apply
 - Usage learn (opt-in `--learn` / `--improve`): local skill/workflow names → proposals → `grok-kit.json` adaptations only after consent
+- KV cache: always-on project rules stay byte-stable; learned workflows stay in JSON; no-op `--improve` ticks do not rewrite `.mdc` files
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 
 ## In progress

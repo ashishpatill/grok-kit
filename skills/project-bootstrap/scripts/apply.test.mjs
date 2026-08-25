@@ -154,20 +154,31 @@ describe("apply", () => {
     });
     assert.match(text, /only these enabled features/);
     assert.match(text, /tell_proof_verify/);
+    assert.match(text, /KV-cache/);
     assert.ok(text.split("\n").length < 40);
   });
 
-  it("renderProjectRule appends consented learned workflows", () => {
-    const text = renderProjectRule({
+  it("renderProjectRule keeps learned workflows out of the always-on prefix", () => {
+    const opts = {
       profile: "generic",
       enabled: ["route-task", "verify-aci"],
       available: ["refine-harness", "usage-learn"],
       mcpRecommended: [],
       prove: { verify: "true" },
-      learned: { workflows: ["Ship path: route-task → verify-aci → watch-ci"] },
+      learned: {
+        updatedAt: "2026-08-25T10:00:00.000Z",
+        workflows: ["Ship path: route-task → verify-aci → watch-ci"],
+      },
+    };
+    const text = renderProjectRule(opts);
+    const again = renderProjectRule({
+      ...opts,
+      learned: { updatedAt: "2026-08-26T99:00:00.000Z", workflows: ["other"] },
     });
-    assert.match(text, /Learned workflows/);
-    assert.match(text, /Ship path: route-task/);
+    assert.equal(text, again);
+    assert.doesNotMatch(text, /Ship path/);
+    assert.doesNotMatch(text, /\d{4}-\d{2}-\d{2}T/);
+    assert.match(text, /learned\.workflows/);
     assert.match(text, /usage-learn/);
   });
 
