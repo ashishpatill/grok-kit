@@ -31,7 +31,7 @@ Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-
 - [x] No “design work” / design-superpower framing in kit-facing copy
 - [x] Working tree free of banned vendor names in tracked content
 - [x] PR #5 reviewed and merged to `main` (user-asked)
-- [x] `grok-kit apply` adapts per project; tell-proof template; user + plugin auto-apply
+- [x] `grok-kit apply` adapts per project; tell-proof template; user + plugin auto-apply after `--i-consent`
 - [x] No secrets committed; checks diagnosed or N/A documented
 
 ## Loop order

@@ -1,7 +1,96 @@
 #!/usr/bin/env bash
 # Install user-level agents, hooks, permissions, and slim MCP from this kit.
+# Refuses to mutate ~/.cursor unless the user consents (--i-consent or "I CONSENT").
 set -euo pipefail
 KIT="$(cd "$(dirname "$0")/.." && pwd)"
+
+CONSENT=false
+SKIP_MCP=false
+APPLY_CWD=true
+DRY_RUN=false
+HELP=false
+
+usage() {
+  cat <<'EOF'
+install-user-layer — copy grok-kit onto this machine (explicit consent required)
+
+Usage:
+  grok-kit install --i-consent [--skip-mcp-slim] [--no-apply-cwd] [--dry-run]
+  ./scripts/install-user-layer.sh --i-consent
+
+Without --i-consent, prints the consent notice and exits 78 (no files written).
+On a TTY you may type I CONSENT instead of passing the flag.
+
+  --i-consent       explicit consent for user layer + per-repo apply + MCP slim
+  --skip-mcp-slim   keep current ~/.cursor/mcp.json (still backs up nothing)
+  --no-apply-cwd    do not grok-kit apply the current directory
+  --dry-run         print the notice and planned actions; write nothing
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      HELP=true
+      shift
+      ;;
+    --i-consent|--consent)
+      CONSENT=true
+      shift
+      ;;
+    --skip-mcp-slim)
+      SKIP_MCP=true
+      shift
+      ;;
+    --no-apply-cwd)
+      APPLY_CWD=false
+      shift
+      ;;
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 64
+      ;;
+  esac
+done
+
+if [[ "$HELP" == true ]]; then
+  usage
+  exit 0
+fi
+
+node "$KIT/scripts/consent.mjs" notice
+
+if [[ "$DRY_RUN" == true ]]; then
+  echo "dry-run: would install user layer; project-apply=$([[ "$APPLY_CWD" == true ]] && echo on || echo cwd-skipped); mcp-slim=$([[ "$SKIP_MCP" == true ]] && echo skip || echo on)"
+  echo "dry-run: no files written (pass --i-consent without --dry-run to apply)"
+  exit 0
+fi
+
+if [[ "$CONSENT" != true ]]; then
+  if [[ -t 0 ]]; then
+    printf 'Type I CONSENT to continue: '
+    read -r reply
+    reply="$(printf '%s' "$reply" | tr '[:upper:]' '[:lower:]' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+    if [[ "$reply" != "i consent" ]]; then
+      echo "Refusing: no consent. Re-run with --i-consent." >&2
+      exit 78
+    fi
+  else
+    echo "Refusing: no consent. Re-run with --i-consent after reading the notice." >&2
+    exit 78
+  fi
+fi
+
+SCOPES="user-layer,project-apply"
+if [[ "$SKIP_MCP" != true ]]; then
+  SCOPES="${SCOPES},mcp-slim"
+fi
+node "$KIT/scripts/consent.mjs" write --scopes "$SCOPES" --source "install --i-consent"
 
 mkdir -p "$HOME/.cursor/agents" "$HOME/.cursor/hooks" "$HOME/.cursor/skills" "$HOME/.cursor/rules"
 
@@ -64,22 +153,22 @@ if [[ ! -f "$HOME/.cursor/permissions.json" ]]; then
 EOF
 fi
 
-# Backup and slim MCP
-MCP="$HOME/.cursor/mcp.json"
-if [[ -f "$MCP" ]]; then
-  cp -f "$MCP" "$HOME/.cursor/mcp.json.bak.grok-kit.$(date +%Y%m%d%H%M%S)"
-fi
-cp -f "$KIT/docs/mcp-snippets/user-mcp.icm-only.json" "$MCP"
+if [[ "$SKIP_MCP" != true ]]; then
+  MCP="$HOME/.cursor/mcp.json"
+  if [[ -f "$MCP" ]]; then
+    cp -f "$MCP" "$HOME/.cursor/mcp.json.bak.grok-kit.$(date +%Y%m%d%H%M%S)"
+  fi
+  cp -f "$KIT/docs/mcp-snippets/user-mcp.icm-only.json" "$MCP"
 
-# Archive previous product servers for project use
-ARCHIVE="$HOME/.cursor/mcp-servers.archived.json"
-if [[ ! -f "$ARCHIVE" ]]; then
-  cat > "$ARCHIVE" <<'EOF'
+  ARCHIVE="$HOME/.cursor/mcp-servers.archived.json"
+  if [[ ! -f "$ARCHIVE" ]]; then
+    cat > "$ARCHIVE" <<'EOF'
 {
   "comment": "Former user-global MCP servers — enable per-project via .cursor/mcp.json",
   "mcpServers": {}
 }
 EOF
+  fi
 fi
 
 # Symlink kit skills into ~/.cursor/skills for discovery even without plugin load
@@ -101,11 +190,21 @@ chmod +x "$KIT/hooks/session-start-apply.sh"
 mkdir -p "$HOME/.local/bin"
 ln -sfn "$KIT/scripts/grok-kit.mjs" "$HOME/.local/bin/grok-kit"
 
-echo "User layer installed."
-echo "- MCP slimmed to ICM (backup saved beside mcp.json)"
+if [[ "$APPLY_CWD" == true ]]; then
+  APPLY_ROOT="${GROK_KIT_APPLY_ROOT:-$PWD}"
+  node "$KIT/scripts/grok-kit.mjs" apply --root "$APPLY_ROOT" --if-missing --require-git --require-consent >/dev/null || true
+fi
+
+echo "User layer installed (consent recorded in ~/.cursor/grok-kit-consent.json)."
+if [[ "$SKIP_MCP" == true ]]; then
+  echo "- MCP slim skipped (--skip-mcp-slim)"
+else
+  echo "- MCP slimmed to ICM (backup saved beside mcp.json)"
+fi
 echo "- Agents in ~/.cursor/agents"
-echo "- User rule ~/.cursor/rules/grok-kit.mdc (auto-apply via grok-kit apply)"
+echo "- User rule ~/.cursor/rules/grok-kit.mdc (per-repo apply on sessionStart, because you consented)"
 echo "- Hooks: stop + sessionStart (merged into existing hooks.json)"
 echo "- Skills symlinked in ~/.cursor/skills"
 echo "- CLI: $HOME/.local/bin/grok-kit  (add ~/.local/bin to PATH if needed)"
 echo "Reload the editor window. Install ICM next: docs/icm-setup.md"
+echo "Revoke: grok-kit consent revoke"

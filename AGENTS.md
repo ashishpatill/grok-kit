@@ -28,5 +28,6 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - Never store secrets in ICM topics or rules
 - Prefer Skills > Subagents > Best-of-N
 - Adaptation SoT: `.cursor/grok-kit.json` (`grok-kit apply`). Use enabled features only; do not dump the whole kit into always-on rules.
+- User-layer install and background per-repo apply require `grok-kit install --i-consent`. Direct `grok-kit apply --root .` is this-repo-only.
 - Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once).
 - After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).

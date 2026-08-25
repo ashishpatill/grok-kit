@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { isMainModule } from "../../../scripts/lib/is-main.mjs";
+import { hasScope, readConsent } from "../../../scripts/consent.mjs";
 import { KIT, PROFILE_NAMES, runBootstrap } from "./bootstrap.mjs";
 import { chooseAdaptation, detectProject } from "./detect.mjs";
 
@@ -10,17 +11,21 @@ const HELP = `apply — detect this repo, bootstrap a thin kit layer, write adap
 
 Usage:
   apply [--root DIR] [--profile NAME] [--if-missing] [--require-git]
-        [--detect-only] [--dry-run] [--write-mcp]
+        [--require-consent] [--detect-only] [--dry-run] [--write-mcp]
 
 Detects stack, picks a profile, runs bootstrap (skip existing rich files),
-and always writes:
+and writes:
   .cursor/grok-kit.json
   .cursor/rules/grok-kit-project.mdc
 
---if-missing     no-op when .cursor/grok-kit.json already exists
---require-git    skip when DIR is not a git work tree (sessionStart hook)
---detect-only    print adaptation JSON; write nothing
---write-mcp      copy Tell MCP into .cursor/mcp.json when recommended and missing
+Direct grok-kit apply is explicit per-repo consent. sessionStart passes
+--require-consent so background apply runs only after grok-kit install --i-consent.
+
+--if-missing        no-op when .cursor/grok-kit.json already exists
+--require-git       skip when DIR is not a git work tree (sessionStart hook)
+--require-consent   skip writes unless ~/.cursor/grok-kit-consent.json has project-apply
+--detect-only       print adaptation JSON; write nothing
+--write-mcp         copy Tell MCP into .cursor/mcp.json when recommended and missing
 
 Profiles: ${PROFILE_NAMES.join(", ")}
 `;
@@ -80,6 +85,7 @@ export function parseArgs(argv) {
     requireGit: false,
     detectOnly: false,
     writeMcp: false,
+    requireConsent: false,
     help: false,
   };
   for (let i = 0; i < argv.length; i += 1) {
@@ -114,6 +120,9 @@ export function parseArgs(argv) {
         break;
       case "--write-mcp":
         out.writeMcp = true;
+        break;
+      case "--require-consent":
+        out.requireConsent = true;
         break;
       default:
         throw new Error(`unknown argument: ${arg}`);
@@ -283,6 +292,14 @@ export function runApply(argv, io = {}) {
   if (options.requireGit && !isGitRepo(root)) {
     stdout(`${JSON.stringify(skippedPayload(root, "not-a-git-repo"))}\n`);
     return 0;
+  }
+
+  if (options.requireConsent && !options.detectOnly) {
+    const already = options.ifMissing && existsSync(jsonPath);
+    if (!already && !hasScope(readConsent(), "project-apply")) {
+      stdout(`${JSON.stringify(skippedPayload(root, "consent-required"))}\n`);
+      return 0;
+    }
   }
 
   if (options.ifMissing && existsSync(jsonPath)) {
