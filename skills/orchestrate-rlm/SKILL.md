@@ -15,27 +15,21 @@ description: >-
 
 ## Procedure
 
-1. Write `.cursor/rlm-state/STATE.md` with:
+1. Write `.cursor/rlm-state/STATE.md` using `templates/_shared/rlm-state/STATE.example.md`:
    - GOAL
    - Acceptance checks (commands)
    - Work units (≤5)
    - Budget (max children, max passes)
-2. For each unit, spawn a Task/subagent with this contract:
+2. Compile — do not freehand child prompts:
 
-```text
-goal: <one sentence>
-context:
-  - absolute paths
-  - constraints / non-goals
-  - verify command
-  - definition of done
-return: ≤N bullets + paths + open risks (no raw dumps)
-model: pin cheap/composer for explore; inherit only for judgment-heavy implement
+```bash
+grok-kit state-tools check .cursor/rlm-state/STATE.md
+grok-kit state-tools render-spawn .cursor/rlm-state/STATE.md
 ```
 
-3. Parent merges summaries into STATE.md
-4. Run gate commands (`test` / `lint`)
-5. Depth **1** — children must not spawn grandchildren unless map-reduce was requested
+3. For each `contracts[]` string, spawn a Task/subagent. Depth **1**.
+4. Parent merges summaries into STATE.md
+5. `grok-kit verify-aci` plus listed gate commands
 
 ## Pitfalls
 

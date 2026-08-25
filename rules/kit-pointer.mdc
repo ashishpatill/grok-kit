@@ -7,7 +7,9 @@ alwaysApply: true
 
 - `/cost-check` for routing (Auto Balance default; Cost/Composer for explore; Intelligence only for Debug/architecture). Prefer Models pool (Grok 4.5 / Composer 2.5) for routine.
 - Before re-asking Workspace facts, recall ICM topics (`workspace-routing`, `project-*`, `preferences`).
-- Multi-hop work: use `/orchestrate-rlm` — thin parent, summary-only children, depth 1.
+- Multi-hop work: use `/orchestrate-rlm` — thin parent, summary-only children, depth 1. Compile STATE.md with `state-tools`.
 - Ambiguous multi-file work: `/plan-execute` then Agent after approval.
+- Prove work with `/verify-aci` and `/rubric-verify`. PR merge-state via `/watch-ci` (status-once). Start with `/route-task`.
+- Compiled CLI: `grok-kit` after install (`~/.local/bin/grok-kit`); from a checkout `node scripts/grok-kit.mjs`.
 - End deep sessions with `/session-handoff`. Propose memory via `/memory-sync` — never silent identity writes.
 - Product MCP (database/browser/payments/deploy) stays project-scoped; do not enable globally.

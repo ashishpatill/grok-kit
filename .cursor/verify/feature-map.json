@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "defaultSurface": "main",
+  "surfaces": {
+    "unit": {
+      "doctor": "node -e \"if (Number(process.versions.node.split('.')[0]) < 18) process.exit(1)\"",
+      "launch": "node scripts/grok-kit.mjs --help >/dev/null",
+      "drive": "bash scripts/run-unit-tests.sh"
+    },
+    "main": {
+      "useProjectScript": true
+    }
+  }
+}

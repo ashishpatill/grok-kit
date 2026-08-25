@@ -21,8 +21,9 @@ disable-model-invocation: true
    - Evidence quote
    - Exact proposed text
    - Risk if wrong
-3. Stop. Wait for human approve/reject.
-4. On approve, apply only the accepted patches.
+3. When the same procedure was skipped or narrated twice in this trajectory, prefer proposing a **script** (compiled steps) over more skill prose.
+4. Stop. Wait for human approve/reject.
+5. On approve, apply only the accepted patches.
 
 ## Why gated
 

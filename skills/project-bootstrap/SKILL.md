@@ -2,8 +2,9 @@
 name: project-bootstrap
 description: >-
   Bootstrap a repo with thin AGENTS.md, .cursor/rules/core.mdc, ignore files,
-  optional mcp.json, STATE conventions, and ICM project topic. Use when setting
-  up the grok-kit layer for a new or existing project.
+  verify ACI (doctor/launch/drive), optional mcp.json, STATE conventions, and
+  ICM project topic. Use when setting up the grok-kit layer for a new or existing
+  project.
 ---
 
 # Project Bootstrap
@@ -24,22 +25,31 @@ description: >-
 
 ## Procedure
 
-1. Detect stack (package.json, pyproject, Package.swift, etc.) or ask for profile
-2. Ensure files (do not overwrite rich existing AGENTS.md — merge thin kit section instead):
+1. Detect stack (or ask). Pick a profile.
+2. Run the compiler (do not hand-copy files):
 
-```text
-AGENTS.md                 # ≤80 lines if creating fresh
-.cursorignore
-.cursorindexingignore
-.cursor/rules/core.mdc    # alwaysApply invariants ≤40 lines
-.cursor/mcp.json          # only if product MCP needed
-.cursor/rlm-state/.gitkeep
+```bash
+grok-kit bootstrap --root <repo> --profile <profile>
 ```
 
-3. Add to `.gitignore` if missing: `.cursor/rlm-state/`, `.cursor/handoff.md`, `PENDING_MEMORY.md`
-4. Copy profile extras from `templates/<profile>/`
-5. Suggest ICM topic `project-<slug>` with: how to run/test, gotchas, key paths
-6. Run `/cost-check` mentally: disable global product MCP not needed here
+`--dry-run` prints the plan. Existing rich `AGENTS.md` / `verify.sh` are skipped unless `--force-verify`.
+
+The script writes:
+
+```text
+AGENTS.md                 # created, or a grok-kit section appended
+.cursorignore
+.cursorindexingignore
+.cursor/rules/core.mdc
+.cursor/verify/verify.sh
+.cursor/verify/feature-map.json
+.cursor/verify/rubric.json
+.gitignore                # ACI log + rlm-state lines
+```
+
+3. Replace `drive()` in `.cursor/verify/verify.sh` with this repo's prove-it command.
+4. Suggest ICM topic `project-<slug>` with: how to run/test, gotchas, key paths
+5. `/cost-check`: disable global product MCP not needed here
 
 ## Core stubs
 
@@ -52,6 +62,7 @@ AGENTS.md                 # ≤80 lines if creating fresh
 ## Run / test
 ## Conventions
 ## Skills index
+/verify-aci  /rubric-verify  /watch-ci  /route-task
 ## Gotchas
 ## ICM topic
 project-<slug>
@@ -79,4 +90,5 @@ alwaysApply: true
 
 - `core.mdc` present and short
 - Ignore files present
+- `.cursor/verify/verify.sh` exists; `drive()` is this repo's prove-it command (not the template fail-closed stub)
 - User can run stated test command

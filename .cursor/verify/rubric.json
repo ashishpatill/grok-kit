@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "task": "Dogfood grok-kit on grok-kit",
+  "items": [
+    {
+      "id": "kit-cli",
+      "claim": "compiled grok-kit dispatcher exists",
+      "kind": "path-exists",
+      "path": "scripts/grok-kit.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "path-install",
+      "claim": "install puts grok-kit on PATH so other repos can run it",
+      "kind": "grep-worktree",
+      "path": "scripts/install-user-layer.sh",
+      "pattern": ".local/bin/grok-kit",
+      "severity": "must"
+    },
+    {
+      "id": "bootstrap-script",
+      "claim": "project-bootstrap is a script, not only prose",
+      "kind": "path-exists",
+      "path": "skills/project-bootstrap/scripts/bootstrap.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "route-task-script",
+      "claim": "route-task compiles sequences instead of a sticky mode",
+      "kind": "path-exists",
+      "path": "skills/route-task/scripts/route-task.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "skills-use-cli",
+      "claim": "verify-aci skill documents grok-kit CLI",
+      "kind": "grep-worktree",
+      "path": "skills/verify-aci/SKILL.md",
+      "pattern": "grok-kit verify-aci",
+      "severity": "must"
+    },
+    {
+      "id": "no-skill-dir-env",
+      "claim": "skills do not tell agents to use unset $SKILL_DIR",
+      "kind": "command",
+      "command": "! grep -R --include='SKILL.md' -n 'SKILL_DIR' skills",
+      "severity": "must"
+    },
+    {
+      "id": "agents-run-test",
+      "claim": "AGENTS.md names the prove-it command",
+      "kind": "grep-worktree",
+      "path": "AGENTS.md",
+      "pattern": "grok-kit.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "no-secrets",
+      "claim": "diff does not add inline secrets",
+      "kind": "diff-excludes",
+      "pattern": "(API_KEY|SECRET|TOKEN)\\s*=\\s*['\\\"][^'\\\"]+",
+      "severity": "must"
+    },
+    {
+      "id": "cli-help",
+      "claim": "dispatcher help runs",
+      "kind": "command",
+      "command": "node scripts/grok-kit.mjs --help | grep -q route-task",
+      "severity": "must"
+    },
+    {
+      "id": "judgment-lean-skills",
+      "claim": "new skills stay lean with bulk in references/",
+      "kind": "judgment",
+      "severity": "must"
+    }
+  ]
+}

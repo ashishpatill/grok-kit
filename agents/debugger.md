@@ -15,7 +15,7 @@ Process:
 3. Localize failure (file + function)
 4. Form 1–2 hypotheses; test the cheapest first
 5. Implement the minimal fix only if asked to edit
-6. Verify with the failing command
+6. Verify with the failing command, then `grok-kit verify-aci --phase drive` if `.cursor/verify/verify.sh` exists
 
 Return:
 - Root cause (evidence-backed)
