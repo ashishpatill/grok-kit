@@ -1,0 +1,6 @@
+.cursor/rlm-state/
+.cursor/handoff.md
+.cursor/verify/last.log
+.cursor/verify/last.json
+PENDING_MEMORY.md
+node_modules/

@@ -1,6 +1,6 @@
 # Status — grok-kit
 
-**Updated:** 2026-08-10
+**Updated:** 2026-08-25
 **Authority:** this file (GOAL_AND_LOOP.md for stop rules; SETUP-STATUS.md for machine install)
 
 ## Done
@@ -12,17 +12,22 @@
 - Positioning corrected: harness kit (not design-workflow marketing)
 - README install / setup / usage
 - Marketplace prep: LICENSE, logo, `.cursor-plugin/plugin.json`, root `plugin.json`, `docs/publish.md`
+- Verify ACI (`/verify-aci`, project `.cursor/verify/verify.sh`)
+- Merge-state CI watcher (`/watch-ci`, status-once default, `--fixture` offline)
+- Rubric verify (mechanical checklist + judgment leftovers)
+- Thin `/route-task` + compiled `state-tools` for `/orchestrate-rlm`
+- Dogfood on grok-kit: `~/.local/bin/grok-kit` PATH install, compiled bootstrap / route-task / session-handoff / skill-curator, rubric auto-diff includes untracked files
+- PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 
 ## In progress
 
-- Ship-loop PR → merge; marketplace submit (Cursor form + Grok catalog PR)
+- Marketplace submit (Cursor form + Grok catalog PR)
 
 ## Remaining (ordered)
 
-1. Open/merge PR against `main`
-2. Submit Cursor Marketplace form (manual account step)
-3. Open Grok Build catalog PR with pinned `main` SHA
-4. Soft-verify reload / slash skills (machine-local)
+1. Submit Cursor Marketplace form (manual account step)
+2. Open Grok Build catalog PR with pinned `main` SHA
+3. Soft-verify reload / slash skills (machine-local)
 
 ## Blocked
 

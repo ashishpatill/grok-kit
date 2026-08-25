@@ -1,0 +1,19 @@
+{
+  "facts": {
+    "owner": "acme",
+    "repo": "app",
+    "number": 12,
+    "state": "OPEN",
+    "isDraft": false,
+    "mergeable": "CONFLICTING",
+    "mergeStateStatus": "DIRTY",
+    "reviewDecision": null,
+    "headRefOid": "head",
+    "headRefName": "feat",
+    "baseRefName": "main",
+    "mergedAt": null
+  },
+  "checks": [{ "name": "test", "kind": "passed", "reportedState": "SUCCESS" }],
+  "threads": [],
+  "commitRollups": [{ "oid": "head", "state": "SUCCESS" }]
+}

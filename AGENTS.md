@@ -4,9 +4,17 @@ Personal Cursor/agent harness kit — playbook skills, orchestration, cost routi
 
 ## Commands of interest
 
-- Skills: `project-bootstrap`, `plan-execute`, `orchestrate-rlm`, `session-handoff`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`
+- Skills: `project-bootstrap`, `plan-execute`, `orchestrate-rlm`, `session-handoff`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
 - Agents: `verifier`, `debugger`, `researcher`
 - Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
+
+## Run / test
+
+```bash
+node scripts/grok-kit.mjs check
+node scripts/grok-kit.mjs verify-aci --root . --phase doctor
+./.cursor/verify/verify.sh
+```
 
 ## Platform boundary
 
@@ -19,3 +27,5 @@ Personal Cursor/agent harness kit — playbook skills, orchestration, cost routi
 - Keep kit skills lean; put bulk in `references/`
 - Never store secrets in ICM topics or rules
 - Prefer Skills > Subagents > Best-of-N
+- Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once).
+- After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).
