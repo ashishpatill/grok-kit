@@ -2,7 +2,7 @@
 
 ## Positioning
 
-**grok-kit** is a personal Cursor/agent harness kit: playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install helpers.
+**grok-kit** is a personal harness kit for Cursor (interactive coding) and Grok Build (terminal agent): playbook skills, thin-parent orchestration, cost routing, ICM shared-memory bridge, project bootstrap, and user-layer install helpers. Same plugin tree in both hosts. See the README section “How grok-kit uses Cursor and Grok Build”.
 
 ## Done
 

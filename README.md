@@ -3,9 +3,67 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ashishpatill/grok-kit/blob/main/LICENSE)
 [![GitHub](https://img.shields.io/badge/github-ashishpatill%2Fgrok-kit-181717.svg?logo=github)](https://github.com/ashishpatill/grok-kit)
 
-Personal Cursor agent harness kit: playbook skills, thin-parent orchestration, cost-aware model routing, shared-memory bridge (ICM), and project bootstrap. Built so agent work stays repeatable instead of burning context and forgetting decisions between chats.
+Personal harness kit for **Cursor** (interactive coding) and **Grok Build** (terminal agent). Same plugin tree: playbook skills, thin-parent orchestration, cost-aware routing, ICM memory, and per-repo `grok-kit apply`. It does not replace either host. It is the layer that turns their built-in powers into a repeatable loop instead of burning context and forgetting decisions between chats.
 
 Local checkout may live at any path (for example `cursor-kit`). Plugin id is always `grok-kit`.
+
+## How grok-kit uses Cursor and Grok Build
+
+**Cursor** is the interactive coding host. **Grok Build** is the terminal / headless coding host. **Grok 4.5** and **Composer 2.5** are models you pick *inside* those hosts. grok-kit is none of those. It is the shared plugin tree that makes each host's built-in powers fire on purpose:
+
+- **On demand** — playbooks are `SKILL.md` files. They load when you invoke them, not on every message.
+- **Thin always-on** — rules and `AGENTS.md` stay short and byte-stable so the host can KV-cache the prompt prefix.
+- **Cheap where review is enough** — custom agents pin Composer; `/cost-check` picks Optimize For.
+- **One CLI** — `grok-kit` (symlink from `scripts/grok-kit.mjs`) runs apply, verify, hygiene, rsi, and the rest with or without an IDE.
+
+Official Cursor Marketplace and xAI catalog listings are still remaining (`docs/publish.md`). A clone works in both hosts today.
+
+### Cursor (interactive coding source of truth)
+
+Cursor is the daily driver. grok-kit fills Cursor's agent surface instead of inventing a second IDE.
+
+| Cursor power | How grok-kit uses it |
+|--------------|----------------------|
+| **Agent Skills** (`skills/*/SKILL.md` + scripts, loaded when invoked) | Playbooks live under `skills/`. You type `/plan-execute`, `/cost-check`, `/orchestrate-rlm`, `/rsi`, and so on. Bulk stays **out** of the always-on prompt. |
+| **Custom agents** (kit `agents/`; install copies to `~/.cursor/agents/`) | `verifier`, `debugger`, `researcher` pin **Composer / cheap**. Explore and review do not inherit the parent's Intelligence setting. |
+| **Rules** (user + project `.mdc`, `alwaysApply`) | Three complementary always-on files, all short: kit pointer (`rules/kit-pointer.mdc`), user `~/.cursor/rules/grok-kit.mdc`, generated `.cursor/rules/grok-kit-project.mdc`. No timestamps, no learned dumps. Cursor can KV-cache the prefix. |
+| **`AGENTS.md`** | One screen: platform boundary (Cursor SoT), skill names, ICM/secrets rule. Bulk stays in skills. |
+| **MCP** | User-global slimmed to ICM after `install --i-consent`. Product servers (browser, DB, deploy, Tell) stay **project-scoped** so unused tool schemas are not injected into every chat. |
+| **Hooks** (`hooks/hooks.json`) | `sessionStart`: `grok-kit apply --if-missing` plus a one-line flagship hint. `stop`: memory reminder. Fail-open; `additional_context` stays short. |
+| **Plugins** (`.cursor-plugin/plugin.json`, local `~/.cursor/plugins/local/`) | `./scripts/install-user-layer.sh --i-consent` symlinks this repo as the `grok-kit` plugin so Cursor discovers skills, agents, and hooks without copying the tree. |
+| **Optimize For / Models pool** | `/cost-check` is the matrix: Auto Balance for implement, Cost or Composer for ask/nits/verify, Intelligence only for stubborn debug. Prefer Grok 4.5 / Composer 2.5 for routine work. |
+| **Plan / Agent / Ask / Debug modes** | Skills assume Agent for implement, Plan before multi-unit work, Ask for read-only. The kit does not fight the mode picker. |
+| **Explore vs extra search subagents** | Prefer Cursor's built-in Explore. `/orchestrate-rlm` is depth-1, summary-only, and only when the parent cannot do the work. |
+| **Host canvas** (if your Cursor build has it) | `/visualise` emits mermaid the host can render. A screenshot is not proof; Tell-proof repos use `tell_proof_verify`. |
+| **Tell MCP** (project-scoped, never user-global) | Tell-proof profile: `ui-contract.json` + `tell_proof_verify`. Never auto-apply `tell_apply`. |
+
+Cursor Cloud Agents, Tab, and Browser are host features. grok-kit does not wrap them as the default loop. Desktop Cursor remains SoT; an optional long-run companion is rare/eval-only (`docs/companion-agent.md`).
+
+### Grok Build (terminal / headless agent)
+
+[Grok Build plugins](https://github.com/xai-org/grok-build/blob/main/crates/codegen/xai-grok-pager/docs/user-guide/09-plugins.md) are a directory of `skills/`, `agents/`, `hooks/hooks.json`, optional `plugin.json`, plus optional `commands/`, `.mcp.json`, and `.lsp.json`. grok-kit ships the first four. One clone is a valid Grok plugin **and** a CLI you can run when there is no IDE.
+
+| Grok Build power | How grok-kit uses it |
+|------------------|----------------------|
+| **Plugin skills** (`skills/*/SKILL.md`) | Same playbooks as Cursor. They appear in Grok's slash menu. Helper scripts live next to the skill (`skills/*/scripts/`). No duplicate `commands/` folder: `SKILL.md` is the shared format. |
+| **Plugin agents** (`agents/`) | Same `verifier` / `debugger` / `researcher`. Cheap-model pins still apply when the host honors agent `model:` frontmatter. Qualified name is `grok-kit:verifier` if the short name collides. |
+| **Plugin hooks** (`hooks/hooks.json`) | Same sessionStart apply-if-consent + stop memory stub. Plugin root resolves from the script path, `CURSOR_PLUGIN_ROOT`, or `GROK_PLUGIN_ROOT`. |
+| **`plugin.json` metadata** | Root `plugin.json` (name, version, description) plus MIT + logo. Grok discovers components from the standard directories even without a manifest. |
+| **`grok plugin install`** | Works from this repo **today**, listing or not: `grok plugin install /path/to/grok-kit --trust` or `grok plugin install ashishpatill/grok-kit --trust`. After an xAI catalog listing: `grok plugin install grok-kit --trust`. |
+| **`grok inspect`** | Shows what loaded (skills, agents, hooks, MCP, `AGENTS.md`) and approximate token cost. That is why apply subsets features and always-on files stay tiny. |
+| **Terminal CLI** | `./scripts/install-user-layer.sh --i-consent` puts `grok-kit` on `PATH` (`~/.local/bin/grok-kit` → `scripts/grok-kit.mjs`). Or run `node scripts/grok-kit.mjs` from the checkout. Apply, verify, hygiene, rsi, flagship all work with Cursor closed. |
+| **Project files in the repo Grok is in** | `grok-kit apply` writes `.cursor/grok-kit.json`, a thin project rule, and `AGENTS.md` snippets. Grok already reads `AGENTS.md`; keep it one screen. |
+| **No plugin-root `.mcp.json`** | Intentional. Product MCP stays project-scoped (`apply --write-mcp` only). `install-user-layer.sh` slims Cursor user MCP only. Grok Build should not inherit a bloated `~/.cursor/mcp.json`. |
+
+### What the kit adds on top of both hosts
+
+These are grok-kit, not Cursor or Grok builtins:
+
+- **`grok-kit apply`** — detect the repo, enable a subset of features, write `.cursor/grok-kit.json` + a thin generated project rule.
+- **`/cost-check` + token/KV notes** — host KV cache only works if the always-on prefix is stable. The kit keeps it stable.
+- **ICM memory-sync / session-handoff** — human-gated writes; never silent User Rules edits.
+- **`/rsi`** — review-before-ship (flagship + hygiene + prove-it). Does not merge.
+- **Usage-learn (`--learn` / `--improve`)** — opt-in; names only; never auto-edits persona or skill bodies.
 
 ## What it fixes
 
@@ -25,7 +83,7 @@ Common failure modes this kit targets:
 
 ## How grok-kit cuts token usage
 
-Cursor/Grok can reuse the **start** of the prompt (KV cache) on later turns only if those bytes did not change. grok-kit is built around that:
+Cursor and Grok Build can reuse the **start** of the prompt (KV cache) on later turns only if those bytes did not change. grok-kit is built around that:
 
 1. **Subset, not a dump.** `grok-kit apply` enables the features this repo needs. The rest of the kit loads when you type a slash skill, not on every message.
 2. **Stable always-on prefix.** Generated `.cursor/rules/grok-kit-project.mdc` has no timestamps and no per-session text. `install --improve` will not rewrite it unless enabled features actually changed. That is the KV cache fix: one cached router instead of a new prefix every chat.
@@ -36,7 +94,7 @@ Cursor/Grok can reuse the **start** of the prompt (KV cache) on later turns only
 
 Run `/cost-check` before a large agent turn. Details: [`skills/cost-check/references/token-kv-cache.md`](skills/cost-check/references/token-kv-cache.md).
 
-Cursor stays the interactive coding source of truth. An optional long-run companion is rare/eval-only. See [`docs/companion-agent.md`](docs/companion-agent.md).
+See [How grok-kit uses Cursor and Grok Build](#how-grok-kit-uses-cursor-and-grok-build) for the host mapping. Companion policy: [`docs/companion-agent.md`](docs/companion-agent.md).
 
 ## What's included
 
@@ -105,6 +163,18 @@ In Cursor: Developer: Reload Window, then try:
 ```
 
 Confirm the local plugin id `grok-kit` appears under plugins / Customize, and slash skills resolve.
+
+Grok Build (terminal, same clone):
+
+```bash
+grok plugin install /path/to/grok-kit --trust
+# or: grok plugin install ashishpatill/grok-kit --trust
+grok-kit check
+# from the checkout if grok-kit is not on PATH:
+node scripts/grok-kit.mjs check
+```
+
+Reload the Grok plugins list (`r` in the Plugins tab, or a new session). Skills should show in the slash menu. Official catalog listing is still remaining (`docs/publish.md`).
 
 ## Setup
 
@@ -182,10 +252,14 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 
 | Layer | Role |
 |-------|------|
-| Cursor | Editor, MCP, kit skills (daily driver) |
+| Cursor | Interactive coding SoT. Skills, agents, rules, MCP, hooks, plugin. |
+| Grok Build | Terminal / headless host. Same plugin tree + `grok-kit` CLI. |
+| Grok 4.5 / Composer 2.5 | Models inside those hosts. `/cost-check` chooses when. |
 | Hot memory pin | Short MEMORY/USER files |
 | ICM | Long-tail preferences, routing, project topics, handoffs |
-| Companion | Optional unattended/eval only |
+| Companion | Optional unattended/eval only. Not a third daily host. |
+
+Full mapping: [How grok-kit uses Cursor and Grok Build](#how-grok-kit-uses-cursor-and-grok-build).
 
 ## Usage
 
@@ -273,7 +347,7 @@ flowchart TB
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |
 | `.cursor-plugin/plugin.json` | Cursor plugin manifest |
-| `plugin.json` | Root metadata for Grok Build-style catalogs |
+| `plugin.json` | Root metadata for Grok Build plugin discovery / catalogs |
 
 ## Configuration
 
@@ -315,8 +389,11 @@ cp ~/.cursor/mcp-servers.archived.json ~/.cursor/mcp.json
 **ICM not found**  
 Install the binary and run `icm init --mode mcp`. See [`docs/icm-setup.md`](docs/icm-setup.md).
 
+**Does this work in Grok Build?**  
+Yes. Same `skills/`, `agents/`, `hooks/hooks.json`, and `plugin.json`. Install from the clone with `grok plugin install /path/to/grok-kit --trust` (catalog listing is remaining). Put `grok-kit` on PATH with `./scripts/install-user-layer.sh --i-consent`, or run `node scripts/grok-kit.mjs`. Full mapping: [How grok-kit uses Cursor and Grok Build](#how-grok-kit-uses-cursor-and-grok-build).
+
 **Should I run a detached companion daily?**  
-No. Stay in Cursor for interactive work. Companions are eval/unattended only ([`docs/companion-agent.md`](docs/companion-agent.md)).
+No. Stay in Cursor for interactive work (or Grok Build in the terminal with the same kit). Companions are eval/unattended only ([`docs/companion-agent.md`](docs/companion-agent.md)).
 
 **Does this replace User Rules / persona?**  
 No. The kit pointer is thin; persona and policy live in User Rules. `/memory-sync` and `/refine-harness` propose changes; they do not silently rewrite identity. `/usage-learn` may adapt `.cursor/grok-kit.json` only after `install --improve` or `grok-kit learn apply --i-consent`.
