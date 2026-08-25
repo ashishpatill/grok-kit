@@ -22,7 +22,7 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - **Grok Build** — terminal / headless host; same plugin tree + `grok-kit` CLI
 - Prefer Models pool routing via `/cost-check` (Auto Balance default; escalate only when needed)
 - Optional long-run companion is rare/eval-only — do not replace Cursor for routine feature work (see `docs/companion-agent.md`)
-- Host mapping: README “How grok-kit uses Cursor and Grok Build”
+- Host mapping: README "How it uses Cursor" and "How it uses Grok Build"
 
 ## Rules
 

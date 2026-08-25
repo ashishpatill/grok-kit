@@ -36,7 +36,7 @@ Ship an accurate, lean personal harness kit for Cursor and Grok Build: playbook 
 - [x] Flagship session look: `/flagship` `/overview` `/visualise` (status + mermaid; host canvas if available)
 - [x] Code hygiene: `/code-hygiene` ranks drift; human decides scrap / fix / keep (never auto-delete)
 - [x] Tell-proof UI contract template + `/rsi` review-before-ship
-- [x] README maps kit behavior onto Cursor and Grok Build host powers
+- [x] README maps kit behavior onto Cursor and Grok Build host powers (plain-language README, no em dashes)
 - [x] No secrets committed; checks diagnosed or N/A documented
 
 ## Loop order

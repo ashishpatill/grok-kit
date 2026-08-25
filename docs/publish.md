@@ -1,6 +1,6 @@
 # Publishing grok-kit
 
-The kit is one plugin tree for **Cursor** (`.cursor-plugin/plugin.json`) and **Grok Build** (`skills/`, `agents/`, `hooks/hooks.json`, root `plugin.json`). How those hosts' powers are used: README “How grok-kit uses Cursor and Grok Build”.
+The kit is one plugin tree for **Cursor** (`.cursor-plugin/plugin.json`) and **Grok Build** (`skills/`, `agents/`, `hooks/hooks.json`, root `plugin.json`). Host mapping: README "How it uses Cursor" and "How it uses Grok Build".
 
 ## Local install (always works)
 
