@@ -25,6 +25,7 @@
 - Code hygiene: `/code-hygiene` ranks stale/low-quality files; human decides scrap / fix / keep; never auto-delete
 - Tell-proof UI contract (`.cursor/verify/ui-contract.json`) + `/rsi` review-before-ship
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
+- README maps how grok-kit uses Cursor (skills, agents, rules, MCP, hooks, plugin, Optimize For) and Grok Build (same plugin tree, `grok plugin install`, CLI, no plugin-root MCP dump)
 
 ## In progress
 

@@ -176,7 +176,13 @@ export function appendEvent(event, options = {}) {
     ts: event.ts ?? new Date().toISOString(),
     kind: event.kind ?? "cli",
     command: event.command,
-    host: event.host ?? (process.env.CURSOR_PLUGIN_ROOT ? "cursor" : "cli"),
+    host:
+      event.host ??
+      (process.env.CURSOR_PLUGIN_ROOT
+        ? "cursor"
+        : process.env.GROK_PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT
+          ? "grok"
+          : "cli"),
     project: event.project ?? null,
     ...safeExtra(event.command, event.args ?? []),
     ...(event.intent ? { intent: event.intent } : {}),

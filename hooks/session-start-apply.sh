@@ -13,8 +13,8 @@ emit() {
 }
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_ROOT="${CURSOR_PLUGIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
-root="${CURSOR_PROJECT_DIR:-$PWD}"
+PLUGIN_ROOT="${CURSOR_PLUGIN_ROOT:-${GROK_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}}}"
+root="${CURSOR_PROJECT_DIR:-${GROK_PROJECT_DIR:-$PWD}}"
 
 ctx="grok-kit: no project or user-layer writes until you consent. Run: grok-kit install --i-consent (or: node ${PLUGIN_ROOT}/scripts/grok-kit.mjs install --i-consent). This repo only: grok-kit apply --root ."
 

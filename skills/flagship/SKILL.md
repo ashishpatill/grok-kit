@@ -7,7 +7,7 @@ description: >-
 
 # Flagship
 
-Cursor/Grok flagship look for this repo: status first, picture second.
+Cursor and Grok Build flagship look for this repo: status first, picture second.
 
 ```bash
 grok-kit flagship --when start   # session start

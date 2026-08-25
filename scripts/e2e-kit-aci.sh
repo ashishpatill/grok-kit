@@ -300,6 +300,12 @@ PY
 )
 python3 -c "import json; ctx=json.load(open('$TMP/hook3.json')); assert 'already adapted' in ctx['additional_context']"
 python3 -c "import json; ctx=json.load(open('$TMP/hook3.json')); assert 'usage-learn' not in ctx['additional_context']"
+(
+  cd "$HOOK"
+  unset CURSOR_PLUGIN_ROOT
+  GROK_PLUGIN_ROOT="$ROOT" GROK_KIT_CONSENT_FILE="$TMP/yes-consent.json" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook-grok.json"
+)
+python3 -c "import json; ctx=json.load(open('$TMP/hook-grok.json')); assert 'already adapted' in ctx['additional_context']"
 unset GROK_KIT_CONSENT_FILE
 pass "sessionStart hook"
 
