@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "defaultSurface": "main",
+  "surfaces": {
+    "main": {
+      "useProjectScript": true
+    },
+    "ui": {
+      "doctor": "test -f .cursor/verify/ui-contract.json",
+      "launch": "test -f .cursor/verify/ui-contract.json",
+      "drive": "echo 'Replace this surface: run tell_proof_verify against .cursor/verify/ui-contract.json. A screenshot is not proof.' >&2; exit 1"
+    }
+  }
+}

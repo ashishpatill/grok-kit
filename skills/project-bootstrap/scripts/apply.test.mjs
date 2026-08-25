@@ -87,6 +87,7 @@ describe("apply", () => {
     assert.match(rule, /tell_proof_verify/);
     assert.match(rule, /tell-proof/);
     assert.equal(existsSync(path.join(dir, ".cursor/mcp.json")), false);
+    assert.equal(existsSync(path.join(dir, ".cursor/verify/ui-contract.json")), true);
   });
 
   it("skips the second --if-missing run", async () => {

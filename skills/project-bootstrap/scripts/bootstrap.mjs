@@ -132,6 +132,12 @@ function readKit(rel) {
   return readFileSync(path.join(KIT, rel), "utf8");
 }
 
+function profileTemplate(profile, name, sharedRel) {
+  const specific = path.join(KIT, "templates", profile, name);
+  if (existsSync(specific)) return readFileSync(specific, "utf8");
+  return readKit(sharedRel);
+}
+
 function planWrite(rel, contents, exists, force) {
   if (exists && !force) return { rel, action: "skip" };
   return { rel, action: exists ? "overwrite" : "create", contents };
@@ -142,7 +148,11 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/verify.sh",
-      readKit("templates/_shared/verify/verify.sh"),
+      profileTemplate(
+        options.profile,
+        "verify.sh",
+        "templates/_shared/verify/verify.sh"
+      ),
       existsSync(path.join(root, ".cursor/verify/verify.sh")),
       options.forceVerify
     )
@@ -150,7 +160,11 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/feature-map.json",
-      readKit("templates/_shared/verify/feature-map.example.json"),
+      profileTemplate(
+        options.profile,
+        "feature-map.json",
+        "templates/_shared/verify/feature-map.example.json"
+      ),
       existsSync(path.join(root, ".cursor/verify/feature-map.json")),
       false
     )
@@ -158,11 +172,31 @@ export function planBootstrap(root, options) {
   steps.push(
     planWrite(
       ".cursor/verify/rubric.json",
-      readKit("templates/_shared/rubric/checklist.example.json"),
+      profileTemplate(
+        options.profile,
+        "rubric.json",
+        "templates/_shared/rubric/checklist.example.json"
+      ),
       existsSync(path.join(root, ".cursor/verify/rubric.json")),
       false
     )
   );
+  const uiContract = path.join(
+    KIT,
+    "templates",
+    options.profile,
+    "ui-contract.json"
+  );
+  if (existsSync(uiContract)) {
+    steps.push(
+      planWrite(
+        ".cursor/verify/ui-contract.json",
+        readFileSync(uiContract, "utf8"),
+        existsSync(path.join(root, ".cursor/verify/ui-contract.json")),
+        false
+      )
+    );
+  }
   const core =
     options.profile === "generic"
       ? GENERIC_CORE

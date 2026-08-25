@@ -31,6 +31,7 @@ describe("bootstrap", () => {
     assert.equal(first.ok, true);
     assert.equal(existsSync(path.join(dir, ".cursor/verify/verify.sh")), true);
     assert.equal(existsSync(path.join(dir, ".cursor/verify/rubric.json")), true);
+    assert.equal(existsSync(path.join(dir, ".cursor/verify/ui-contract.json")), false);
     assert.equal(existsSync(path.join(dir, ".cursor/rules/core.mdc")), true);
     assert.equal(existsSync(path.join(dir, ".cursorignore")), true);
     assert.match(await readFile(path.join(dir, "AGENTS.md"), "utf8"), /verify-aci/);
@@ -63,6 +64,19 @@ describe("bootstrap", () => {
     assert.match(core, /tell_proof_verify/);
     const agents = await readFile(path.join(dir, "AGENTS.md"), "utf8");
     assert.match(agents, /tell_apply/);
+    const contract = await readFile(
+      path.join(dir, ".cursor/verify/ui-contract.json"),
+      "utf8"
+    );
+    assert.match(contract, /app-shell/);
+    const verify = await readFile(path.join(dir, ".cursor/verify/verify.sh"), "utf8");
+    assert.match(verify, /tell_proof_verify/);
+    const map = JSON.parse(
+      await readFile(path.join(dir, ".cursor/verify/feature-map.json"), "utf8")
+    );
+    assert.ok(map.surfaces.ui);
+    const rubric = await readFile(path.join(dir, ".cursor/verify/rubric.json"), "utf8");
+    assert.match(rubric, /ui-contract/);
   });
 
   it("loads agentic-framework core.mdc from templates", async () => {
