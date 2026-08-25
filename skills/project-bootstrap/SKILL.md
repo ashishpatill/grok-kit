@@ -47,7 +47,7 @@ grok-kit bootstrap --root <repo> --profile <profile>
 
 | Profile | When |
 |---------|------|
-| `tell-proof` | Tell monorepo (`@tell/mcp` / `tell_proof_verify`) |
+| `tell-proof` | Tell monorepo (`@tell/mcp` / `tell_proof_verify` + `.cursor/verify/ui-contract.json`) |
 | `nextjs-clerk-neon` | Next.js + Clerk |
 | `research-python` | Python without a JS UI |
 | `agentic-framework` | grok-kit itself / harness repos |
@@ -63,6 +63,7 @@ AGENTS.md                 # created, or a grok-kit section appended
 .cursor/verify/verify.sh
 .cursor/verify/feature-map.json
 .cursor/verify/rubric.json
+.cursor/verify/ui-contract.json   # tell-proof profile only
 .gitignore                # ACI log + rlm-state lines
 ```
 
@@ -70,7 +71,7 @@ AGENTS.md                 # created, or a grok-kit section appended
 
 1. Replace `drive()` in `.cursor/verify/verify.sh` with this repo's prove-it command.
 2. Follow **enabled** features in `.cursor/grok-kit.json` only.
-3. If `tell-proof` is enabled, UI claims need `tell_proof_verify`. Do not auto-apply `tell_apply` patches. Enable Tell MCP with `tell mcp install cursor --project` (or `pnpm -F @tell/mcp start` in the Tell repo).
+3. If `tell-proof` is enabled, UI claims need `tell_proof_verify` against `.cursor/verify/ui-contract.json`. Do not auto-apply `tell_apply` patches. Enable Tell MCP with `tell mcp install cursor --project` (or `pnpm -F @tell/mcp start` in the Tell repo).
 4. Suggest ICM topic `project-<slug>` with: how to run/test, gotchas, key paths
 5. `/cost-check`: disable global product MCP not needed here
 6. Usage-learn is gated: observe only after `install --learn`; adapt `grok-kit.json` only after `--improve` or `grok-kit learn apply --i-consent`
