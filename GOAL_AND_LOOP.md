@@ -10,7 +10,7 @@ Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-
 - Docs/skills/agents/plugin copy that matches what the tree actually contains
 - Vendor-neutral wording in tree (no banned product names in new content)
 - Install/symlink helpers and MCP snippets for ICM-first globals
-- PR open for review (merge only when explicitly requested)
+- Land work via PR; merge only when explicitly requested
 
 ## Out of scope / frozen
 
@@ -27,11 +27,11 @@ Ship an accurate, lean personal Cursor/agent harness kit: playbook skills, thin-
 
 ## Definition of done
 
-- [ ] In-scope docs and progress authority present and accurate
-- [ ] No “design work” / design-superpower framing in kit-facing copy
-- [ ] Working tree free of banned vendor names in tracked content
-- [ ] PR open against `main` (merge skipped unless user asks)
-- [ ] No secrets committed; checks diagnosed or N/A documented
+- [x] In-scope docs and progress authority present and accurate
+- [x] No “design work” / design-superpower framing in kit-facing copy
+- [x] Working tree free of banned vendor names in tracked content
+- [x] PR #5 reviewed and merged to `main` (user-asked)
+- [x] No secrets committed; checks diagnosed or N/A documented
 
 ## Loop order
 
