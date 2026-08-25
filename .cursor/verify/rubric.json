@@ -18,6 +18,20 @@
       "severity": "must"
     },
     {
+      "id": "apply-script",
+      "claim": "grok-kit apply detects and writes adaptation SoT",
+      "kind": "path-exists",
+      "path": "skills/project-bootstrap/scripts/apply.mjs",
+      "severity": "must"
+    },
+    {
+      "id": "kit-adapted",
+      "claim": "this repo is adapted via grok-kit.json",
+      "kind": "path-exists",
+      "path": ".cursor/grok-kit.json",
+      "severity": "must"
+    },
+    {
       "id": "bootstrap-script",
       "claim": "project-bootstrap is a script, not only prose",
       "kind": "path-exists",
@@ -65,7 +79,7 @@
       "id": "cli-help",
       "claim": "dispatcher help runs",
       "kind": "command",
-      "command": "node scripts/grok-kit.mjs --help | grep -q route-task",
+      "command": "node scripts/grok-kit.mjs --help | grep -q apply",
       "severity": "must"
     },
     {

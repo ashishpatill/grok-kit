@@ -13,12 +13,14 @@ KITCLI="$ROOT/scripts/grok-kit.mjs"
 
 echo "== CLI --help =="
 node "$KITCLI" --help | grep -q bootstrap || fail "grok-kit help"
+node "$KITCLI" --help | grep -q apply || fail "grok-kit help apply"
 node "$KITCLI" --help | grep -q route-task || fail "grok-kit help route-task"
 node "$KITCLI" verify-aci --help | grep -q doctor || fail "verify-aci help"
 node "$KITCLI" watch-ci --help | grep -q status-once || fail "watch-ci help"
 node "$KITCLI" rubric-verify --help | grep -q judgment || fail "rubric-verify help"
 node "$KITCLI" state-tools --help | grep -q render-spawn || fail "state-tools help"
 node "$KITCLI" bootstrap --help | grep -q profile || fail "bootstrap help"
+node "$KITCLI" apply --help | grep -q if-missing || fail "apply help"
 node "$KITCLI" route-task --help | grep -q feature || fail "route-task help"
 node "$KITCLI" session-handoff --help | grep -q init || fail "session-handoff help"
 node "$KITCLI" skill-curator --help | grep -q inventory || fail "skill-curator help"
@@ -178,6 +180,73 @@ print("bootstrap wrote project layer")
 PY
 pass "bootstrap"
 
+echo "== apply detect + tell-proof template (fake Tell tree) =="
+TELL="$TMP/tell"
+mkdir -p "$TELL/packages/mcp"
+printf '%s\n' '# Tell' '' 'Existing mission. tell_proof_verify listed.' > "$TELL/AGENTS.md"
+printf '%s\n' '{"name":"@tell/mcp"}' > "$TELL/packages/mcp/package.json"
+node "$KITCLI" apply --root "$TELL" --detect-only >"$TMP/tell-detect.json"
+python3 - <<PY
+import json
+v=json.load(open("$TMP/tell-detect.json"))
+assert v["ok"] is True and v["profile"]=="tell-proof", v
+assert "tell-proof" in v["enabled"] and "orchestrate-rlm" in v["enabled"], v
+assert v["mcpRecommended"]==["tell"]
+assert v["prove"]["ui"]=="tell_proof_verify"
+print("detect-only tell-proof")
+PY
+[[ ! -e "$TELL/.cursor/grok-kit.json" ]] || fail "detect-only must not write"
+node "$KITCLI" apply --root "$TELL" >"$TMP/tell-apply.json"
+python3 - <<PY
+import json
+from pathlib import Path
+v=json.load(open("$TMP/tell-apply.json"))
+assert v["ok"] is True and v["profile"]=="tell-proof", v
+root = Path("$TELL")
+agents = (root / "AGENTS.md").read_text()
+assert "Existing mission" in agents
+assert "tell_proof_verify" in agents
+assert "grok-kit apply" in agents
+manifest = json.loads((root / ".cursor/grok-kit.json").read_text())
+assert manifest["profile"]=="tell-proof"
+assert "tell-proof" in manifest["enabled"]
+rule = (root / ".cursor/rules/grok-kit-project.mdc").read_text()
+assert "alwaysApply: true" in rule and "tell_proof_verify" in rule
+assert not (root / ".cursor/mcp.json").exists()
+print("apply tell-proof without clobber or MCP write")
+PY
+node "$KITCLI" apply --root "$TELL" --if-missing >"$TMP/tell-skip.json"
+python3 -c "import json; v=json.load(open('$TMP/tell-skip.json')); assert v['skipped'] is True and v['reason']=='already-adapted'"
+NAKED="$TMP/notgit"
+mkdir -p "$NAKED"
+node "$KITCLI" apply --root "$NAKED" --require-git >"$TMP/notgit.json"
+python3 -c "import json; v=json.load(open('$TMP/notgit.json')); assert v['reason']=='not-a-git-repo'"
+[[ ! -e "$NAKED/.cursor/grok-kit.json" ]] || fail "require-git wrote on non-git"
+pass "apply + tell-proof"
+
+echo "== sessionStart hook apply-if-missing =="
+HOOK="$TMP/hookgit"
+mkdir -p "$HOOK"
+git -C "$HOOK" init -q
+(
+  cd "$HOOK"
+  CURSOR_PLUGIN_ROOT="$ROOT" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook1.json"
+)
+python3 - <<PY
+import json
+from pathlib import Path
+ctx=json.load(open("$TMP/hook1.json"))
+assert "additional_context" in ctx and "grok-kit" in ctx["additional_context"], ctx
+assert (Path("$HOOK") / ".cursor/grok-kit.json").is_file()
+print("sessionStart applied")
+PY
+(
+  cd "$HOOK"
+  CURSOR_PLUGIN_ROOT="$ROOT" bash "$ROOT/hooks/session-start-apply.sh" >"$TMP/hook2.json"
+)
+python3 -c "import json; ctx=json.load(open('$TMP/hook2.json')); assert 'already adapted' in ctx['additional_context']"
+pass "sessionStart hook"
+
 echo "== route-task / session-handoff / skill-curator =="
 node "$KITCLI" route-task feature >"$TMP/route.json"
 python3 - <<PY
@@ -225,7 +294,31 @@ bash "$ROOT/scripts/install-user-layer.sh" >"$TMP/install.log"
 [[ -L "$HOME/.cursor/plugins/local/grok-kit" ]] || fail "plugin symlink"
 [[ -L "$HOME/.local/bin/grok-kit" ]] || fail "PATH grok-kit symlink"
 [[ -f "$HOME/.cursor/agents/verifier.md" ]] || fail "verifier agent"
+[[ -f "$HOME/.cursor/rules/grok-kit.mdc" ]] || fail "user grok-kit rule"
+grep -q "grok-kit apply" "$HOME/.cursor/rules/grok-kit.mdc" || fail "user rule should mention apply"
+grep -q sessionStart "$HOME/.cursor/hooks.json" || fail "sessionStart hook"
 grep -q verify-aci "$HOME/.cursor/agents/verifier.md" || fail "verifier should mention verify-aci"
+grep -q tell_proof_verify "$HOME/.cursor/agents/verifier.md" || fail "verifier should mention tell_proof_verify"
+grep -q orchestrate-rlm "$HOME/.cursor/agents/researcher.md" || fail "researcher should mention orchestrate-rlm"
+# Re-install must merge, not wipe, extra hook events
+python3 - <<PY
+import json
+from pathlib import Path
+p = Path("$HOME/.cursor/hooks.json")
+data = json.loads(p.read_text())
+data["hooks"]["preToolUse"] = [{"command": "./hooks/keep-me.sh", "timeout": 5}]
+p.write_text(json.dumps(data, indent=2) + "\n")
+PY
+bash "$ROOT/scripts/install-user-layer.sh" >/dev/null
+python3 - <<PY
+import json
+h=json.load(open("$HOME/.cursor/hooks.json"))
+events=h["hooks"]
+assert any(e.get("command")=="./hooks/keep-me.sh" for e in events["preToolUse"]), events
+assert any("session-start-apply.sh" in e.get("command","") for e in events["sessionStart"]), events
+assert any("stage-memory-candidate.sh" in e.get("command","") for e in events["stop"]), events
+print("hooks merge preserved extra events")
+PY
 node "$HOME/.cursor/skills/watch-ci/scripts/watch-ci.mjs" --fixture "$ROOT/skills/watch-ci/fixtures/ready.json" >"$TMP/from-home.json"
 [[ -s "$TMP/from-home.json" ]] || fail "watch-ci via skill symlink produced no stdout (isMain/symlink bug)"
 python3 -c "import json; assert json.load(open('$TMP/from-home.json'))['kind']=='ready'"

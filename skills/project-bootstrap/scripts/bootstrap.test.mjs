@@ -49,6 +49,17 @@ describe("bootstrap", () => {
     assert.equal(agents.action, "skip");
   });
 
+  it("loads tell-proof core.mdc from templates", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "boot-tell-"));
+    runBootstrap(["--root", dir, "--profile", "tell-proof"], {
+      stdout: () => {},
+    });
+    const core = await readFile(path.join(dir, ".cursor/rules/core.mdc"), "utf8");
+    assert.match(core, /tell_proof_verify/);
+    const agents = await readFile(path.join(dir, "AGENTS.md"), "utf8");
+    assert.match(agents, /tell_apply/);
+  });
+
   it("loads agentic-framework core.mdc from templates", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "boot-af-"));
     runBootstrap(["--root", dir, "--profile", "agentic-framework"], {

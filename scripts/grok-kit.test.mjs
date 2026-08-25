@@ -10,6 +10,7 @@ describe("grok-kit dispatcher", () => {
       "rubric-verify",
       "state-tools",
       "bootstrap",
+      "apply",
       "route-task",
       "session-handoff",
       "skill-curator",
@@ -20,6 +21,7 @@ describe("grok-kit dispatcher", () => {
       assert.ok(COMMANDS[name], name);
     }
     assert.match(HELP, /verify-aci/);
+    assert.match(HELP, /apply/);
     assert.match(HELP, /\.local\/bin\/grok-kit/);
   });
 

@@ -16,7 +16,7 @@ Common failure modes this kit targets:
 | Ad-hoc agent chaos | Skills ladder + `/orchestrate-rlm` (thin parent, summary-only children, depth 1) |
 | Expensive model misuse | `/cost-check` router matrix (Auto Balance default; pin cheap for explore/verify) |
 | Session amnesia | ICM shared memory + `/memory-sync` / `/session-handoff` (human-gated writes) |
-| Under-tooled repos | `/project-bootstrap` → thin `AGENTS.md`, rules, ignore files, stack templates, `.cursor/verify/` ACI |
+| Under-tooled repos | `grok-kit apply` detects the stack, bootstraps a thin layer, writes `.cursor/grok-kit.json` so only the useful kit features fire |
 | "Is it green?" lies | `/watch-ci` uses GitHub merge state (conflicts → threads → failing checks); approval is a human wait |
 | Fake-done claims | `/verify-aci` (doctor/launch/drive) + cheap `/rubric-verify` instead of a review swarm |
 | Context bloat from MCP | Install slims user MCP to ICM-only; product servers stay project-scoped |
@@ -31,7 +31,8 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 - Memory bridge: ICM for long-tail store; keep hot MEMORY/USER short; no silent identity mutation
 - MCP slim pattern: user-global = ICM; archive/restore helpers; product servers in project snippets
 - User-layer install script: agents, hooks, skill symlinks, plugin symlink, `~/.local/bin/grok-kit` dispatcher
-- Stack templates: Next.js/Clerk/Neon, research-Python, agentic-framework profiles for bootstrap
+- Stack templates: Next.js/Clerk/Neon, research-Python, agentic-framework, Tell (tell-proof) profiles
+- Auto-apply: plugin + user rule + sessionStart hook run `grok-kit apply --if-missing` so every git repo gets an adapted kit layer
 
 ### Skills
 
@@ -40,7 +41,7 @@ Cursor stays the interactive coding source of truth. An optional long-run compan
 | `/cost-check` | Before large runs, high spend, or choosing Cost / Balance / Intelligence |
 | `/plan-execute` | Ambiguous multi-file work: plan first, then implement |
 | `/orchestrate-rlm` | Multi-hop / multi-package work; thin parent, summary-only children |
-| `/project-bootstrap` | New or under-tooled repo: `.cursor/` layer + thin AGENTS + verify ACI |
+| `/project-bootstrap` | Detect + adapt: `grok-kit apply` writes `grok-kit.json` and a thin project rule; `bootstrap` is the low-level copier |
 | `/verify-aci` | Prove the artifact: project `doctor` / `launch` / one `drive` |
 | `/rubric-verify` | Score a short repo-grounded checklist against the diff |
 | `/watch-ci` | PR merge-state (status-once). Not a green checkbox list |
@@ -97,7 +98,8 @@ Option A: install script (recommended)
 This will:
 
 - Copy agents into `~/.cursor/agents/`
-- Install stop-hook + `~/.cursor/hooks.json`
+- Copy user rule `~/.cursor/rules/grok-kit.mdc` (auto-apply + adapt)
+- Merge stop + sessionStart hooks into `~/.cursor/hooks.json` (preserves other events)
 - Symlink each skill into `~/.cursor/skills/`
 - Symlink the plugin to `~/.cursor/plugins/local/grok-kit`
 - Symlink `~/.local/bin/grok-kit` so skills work in any repo
@@ -160,7 +162,7 @@ Machine-specific checklist for an already-applied host: [`docs/SETUP-STATUS.md`]
 1. Start with `/route-task` (bug / feature / investigate / ship) or `/plan-execute` for ambiguous work
 2. Before a large or expensive run, `/cost-check`
 3. Multi-package or parallel units → `/orchestrate-rlm` (compile STATE.md with `state-tools`; children return summaries only)
-4. New repo → `/project-bootstrap` (pick a template profile; replace `drive()` in `.cursor/verify/verify.sh`)
+4. New repo → `grok-kit apply --root .` (or `/project-bootstrap`). Replace `drive()` in `.cursor/verify/verify.sh`. Follow enabled features in `.cursor/grok-kit.json` only.
 5. After implement → `/verify-aci` then `/rubric-verify` (defaults to `.cursor/verify/rubric.json`; auto-diff includes untracked files). If a PR is open → `/watch-ci` `--status-once`
 6. End deep work → `/session-handoff`; durable facts → `/memory-sync` (propose, don't auto-apply)
 
@@ -204,7 +206,7 @@ flowchart TB
 
   subgraph project["Project repo"]
     AM[AGENTS.md]
-    CR[.cursor/rules]
+    CR[.cursor/rules + grok-kit.json]
     PM[.cursor/mcp.json product servers]
     ST[.cursor/rlm-state / verify / handoff]
   end
@@ -230,9 +232,9 @@ flowchart TB
 |------|---------|
 | `skills/` | Playbook skills (slash commands) |
 | `agents/` | `verifier`, `debugger`, `researcher` |
-| `rules/` | Thin always-on kit pointer (persona stays in User Rules) |
-| `hooks/` | Optional memory-candidate staging on session stop |
-| `templates/` | Stack profiles for `/project-bootstrap` |
+| `rules/` | Thin always-on kit pointer (persona stays in User Rules); tells agents to `grok-kit apply` when a repo is unadapted |
+| `hooks/` | sessionStart apply-if-missing + optional memory-candidate staging on stop |
+| `templates/` | Stack profiles for apply/bootstrap, including tell-proof |
 | `scripts/` | User-layer install, ICM seed, `kit-check.sh`, `grok-kit.mjs` dispatcher |
 | `.cursor/verify/` | Kit ACI (`verify.sh`, feature-map, rubric) |
 | `docs/` | ICM setup, MCP snippets, companion criteria, publish notes |
@@ -250,7 +252,8 @@ Key knobs (no secrets in the kit):
 | User MCP | `~/.cursor/mcp.json` | ICM-only by default after install |
 | MCP archive | `~/.cursor/mcp-servers.archived.json` | Former globals for project restore |
 | Permissions | `~/.cursor/permissions.json` | Stub allowlist includes `icm` |
-| Hooks | `~/.cursor/hooks.json` | Stop hook stages memory candidates |
+| User rules | `~/.cursor/rules/grok-kit.mdc` | Auto-apply + per-project adaptation router |
+| Hooks | `~/.cursor/hooks.json` | sessionStart apply-if-missing + stop memory stub (merged, not overwritten) |
 | Hot pin paths | `HOT_MEMORY_FILE` / `HOT_USER_FILE` | For seed script |
 | Project MCP | `<repo>/.cursor/mcp.json` | Product servers only when needed |
 

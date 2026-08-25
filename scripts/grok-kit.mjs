@@ -30,6 +30,10 @@ export const COMMANDS = Object.freeze({
     kind: "node",
     file: "skills/project-bootstrap/scripts/bootstrap.mjs",
   },
+  apply: {
+    kind: "node",
+    file: "skills/project-bootstrap/scripts/apply.mjs",
+  },
   "route-task": {
     kind: "node",
     file: "skills/route-task/scripts/route-task.mjs",
@@ -70,6 +74,7 @@ Commands:
   rubric-verify      score .cursor/verify/rubric.json (or --rubric)
   state-tools        check | render-spawn STATE.md
   bootstrap          copy project layer (verify ACI, ignores, core rule, rubric)
+  apply              detect stack, bootstrap, write .cursor/grok-kit.json + project rule
   route-task         print compiled bug|feature|investigate|ship sequence
   session-handoff    init | check .cursor/handoff.md
   skill-curator      inventory kit skills; flag overlapping descriptions
@@ -83,6 +88,7 @@ Examples:
   grok-kit rubric-verify
   grok-kit route-task feature
   grok-kit bootstrap --root /path/to/app --profile generic
+  grok-kit apply --root /path/to/app
 `;
 
 function spawnFile(kind, file, args) {
