@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import path from "node:path";
+import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { classifyPr, isTransient, EXIT } from "./policy.mjs";
 import {
@@ -240,9 +241,19 @@ export async function runWatchCi(argv, io = {}) {
 
 export { parseArgs, HELP };
 
-const isMain =
-  Boolean(process.argv[1]) &&
-  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+function isMainModule(metaUrl) {
+  if (!process.argv[1]) return false;
+  const self = fileURLToPath(metaUrl);
+  let invoked;
+  try {
+    invoked = realpathSync(process.argv[1]);
+  } catch {
+    invoked = path.resolve(process.argv[1]);
+  }
+  return self === invoked;
+}
+
+const isMain = isMainModule(import.meta.url);
 if (isMain) {
   runWatchCi(process.argv.slice(2))
     .then((code) => {

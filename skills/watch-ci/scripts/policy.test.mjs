@@ -218,6 +218,18 @@ describe("classifyPr priority and actor split", () => {
     assert.equal(isTransient(v), true);
   });
 
+  it("still reports draft when check reads failed", () => {
+    const v = classifyPr(
+      snapshot({
+        facts: { isDraft: true },
+        checksRead: "failed",
+        threadsRead: "failed",
+      })
+    );
+    assert.equal(v.class, "draft");
+    assert.equal(v.actor, "human");
+  });
+
   it("draft is a human gate unless allowDraft", () => {
     const blocked = classifyPr(snapshot({ facts: { isDraft: true } }));
     assert.equal(blocked.class, "draft");

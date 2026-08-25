@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { classifyGhCheck, parsePrUrl, parsePullRequestFacts, parseRepoFromRemote, parseReviewThreads, parseStatusCheckRollup } from "./github.mjs";
+import { classifyGhCheck, loadFixture, parsePrUrl, parsePullRequestFacts, parseRepoFromRemote, parseReviewThreads, parseStatusCheckRollup, readSnapshotFromGh } from "./github.mjs";
 
 describe("parseRepoFromRemote", () => {
   it("parses https and ssh remotes", () => {
@@ -112,6 +112,63 @@ describe("parseReviewThreads", () => {
   });
 });
 
+describe("readSnapshotFromGh", () => {
+  it("treats 'no checks reported' as an empty successful read", async () => {
+    const run = async (argv) => {
+      if (argv.includes("view")) {
+        return {
+          code: 0,
+          stdout: JSON.stringify({
+            number: 5,
+            url: "https://github.com/acme/app/pull/5",
+            state: "OPEN",
+            isDraft: true,
+            mergeable: "MERGEABLE",
+            mergeStateStatus: "CLEAN",
+            reviewDecision: "",
+            headRefName: "feat",
+            baseRefName: "main",
+            commits: [{ oid: "abc" }],
+            statusCheckRollup: [],
+          }),
+          stderr: "",
+        };
+      }
+      if (argv.includes("checks")) {
+        return {
+          code: 1,
+          stdout: "",
+          stderr: "no checks reported on the 'feat' branch\n",
+        };
+      }
+      if (argv.includes("graphql")) {
+        return {
+          code: 0,
+          stdout: JSON.stringify({
+            data: {
+              repository: {
+                pullRequest: { reviewThreads: { nodes: [] } },
+              },
+            },
+          }),
+          stderr: "",
+        };
+      }
+      return { code: 1, stdout: "", stderr: `unexpected ${argv.join(" ")}` };
+    };
+    const snap = await readSnapshotFromGh({
+      owner: "acme",
+      repo: "app",
+      pr: 5,
+      run,
+    });
+    assert.equal(snap.checksRead, "ok");
+    assert.equal(snap.checks.length, 0);
+    assert.equal(snap.threadsRead, "ok");
+    assert.equal(snap.facts.isDraft, true);
+  });
+});
+
 describe("loadFixture", () => {
   it("reads a snapshot file", async () => {
     const dir = await mkdtemp(path.join(tmpdir(), "watch-ci-"));
@@ -123,7 +180,6 @@ describe("loadFixture", () => {
         checks: [],
       })
     );
-    const { loadFixture } = await import("./github.mjs");
     const snap = await loadFixture(file);
     assert.equal(snap.facts.number, 1);
     assert.equal(snap.checksRead, "ok");

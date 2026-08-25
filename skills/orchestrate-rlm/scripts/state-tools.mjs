@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -112,9 +112,19 @@ export function runStateTools(argv, io = {}) {
 
 export { HELP };
 
-const isMain =
-  Boolean(process.argv[1]) &&
-  fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+function isMainModule(metaUrl) {
+  if (!process.argv[1]) return false;
+  const self = fileURLToPath(metaUrl);
+  let invoked;
+  try {
+    invoked = realpathSync(process.argv[1]);
+  } catch {
+    invoked = path.resolve(process.argv[1]);
+  }
+  return self === invoked;
+}
+
+const isMain = isMainModule(import.meta.url);
 if (isMain) {
   try {
     process.exit(runStateTools(process.argv.slice(2)));
