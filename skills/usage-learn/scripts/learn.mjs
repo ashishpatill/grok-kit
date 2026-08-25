@@ -42,6 +42,7 @@ export const LOG_COMMANDS = Object.freeze([
   "drift",
   "scrap",
   "code-hygiene",
+  "rsi",
 ]);
 
 const COMMAND_FEATURE = Object.freeze({
@@ -62,6 +63,7 @@ const COMMAND_FEATURE = Object.freeze({
   drift: "code-hygiene",
   scrap: "code-hygiene",
   "code-hygiene": "code-hygiene",
+  rsi: "rsi",
   "cost-check": "cost-check",
   "plan-execute": "plan-execute",
   "orchestrate-rlm": "orchestrate-rlm",

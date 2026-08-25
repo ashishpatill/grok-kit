@@ -78,6 +78,10 @@ export const COMMANDS = Object.freeze({
     kind: "node",
     file: "skills/code-hygiene/scripts/hygiene.mjs",
   },
+  rsi: {
+    kind: "node",
+    file: "skills/rsi/scripts/rsi.mjs",
+  },
   "skill-curator": {
     kind: "node",
     file: "skills/skill-curator-manual/scripts/skill-curator.mjs",
@@ -126,6 +130,7 @@ Commands:
   visualise          mermaid picture of that status (alias: visualize)
   flagship           session start/end bundle: overview + visualise
   hygiene            ranked code drift; human decides scrap/fix/keep (aliases: drift, scrap, code-hygiene)
+  rsi                review before ship: flagship + hygiene + prove-it steps
   skill-curator      inventory kit skills; flag overlapping descriptions
   learn              observe usage; propose/apply harness tweaks (consent)
   check              kit unit tests + offline user journey
@@ -146,6 +151,7 @@ Examples:
   grok-kit flagship --when start
   grok-kit overview --root .
   grok-kit hygiene --root .
+  grok-kit rsi --root .
 `;
 
 function spawnFile(kind, file, args) {

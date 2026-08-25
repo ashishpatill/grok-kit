@@ -37,6 +37,8 @@ describe("route-task", () => {
     assert.equal(hygiene.sticky, false);
     assert.match(hygiene.steps.join("\n"), /grok-kit hygiene/);
     assert.match(hygiene.steps.join("\n"), /Do not auto-delete/);
+    const ship = sequenceFor("ship");
+    assert.match(ship.steps.join("\n"), /grok-kit rsi/);
   });
 
   it("rejects unknown intents", () => {
