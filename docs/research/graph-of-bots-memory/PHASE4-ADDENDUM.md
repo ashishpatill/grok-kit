@@ -1,7 +1,7 @@
 ## Phase 4 addendum — Memory backend default (research locked 2026-09-28)
 
 **Status:** Research recommendation published for Ashish to review — **not implemented**. Store choice (ICM/SQLite vs Neon+pgvector vs other) is **open** until Ashish decides.  
-**Source pack:** `/workspace/research/graph-of-bots-memory/` (`SOURCE-MAP.md`, `MEMORY-RECOMMENDATION.md`).  
+**Source pack:** [`docs/research/graph-of-bots-memory/`](./) (`SOURCE-MAP.md`, `MEMORY-RECOMMENDATION.md`).  
 **Non-goals unchanged:** do not replace Evidence Loom claim-promote rules; do not divert DeepHarness tip work; do not dual-write hot `MEMORY.md` from multiple agent homes.
 
 ### Research recommendation (not a locked decision)
@@ -67,4 +67,4 @@ Goal: bots recall years-old decisions and mistake learnings instead of re-halluc
 ### Implementer pointer
 
 Full taxonomy, comparison table, and source citations:  
-`/workspace/research/graph-of-bots-memory/MEMORY-RECOMMENDATION.md` and `SOURCE-MAP.md`.
+[`MEMORY-RECOMMENDATION.md`](./MEMORY-RECOMMENDATION.md) and [`SOURCE-MAP.md`](./SOURCE-MAP.md).

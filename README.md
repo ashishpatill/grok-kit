@@ -9,7 +9,7 @@ This is not a second IDE and not a model. Cursor is where I write code. Grok Bui
 
 You can clone this anywhere (local folder names like `cursor-kit` are fine). The plugin id is always `grok-kit`.
 
-[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [FAQ](#faq)
+[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [Graph of bots](#graph-of-bots) · [FAQ](#faq)
 
 ## Why it exists
 
@@ -56,12 +56,6 @@ One clone is a Cursor plugin and a Grok Build plugin. After install, `grok-kit` 
 One golden path for the claim, not ten parallel demos. Replace `drive()` in `.cursor/verify/verify.sh` with the command that proves *this* repo. A missing drive that still exits 0 is a lie. Children of `/orchestrate-rlm` return summaries only, depth 1. Durable facts go through `/memory-sync` as proposals. End a deep session with `/session-handoff`.
 
 The loop is small on purpose: route the task, spend the right model, prove it, then stop.
-
-## Graph of bots
-
-**Plan only** — not implemented yet. grok-kit is evolving toward a flexible **organization graph**: each node is ideally a Grok Bot (or agent), nodes can **expand into nested subgraphs** (crews), and bots may connect to multiple peers with contracted handoffs. Durable bot memory is specified as a **store contract** (ICM / SQLite today; optional remote vector DB later), with GitHub `bot-memory` craft YAML as the human **audit view**, not the only runtime fetch path.
-
-Full phases, schemas, and verify checklist: [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md). Phase 4 memory research (store choice open): [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/README.md).
 
 ## Install
 
@@ -284,6 +278,16 @@ plugin.json                 Grok Build metadata
 Key paths after install: plugin at `~/.cursor/plugins/local/grok-kit`, consent at `~/.cursor/grok-kit-consent.json`, user MCP at `~/.cursor/mcp.json`. Never put API keys in ICM topics, rules, or handoff files.
 
 Machine-specific checklist if this host is already applied: [`docs/SETUP-STATUS.md`](docs/SETUP-STATUS.md).
+
+
+
+## Graph of bots
+
+Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory uses a store, with GitHub `bot-memory` craft logs as the human audit view.
+
+**Store choice is open** (Ashish decides before Phase 4 coding): ICM/SQLite-only vs Neon + pgvector vs hybrid. Research pack: [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
+
+See [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md).
 
 ## FAQ
 

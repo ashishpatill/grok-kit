@@ -78,7 +78,7 @@ Per job: select a path (or small DAG) through the org graph, including diving in
 ### 3.1 Layers (keep all three; do not collapse)
 
 | Layer | What it is | Where |
-|-------|------------|-----|
+|-------|------------|--------|
 | Hot pin | Tiny always-loaded identity / prefs | MEMORY.md / USER.md (size-capped) |
 | Long-tail store | Searchable durable facts per bot / project | **Primary:** ICM (SQLite, optional embeddings) already documented in grok-kit. **Later:** one remote DB or vector store behind the same API |
 | Craft log (human view) | Measured `happened/wrong/worked/next` after real outcomes | `BIMLabz/bot-memory` markdown — remains the **audit view**, not the only runtime fetch path |
@@ -101,8 +101,7 @@ Rules:
 - No secrets in the store.
 - Craft log writes still require a **measured** outcome before YAML hits bot-memory.
 - Vector embeddings are optional in Phase 1 (ICM supports `--no-embeddings`); enable when recall quality needs them.
-- Phase 4 research (see [`docs/research/graph-of-bots-memory/`](research/graph-of-bots-memory/README.md)): compare ICM/SQLite, Neon + `pgvector`, hybrid, and alternatives; Ashish picks **one** primary durable store before implementation. Until then, treat the pack recommendation as a candidate, not decided.
-- Namespaces include **bot**, **project**, and **feature** scopes (shared capabilities), not only per-bot topics — see the research pack for the full sketch.
+- Phase 2 research (Research Delegation): compare Neon + `pgvector`, hosted vector DBs, vs staying on ICM — pick **one** remote backend only if local SQLite is not enough for multi-machine org share.
 
 ### 3.3 Existing kit pieces (do not rebuild)
 
@@ -130,24 +129,15 @@ Receivers fail closed if evidence is missing.
 ## 5. Phases
 
 | Phase | Deliverable | Owner type |
-|-------|-------------|-------------|
+|-------|-------------|------------|
 | **0** | This plan committed in `docs/PLAN-graph-of-bots.md` + README/STATUS pointers | Docs (this PR) |
 | **1** | `org-graph` + `handoff` schemas; `examples/org-bimlabz.yaml` with at least one nested subgraph (DeepHarness or Research) | Coding agent |
 | **2** | `graph-handoff` + `graph-expand` skills; wire to Grok Bot messaging / Cursor handoff patterns already in kit | Coding agent |
 | **3** | Memory: document + thin wrapper skill so every bot uses ICM (or the chosen store) via the store contract; craft log remains export/view | Coding agent |
-| **4** | Memory backend research pack landed in [`docs/research/graph-of-bots-memory/`](research/graph-of-bots-memory/README.md) (taxonomy, option compare, shared-feature ACL sketch). **Store choice is open for Ashish:** ICM/SQLite-only vs Neon + pgvector vs hybrid vs other — the pack’s Neon+pgvector hybrid is a **candidate recommendation only**, not a locked decision. Memory scopes are not bot-only: **project** nodes (crews) and **shared-feature** nodes (auth, billing, …) are first-class graph nodes with their own namespaces. CEO gates before any implementation spike | Research Delegation + CEO |
+| **4** | Research slice: one remote DB/vector option vs ICM-only; CEO gates; implement only if multi-machine share is required | Research Delegation + CEO |
 | **5** | One end-to-end demo path in docs (paper → nested research subgraph → Product Ops ship check) with store recalls shown | Docs + coding agent |
 
-Do **not** start Phase 4 implementation until Phase 3 works locally.
-
-### Phase 4 — memory backend (research pack; choice open)
-
-Read [`docs/research/graph-of-bots-memory/README.md`](research/graph-of-bots-memory/README.md) before picking a store. Summary:
-
-- **Open for Ashish:** primary durable store = ICM/SQLite-only, Neon + pgvector, hybrid (Neon primary + ICM local + GitHub audit), or another option after reading the pack.
-- **Not decided:** [`MEMORY-RECOMMENDATION.md`](research/graph-of-bots-memory/MEMORY-RECOMMENDATION.md) proposes Neon + pgvector as the default **candidate**; CEO approval still required.
-- **First-class nodes:** memory is scoped to **bots**, **projects** (crews), **shared features** (canonical auth/billing/deploy truth), and **org** — not a flat bot mesh only.
-- Paste-ready detail: [`PHASE4-ADDENDUM.md`](research/graph-of-bots-memory/PHASE4-ADDENDUM.md); citations: [`SOURCE-MAP.md`](research/graph-of-bots-memory/SOURCE-MAP.md).
+**Phase 4 store choice is OPEN for Ashish** (2026-09-28): ICM/SQLite-only vs Neon + pgvector vs hybrid vs another option. Research pack (recommendation, not a lock-in): [`docs/research/graph-of-bots-memory/`](research/graph-of-bots-memory/). Short paste: [`PHASE4-ADDENDUM.md`](research/graph-of-bots-memory/PHASE4-ADDENDUM.md). Do **not** implement a remote store until Ashish picks. Do **not** start Phase 4 coding until Phase 3 works locally.
 
 ---
 
@@ -175,6 +165,6 @@ Read [`docs/research/graph-of-bots-memory/README.md`](research/graph-of-bots-mem
 
 - Narrative (story, not SoT): CEO box `/workspace/article/ARTICLE.md`
 - WikiSkill memory packs: `/workspace/research/wikiskill/PLAN-dh-bot-memory.md`
+- Phase 4 memory research (OPEN choice): `docs/research/graph-of-bots-memory/`
 - ICM: `docs/icm-setup.md`
-- Phase 4 memory research pack: `docs/research/graph-of-bots-memory/`
 - Prior org decision: markdown craft in `BIMLabz/bot-memory`; DB/graph deferred — **this plan unparks the deferred store + expandable graph inside grok-kit**
