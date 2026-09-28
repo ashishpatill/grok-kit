@@ -61,7 +61,7 @@ The loop is small on purpose: route the task, spend the right model, prove it, t
 
 **Plan only** — not implemented yet. grok-kit is evolving toward a flexible **organization graph**: each node is ideally a Grok Bot (or agent), nodes can **expand into nested subgraphs** (crews), and bots may connect to multiple peers with contracted handoffs. Durable bot memory is specified as a **store contract** (ICM / SQLite today; optional remote vector DB later), with GitHub `bot-memory` craft YAML as the human **audit view**, not the only runtime fetch path.
 
-Full phases, schemas, and verify checklist: [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md).
+Full phases, schemas, and verify checklist: [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md). Phase 4 memory research (store choice open): [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/README.md).
 
 ## Install
 
