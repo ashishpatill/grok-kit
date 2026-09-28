@@ -283,9 +283,9 @@ Machine-specific checklist if this host is already applied: [`docs/SETUP-STATUS.
 
 ## Graph of bots
 
-Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory uses a store, with GitHub `bot-memory` craft logs as the human audit view.
+Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory: **Neon + pgvector** (cloud-primary, locked); ICM as local replica candidate; GitHub `bot-memory` craft logs as audit export only.
 
-**Store choice is open** (Ashish decides before Phase 4 coding): ICM/SQLite-only vs Neon + pgvector vs hybrid. Research pack: [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
+Binding v2 plan landed — **P0 spikes starting**. Research pack: [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/). Build plan: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md).
 
 See [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md).
 

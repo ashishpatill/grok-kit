@@ -80,8 +80,8 @@ Per job: select a path (or small DAG) through the org graph, including diving in
 | Layer | What it is | Where |
 |-------|------------|--------|
 | Hot pin | Tiny always-loaded identity / prefs | MEMORY.md / USER.md (size-capped) |
-| Long-tail store | Searchable durable facts per bot / project | **Primary:** ICM (SQLite, optional embeddings) already documented in grok-kit. **Later:** one remote DB or vector store behind the same API |
-| Craft log (human view) | Measured `happened/wrong/worked/next` after real outcomes | `BIMLabz/bot-memory` markdown — remains the **audit view**, not the only runtime fetch path |
+| Long-tail store | Searchable durable facts per bot / project | **Primary (resolved):** [NeonDB + pgvector](PLAN-bot-memory-graph-v2.md) — cloud-first shared memory per Ashish’s binding v2 plan (2026-09-28). **Local replica candidate:** ICM (SQLite + FTS5 + sqlite-vec) as read cache on devices; sync from daemon `sync_log`. |
+| Craft log (human view) | Measured `happened/wrong/worked/next` after real outcomes | `BIMLabz/bot-memory` markdown — **audit export only** (mirror from store), not the runtime fetch path |
 
 Ashish’s ask: runtime fetch should be optimized for bots. That means the **store** is the runtime source; GitHub craft YAML is the governed human/audit export (or a view), matching the WikiSkill plan line: YAML can be a view of a pattern, not the store.
 
@@ -100,8 +100,8 @@ Rules:
 - One write path per fact (no dual-write hot MEMORY from multiple homes).
 - No secrets in the store.
 - Craft log writes still require a **measured** outcome before YAML hits bot-memory.
-- Vector embeddings are optional in Phase 1 (ICM supports `--no-embeddings`); enable when recall quality needs them.
-- Phase 2 research (Research Delegation): compare Neon + `pgvector`, hosted vector DBs, vs staying on ICM — pick **one** remote backend only if local SQLite is not enough for multi-machine org share.
+- Embeddings are **required from day one** on the Neon path (MiniLM-L6-v2 384-dim, `halfvec` in Postgres) — see [PLAN-bot-memory-graph-v2.md](PLAN-bot-memory-graph-v2.md).
+- **Store choice resolved (2026-09-28):** Neon + pgvector cloud-primary; ICM = local replica candidate; GitHub bot-memory = audit export only. P0 spikes in flight per v2 plan; do not implement P1 until IDL freeze gate.
 
 ### 3.3 Existing kit pieces (do not rebuild)
 
@@ -134,10 +134,10 @@ Receivers fail closed if evidence is missing.
 | **1** | `org-graph` + `handoff` schemas; `examples/org-bimlabz.yaml` with at least one nested subgraph (DeepHarness or Research) | Coding agent |
 | **2** | `graph-handoff` + `graph-expand` skills; wire to Grok Bot messaging / Cursor handoff patterns already in kit | Coding agent |
 | **3** | Memory: document + thin wrapper skill so every bot uses ICM (or the chosen store) via the store contract; craft log remains export/view | Coding agent |
-| **4** | Research slice: one remote DB/vector option vs ICM-only; CEO gates; implement only if multi-machine share is required | Research Delegation + CEO |
+| **4** | Memory backend per [PLAN-bot-memory-graph-v2.md](PLAN-bot-memory-graph-v2.md): **Neon + pgvector** (locked); ICM local replica; bot-memory GitHub audit export. P0 spikes → IDL freeze → P1 prototypes | Research Delegation + CEO |
 | **5** | One end-to-end demo path in docs (paper → nested research subgraph → Product Ops ship check) with store recalls shown | Docs + coding agent |
 
-**Phase 4 store choice is OPEN for Ashish** (2026-09-28): ICM/SQLite-only vs Neon + pgvector vs hybrid vs another option. Research pack (recommendation, not a lock-in): [`docs/research/graph-of-bots-memory/`](research/graph-of-bots-memory/). Short paste: [`PHASE4-ADDENDUM.md`](research/graph-of-bots-memory/PHASE4-ADDENDUM.md). Do **not** implement a remote store until Ashish picks. Do **not** start Phase 4 coding until Phase 3 works locally.
+**Phase 4 store choice RESOLVED** (2026-09-28): **Neon + pgvector** cloud-primary per Ashish’s binding decisions — authoritative build plan: [`docs/PLAN-bot-memory-graph-v2.md`](PLAN-bot-memory-graph-v2.md). ICM remains the candidate **local replica** substrate; [`docs/research/graph-of-bots-memory/`](research/graph-of-bots-memory/) informed the decision. **P0 spikes** (Neon, event-triggered daemon, MCP) are starting; no P1 implementation until IDL v2 freeze gate. Phase 3 local ICM wrapper can proceed in parallel where it does not assume ICM as primary.
 
 ---
 
@@ -165,6 +165,6 @@ Receivers fail closed if evidence is missing.
 
 - Narrative (story, not SoT): CEO box `/workspace/article/ARTICLE.md`
 - WikiSkill memory packs: `/workspace/research/wikiskill/PLAN-dh-bot-memory.md`
-- Phase 4 memory research (OPEN choice): `docs/research/graph-of-bots-memory/`
+- Phase 4 memory: resolved → [`docs/PLAN-bot-memory-graph-v2.md`](PLAN-bot-memory-graph-v2.md); research pack: `docs/research/graph-of-bots-memory/`
 - ICM: `docs/icm-setup.md`
 - Prior org decision: markdown craft in `BIMLabz/bot-memory`; DB/graph deferred — **this plan unparks the deferred store + expandable graph inside grok-kit**
