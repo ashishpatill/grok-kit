@@ -27,6 +27,9 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 const DATABASE_URL = process.env.DATABASE_URL;
 const QUEUE = process.env.MEMORY_QUEUE || 'memory-embed';
 
+const MEMORY_TYPES = new Set(['working', 'episodic', 'semantic', 'procedural', 'goals', 'reflective']);
+const MEMORY_SCOPES = new Set(['global', 'node_local', 'edge']);
+
 if (!DATABASE_URL) {
   console.error('[mcp] DATABASE_URL missing');
   process.exit(1);
@@ -113,6 +116,20 @@ server.registerTool(
     if (metadata.evidence_refs) provenance.evidence_refs = metadata.evidence_refs;
     if (metadata.import_batch) provenance.import_batch = metadata.import_batch;
 
+    if (!MEMORY_TYPES.has(type)) {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: 'VALIDATION', detail: `type must be one of ${[...MEMORY_TYPES].join(',')}` }) }],
+      };
+    }
+    if (!MEMORY_SCOPES.has(scope)) {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: 'VALIDATION', detail: `scope must be one of ${[...MEMORY_SCOPES].join(',')}` }) }],
+      };
+    }
+    const grounding_ids = Array.isArray(metadata.grounding_ids) ? metadata.grounding_ids : [];
+
     const client = await getPool().connect();
     try {
       await client.query('BEGIN');
@@ -124,9 +141,9 @@ server.registerTool(
            index_status, approval, grounding_ids, provenance
          ) VALUES (
            $1, $2, $3, $4, $5, $6, $7,
-           'staged', 'live', '{}', $8::jsonb
+           'staged', 'live', $9, $8::jsonb
          ) RETURNING id, namespace, index_status, approval, created_at`,
-        [id, namespace, type, scope, text, importance, strength, JSON.stringify(provenance)]
+        [id, namespace, type, scope, text, importance, strength, JSON.stringify(provenance), grounding_ids]
       );
       const row = ins.rows[0];
       await client.query('COMMIT');

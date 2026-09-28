@@ -6,9 +6,12 @@
 import pg from 'pg';
 import { pipeline } from '@xenova/transformers';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { createHash } from 'crypto';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const CORPUS = 'out/real-corpus.jsonl';
+const __dir = dirname(fileURLToPath(import.meta.url));
+const CORPUS = resolve(__dir, '../real-corpus.jsonl');
+const OUT_DIR = resolve(__dir, '../out');
 const EMBEDDING_MODEL = 'minilm-l6-v2@1';
 const MODEL = 'Xenova/all-MiniLM-L6-v2';
 const BATCH = 16;
@@ -239,7 +242,7 @@ const summary = {
     'Real corpus seeded into legacy Neon p0-spike alongside synthetic 5k. Queries are distinctive windows from gold row text (not hand paraphrases).',
 };
 
-mkdirSync('out', { recursive: true });
-writeFileSync('out/a0-real-bench.json', JSON.stringify({ summary, details }, null, 2));
+mkdirSync(OUT_DIR, { recursive: true });
+writeFileSync(resolve(OUT_DIR, 'a0-real-bench.json'), JSON.stringify({ summary, details }, null, 2));
 console.log(JSON.stringify(summary, null, 2));
 await client.end();
