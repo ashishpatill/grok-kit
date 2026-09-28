@@ -10,6 +10,9 @@ only when its exit check passes; append a one-line result note.
   tsvector, provenance, validity), sync_log, pg-boss tables. Source: IDL §12,
   crash-consistency §13.
   _Exit: `psql` applies cleanly on a fresh branch._
+  _In progress 2026-09-28: schema drafted (`memory/schema/v1.sql`) and validated
+  locally on PG16 + pgvector 0.8.1 — applies clean, smoke test green
+  (see `memory/spikes/A0/NOTES.md`). Neon-branch apply needs a connection string._
 - [ ] **A0.2** Seed data: 5k synthetic + 500 real memories imported from the
   bot-memory repo (content-hash dedup). _Exit: row counts match._
 - [ ] **A0.3** Eval harness: 50 hand-built queries; measure recall@10, p50/p95
