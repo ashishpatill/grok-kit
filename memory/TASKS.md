@@ -83,7 +83,8 @@ One subtask = one commit. Check only when exit passes.
   _Exit: `\d memories` shows index_status, approval, provenance; sync_log triggers exist._
 - [ ] **P1.M2** Seed 5 001 synthetic + 204 real into v1 branch; row counts match.
 - [ ] **P1.M3** Re-run A0 hybrid bench + C0 MCP round-trip against v1; refresh RESULTS artifacts.
-- [ ] **P1.M4** `memory-mcp` full tool surface per IDL §12 (recall hybrid RRF, get, propose path stubs as listed in plan).
+- [x] **P1.M4** `memory-mcp` full tool surface per IDL §12 (recall hybrid RRF, get, propose path stubs as listed in plan).
+  _2026-09-29: 6 tools live (store, recall[hybrid RRF k=60], list_namespaces, get, ingest_file, propose). Propose routing: episodic/node_local auto; procedural/pinned human-always; semantic auto iff grounding_ids>=2 else queued (proposals table, migration 002; v1.sql untouched). Verified 23/23 green via `mcp/test-surface.mjs` against local PG16 + pgvector 0.8.1 seeded with the 204-row real corpus (MiniLM-384). Daemon-facing promote/supersede/review/decide/stats → M6/M7/G2._
 - [ ] **P1.M5** CLI twin for store/recall/list_namespaces (same contract as MCP).
 - [ ] **P1.M6** Import pipeline: bot-memory JSONL + content-hash dedup → review queue for contradictions.
 - [ ] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
