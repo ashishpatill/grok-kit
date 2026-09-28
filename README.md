@@ -9,7 +9,7 @@ This is not a second IDE and not a model. Cursor is where I write code. Grok Bui
 
 You can clone this anywhere (local folder names like `cursor-kit` are fine). The plugin id is always `grok-kit`.
 
-[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [FAQ](#faq)
+[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [Graph of bots](#graph-of-bots) · [FAQ](#faq)
 
 ## Why it exists
 
@@ -278,6 +278,14 @@ plugin.json                 Grok Build metadata
 Key paths after install: plugin at `~/.cursor/plugins/local/grok-kit`, consent at `~/.cursor/grok-kit-consent.json`, user MCP at `~/.cursor/mcp.json`. Never put API keys in ICM topics, rules, or handoff files.
 
 Machine-specific checklist if this host is already applied: [`docs/SETUP-STATUS.md`](docs/SETUP-STATUS.md).
+
+
+
+## Graph of bots
+
+Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory: **Neon + pgvector** (cloud-primary, locked); ICM as local replica candidate; GitHub `bot-memory` craft logs as audit export only.
+
+Binding v2 plan **frozen (IDL v2.1, signed 2026-09-28)** — **P0 spikes complete, P1 prototypes underway**. Authoritative plan: [`memory/plan/FINAL-PLAN-V2.md`](memory/plan/FINAL-PLAN-V2.md). Originals for reference: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md), [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md), research pack [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
 
 ## FAQ
 
