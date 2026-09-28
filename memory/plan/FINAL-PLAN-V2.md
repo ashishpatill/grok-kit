@@ -1,4 +1,7 @@
 # Bot Memory + Graph of Agents — Build Plan v2
+
+> **Status: FROZEN (IDL v2.1)** — signed by Ashish 2026-09-28. Implementation may proceed (P1). Signature changes require a written v2.2+ and Ashish sign-off.
+
 **For:** Ashish (BIMLabz) · **Date:** 2026-09-28 · **Status:** PLAN ONLY, no code written. v2 incorporates Ashish's binding decisions (2026-09-28), his own plan found in grok-kit PR #9, and new delta research on NeonDB / event-triggered daemons / Tailscale.
 
 **Reading guide:** §1 lists everything that changed from v1 and why. If you read v1, §1 + §5–§8 + §14 + §17 are the new material; taxonomy, honesty model, and graph design carry over with small updates.
@@ -309,7 +312,7 @@ Simpler than v1 — pgvector keeps vectors **in the row**, so there is no dual-s
 - **A0 (Neon spike):** schema on a **Neon branch** (not main); 5k synthetic + 500 real memories from the bot-memory repo; 50 hand-built queries measuring recall@10, p50/p95 latency; embedding A/B (MiniLM-384 local vs nomic-768); RRF-SQL hybrid vs keyword-only baseline. **Stay if** recall@10 ≥ 0.7 AND p95 < 500ms; **kill trigger:** < 0.6 on both → the corpus/queries are the problem, stop.
 - **B0 (daemon spike):** wake via tailnet webhook → drain one pg-boss job → sleep; systemd timer self-wake; cold-start chain timed (webhook → first Neon row < 2 s target).
 - **C0 (MCP spike):** stdio `memory-mcp` serving `store`/`recall` against the Neon branch; one Cursor session round-trip.
-- **FREEZE GATE (serial):** Ashish answers QUESTIONS-V2.md + signs IDL v2. Later changes need written sign-off.
+- **FREEZE GATE (serial):** Ashish answers QUESTIONS-V2.md + signs IDL v2. Later changes need written sign-off. DONE 2026-09-28 (Ashish).
 
 ### P1 — Prototypes (3–4 weeks)
 - **Memory:** full schema + provenance/validity/review tables on Neon main; `memory-mcp` (all tools) + CLI twin; import pipeline (bot-memory repo + ICM → seeded memories, content-hash dedup, contradictions → review queue); worker agents (embed, score, dedup, mirror, backup); `full` replica on daemon host; cold-start contract live.
@@ -343,7 +346,7 @@ All five questions answered.
 
 ## 17. What I need from Ashish
 
-1. **Freeze-gate sign-off** on the IDL v2.1 (§12) before P1 starts — all five governance questions are answered; this is the last gate before the P0 spikes.
+1. **Freeze-gate sign-off** on the IDL v2.1 (§12) before P1 starts — all five governance questions are answered; this is the last gate before the P0 spikes. DONE 2026-09-28.
 2. **The WikiSkill/GEPA plans**: they live in the private `BIMLabz/bot-memory` repo, which I can't read. Either grant read access or paste/export the two docs (`PLAN-dh-bot-memory.md`, `PLAN-dh-bot-memory-gepa.md`). The grok-kit PR #9 plan **was found and is incorporated above** — but if the WikiSkill/GEPA docs contain memory-design specifics beyond it, I should fold those in too.
 2. **Name feature stewards (advisory)** (from the research pack, reinterpreted per Q6): when the org graph lands (P2), name a point of responsibility for each shared feature (`feature-auth`, `feature-billing`, …) — a human role or a bot node. Advisory only, not a gatekeeper. Not blocking for P0/P1.
 

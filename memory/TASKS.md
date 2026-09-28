@@ -66,17 +66,43 @@ _Needs: daemon host on the tailnet (home mini-PC / Mac)._
   _2026-09-28: MCP Client stdio round-trip hit in 419 ms — see ROUNDTRIP.md +
   `spikes/C0/out/c0-roundtrip.json` (measured on legacy Neon schema; re-run on v1)._
 
-## Freeze gate (serial — needs Ashish, blocks P1)
-- [ ] **G.1** Ashish signs IDL v2.1 (`memory/plan/FINAL-PLAN-V2.md` §12).
-  Later changes need written sign-off.
-- [ ] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
-  `PLAN-dh-bot-memory-gepa.md`). _Blocked: private `BIMLabz/bot-memory`
-  repo not accessible._
 
-## P1 — Prototypes (3–4 weeks, starts after freeze gate)
-Tracked here when P0 exits. See plan §14: full schema on Neon main,
-`memory-mcp` (all tools) + CLI twin, import pipeline, worker agents,
-`full` replica, TS orchestrator + blackboard, 3 nodes + Moose stand-in,
-no-gatekeeping concurrency spike, kill -9 + restore drills.
+## Freeze gate (serial)
+- [x] **G.1** Ashish signs IDL v2.1 (`memory/plan/FINAL-PLAN-V2.md` §12).
+  _Signed 2026-09-28 (chat: "Freeze IDL and P1"). Later signature changes need written sign-off (v2.2+)._
+- [ ] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
+  `PLAN-dh-bot-memory-gepa.md`). _Still open if those docs diverge from FINAL-PLAN;
+  private repo export used for A0.2 corpus only so far._
+
+## P1 — Prototypes (3–4 weeks) — started 2026-09-28
+
+One subtask = one commit. Check only when exit passes.
+
+### Memory track
+- [ ] **P1.M1** Apply `schema/v1.sql` on Neon branch `p1-v1` (not production main yet).
+  _Exit: `\d memories` shows index_status, approval, provenance; sync_log triggers exist._
+- [ ] **P1.M2** Seed 5 001 synthetic + 204 real into v1 branch; row counts match.
+- [ ] **P1.M3** Re-run A0 hybrid bench + C0 MCP round-trip against v1; refresh RESULTS artifacts.
+- [ ] **P1.M4** `memory-mcp` full tool surface per IDL §12 (recall hybrid RRF, get, propose path stubs as listed in plan).
+- [ ] **P1.M5** CLI twin for store/recall/list_namespaces (same contract as MCP).
+- [ ] **P1.M6** Import pipeline: bot-memory JSONL + content-hash dedup → review queue for contradictions.
+- [ ] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
+- [ ] **P1.M8** `full` replica plan on daemon host + weekly pg_dump dry-run notes.
+- [ ] **P1.M9** Cold-start contract live in recall envelope (already stubbed; conformance tests).
+
+### Graph track
+- [ ] **P1.G1** TS orchestrator + blackboard/outbox tables on Neon.
+- [ ] **P1.G2** Curator client calling memory MCP as `svc:curator`.
+- [ ] **P1.G3** 3 nodes (grok-coder-01, verifier-01, curator-01) + scripted Moose stand-in.
+- [ ] **P1.G4** Stuck-debug round-trip demo recorded.
+
+### Ops / exit gates
+- [ ] **P1.X1** Tailscale serve wake on daemon host (replace localhost).
+- [ ] **P1.X2** systemd unit + timer self-wake on daemon host.
+- [ ] **P1.X3** Conformance suite green.
+- [ ] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
+- [ ] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
+- [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
+- [ ] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
 
 ## P2 / P3 — per plan §14, tracked after P1 gates.
