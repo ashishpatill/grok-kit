@@ -4,18 +4,23 @@
 
 **Gate (plan §14):** stay if hybrid recall@10 ≥ 0.7 AND p95 < 500 ms; kill if recall@10 < 0.6 on both legs.
 
-| Metric | Result | Gate |
-|--------|-------:|------|
-| Hybrid RRF recall@10 | **0.94** | ≥ 0.7 ✅ |
-| Hybrid p95 latency | **5.13 ms** | < 500 ms ✅ |
-| Keyword recall@10 | 0.72 | — |
-| Vector recall@10 | 0.72 | — |
+| Metric | Synthetic (prior) | Real corpus confirm | Gate |
+|--------|------------------:|--------------------:|------|
+| Hybrid RRF recall@10 | **0.94** | **1.00** (50 gold windows) | ≥ 0.7 ✅ |
+| Hybrid p95 latency | **5.13 ms** | **11.48 ms** | < 500 ms ✅ |
+| Keyword recall@10 | 0.72 | 0.84 | — |
+| Vector recall@10 | 0.72 | 0.82 | — |
 
-**When:** 2026-09-28 (IST). See `RESULTS.md` for full table, corpus notes, and caveats.
+**When:** 2026-09-28 (IST). See `RESULTS.md` for full tables.
 
-**Caveats (honest):**
-- Corpus was **5 001 synthetic** MiniLM-384 rows on Neon branch `p0-spike` (legacy spike schema). 500 real bot-memory rows **not** imported (no `BIMLabz/bot-memory` access).
-- Embedding A/B vs nomic-768 **not run** (deferred; MiniLM-only path).
-- STAY is for architecture (halfvec HNSW + tsvector + RRF-SQL works; latency fine). Confirm on real corpus / v1.sql re-seed before treating as production-final.
+**Corpus notes:**
+- Synthetic: 5 001 MiniLM-384 rows on Neon `p0-spike` (legacy spike schema).
+- Real: Ashish export `real-corpus.jsonl` — **204** unique atomic memories (not 500; repo yield). Seeded into the same Neon branch (`author=import:real-corpus`); total rows 5 206. Artifacts: `spikes/A0/out/a0-real-bench.json`.
+- Real queries are distinctive windows taken from gold row text (not hand paraphrases) — easier than adversarial paraphrases; still confirms hybrid beats each leg alone on real BIMLabz learnings.
 
-**Next:** land B0/C0 adapted to `v1.sql`; re-seed A0 corpus against v1 as follow-up.
+**Still open / deferred:**
+- Embedding A/B vs nomic-768 not run (A0.4).
+- Re-seed + re-bench against authoritative `schema/v1.sql` (script: `spikes/A0/scripts/seed_real_v1.mjs`) when a v1 Neon branch exists.
+- Tailscale wake remains P1.
+
+**Next:** freeze gate (Ashish signs IDL v2.1) then P1.
