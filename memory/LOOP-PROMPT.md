@@ -1,7 +1,7 @@
 # Build-loop prompt — bot memory + graph
 
 Paste into a new OpenCode Desktop session (Muse Spark 1.3) with this repo open,
-or hand to any coding agent. It keeps building until P0 is done or blocked.
+or hand to any coding agent. It keeps building until P1 is done or blocked.
 
 ---
 
@@ -24,14 +24,15 @@ You are the build-loop agent for the GrokKit bot-memory + graph-of-agents plan.
 5. Commit: one subtask = one commit, message `memory: <id> <short description>`.
    Check the box in `memory/TASKS.md` with a one-line result note, in the same commit.
 6. `git push origin feat/bot-memory-p0`.
-7. Go to step 2. STOP when: all P0 boxes are checked, you hit a `Needs:` blocker
-   you cannot clear, or only freeze-gate items remain.
+7. Go to step 2. STOP when: all P1 boxes are checked, you hit a `Needs:` blocker
+   you cannot clear, or only G.2 remains.
 
 **Hard rules**
 - NEVER commit secrets: no API keys, tokens, or connection strings. They come
   from the environment, never the repo.
 - Small, reviewable diffs. No drive-by refactors.
-- Do NOT start P1: freeze gate G.1 (Ashish signs IDL v2.1) blocks it.
+- IDL v2.1 is FROZEN (signed 2026-09-28): follow it exactly; signature changes
+  need Ashish's written sign-off (v2.2+). Do not redesign the architecture mid-build.
 - If an exit check fails twice with different approaches, mark the subtask
   `[blocked: <reason>]` and move to the next unblocked one.
 - End every run with 3 lines: done / in-progress / blocked.
