@@ -1,6 +1,6 @@
 # Graph-of-bots memory research (2026-09-28)
 
-Read these before choosing the durable memory backend for Phase 4.
+Read these for Phase 4 memory context. **Ashish resolved the open store choice (2026-09-28): Neon + pgvector cloud-primary** — see [`docs/PLAN-bot-memory-graph-v2.md`](../../PLAN-bot-memory-graph-v2.md). This pack informed that decision; ICM hybrid/local-replica notes remain relevant.
 
 | File | What it is |
 |------|------------|
@@ -8,6 +8,6 @@ Read these before choosing the durable memory backend for Phase 4.
 | [PHASE4-ADDENDUM.md](./PHASE4-ADDENDUM.md) | Short paste-ready Phase 4 section (recommendation, choices open) |
 | [SOURCE-MAP.md](./SOURCE-MAP.md) | Citations |
 
-**Open choice for Ashish:** ICM/SQLite-only vs Neon + pgvector vs hybrid vs something else. Nothing is implemented yet.
+**Resolved:** Neon + pgvector (cloud-primary); ICM as local replica candidate; GitHub bot-memory as audit export. Nothing is implemented yet — P0 spikes per v2 plan.
 
 Also see repo plan: [`docs/PLAN-graph-of-bots.md`](../../PLAN-graph-of-bots.md).
