@@ -1,0 +1,30 @@
+{
+  "label": "warm",
+  "http_status": 200,
+  "client_wall_ms": 139.17,
+  "ok": true,
+  "queue": "memory-embed",
+  "job_id": "1cd63b07-bd01-4083-8f89-89e744595dac",
+  "job_data": {
+    "kind": "spike-embed",
+    "note": "B0 spike job",
+    "memory_id": null,
+    "enqueued_at": "2026-09-28T14:50:05.182Z"
+  },
+  "first_touch_kind": "fetch",
+  "cold_start_ms": 77.72,
+  "phases_ms": {
+    "boss_start": 63.14,
+    "queue_ready": 4.37,
+    "first_neon_touch": 77.72,
+    "drain_total": 87.09,
+    "stop": 20.86,
+    "wall": 107.96
+  },
+  "target_ms": 2000,
+  "pass": true,
+  "at": "2026-09-28T14:50:09.033Z",
+  "note": "Spike uses localhost only. Production wake = Tailscale serve (tailnet HTTPS), never funnel/public.",
+  "measured_at": "2026-09-28T14:50:09.039Z",
+  "measured_at_ist": "28/9/2026, 8:20:09 pm"
+}

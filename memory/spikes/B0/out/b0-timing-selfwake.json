@@ -1,0 +1,26 @@
+{
+  "label": "selfwake",
+  "ok": true,
+  "queue": "memory-embed",
+  "job_id": "67b2ac2d-69e5-41fd-8802-49627ce5bad1",
+  "job_data": {
+    "kind": "spike-embed",
+    "note": "B0 spike job",
+    "memory_id": null,
+    "enqueued_at": "2026-09-28T14:50:48.895Z"
+  },
+  "first_touch_kind": "fetch",
+  "cold_start_ms": 70.17,
+  "phases_ms": {
+    "boss_start": 56.42,
+    "queue_ready": 4.22,
+    "first_neon_touch": 70.17,
+    "drain_total": 78.79,
+    "stop": 21.2,
+    "wall": 99.99
+  },
+  "target_ms": 2000,
+  "pass": true,
+  "at": "2026-09-28T14:50:51.672Z",
+  "note": "Spike uses localhost only. Production wake = Tailscale serve (tailnet HTTPS), never funnel/public."
+}
