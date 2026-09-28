@@ -285,9 +285,7 @@ Machine-specific checklist if this host is already applied: [`docs/SETUP-STATUS.
 
 Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory: **Neon + pgvector** (cloud-primary, locked); ICM as local replica candidate; GitHub `bot-memory` craft logs as audit export only.
 
-Binding v2 plan landed — **P0 spikes starting**. Research pack: [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/). Build plan: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md).
-
-See [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md).
+Binding v2 plan **frozen (IDL v2.1, signed 2026-09-28)** — **P0 spikes complete, P1 prototypes underway**. Authoritative plan: [`memory/plan/FINAL-PLAN-V2.md`](memory/plan/FINAL-PLAN-V2.md). Originals for reference: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md), [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md), research pack [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
 
 ## FAQ
 
