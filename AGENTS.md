@@ -6,7 +6,7 @@ Personal harness kit for Cursor (interactive SoT) and Grok Build (terminal). Pla
 
 - Skills: `project-bootstrap` (`grok-kit apply` adapts per repo), `plan-execute`, `orchestrate-rlm`, `session-handoff`, `flagship`, `overview`, `visualise`, `code-hygiene`, `rsi`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `usage-learn`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
 - Agents: `verifier`, `debugger`, `researcher`
-- Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
+- Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`, `docs/PLAN-graph-of-bots.md` (org graph + memory store — plan only)
 
 ## Run / test
 

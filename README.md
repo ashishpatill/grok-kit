@@ -57,6 +57,12 @@ One golden path for the claim, not ten parallel demos. Replace `drive()` in `.cu
 
 The loop is small on purpose: route the task, spend the right model, prove it, then stop.
 
+## Graph of bots
+
+**Plan only** — not implemented yet. grok-kit is evolving toward a flexible **organization graph**: each node is ideally a Grok Bot (or agent), nodes can **expand into nested subgraphs** (crews), and bots may connect to multiple peers with contracted handoffs. Durable bot memory is specified as a **store contract** (ICM / SQLite today; optional remote vector DB later), with GitHub `bot-memory` craft YAML as the human **audit view**, not the only runtime fetch path.
+
+Full phases, schemas, and verify checklist: [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md).
+
 ## Install
 
 ```bash

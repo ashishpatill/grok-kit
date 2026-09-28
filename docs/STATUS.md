@@ -1,6 +1,6 @@
 # Status — grok-kit
 
-**Updated:** 2026-08-25
+**Updated:** 2026-09-28
 **Authority:** this file (GOAL_AND_LOOP.md for stop rules; SETUP-STATUS.md for machine install)
 
 ## Done
@@ -27,6 +27,7 @@
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 - README maps how grok-kit uses Cursor (skills, agents, rules, MCP, hooks, plugin, Optimize For) and Grok Build (same plugin tree, `grok plugin install`, CLI, no plugin-root MCP dump)
 - README "What grok-kit is good at" explains the harness in plain language (commands, subset load, consent, cheap models, dual-host, prove-then-stop) without naming other kits
+- Phase 0 Graph of bots plan (`docs/PLAN-graph-of-bots.md`): nested org graph + memory store contract (plan only)
 
 ## In progress
 
@@ -34,6 +35,7 @@
 
 ## Remaining (ordered)
 
+0. Implement Phases 1–5 per `docs/PLAN-graph-of-bots.md` (schemas, skills, memory contract, optional remote store research, end-to-end demo)
 1. Submit Cursor Marketplace form (manual account step)
 2. Open Grok Build catalog PR with pinned `main` SHA
 3. Soft-verify reload / slash skills (machine-local)
