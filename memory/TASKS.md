@@ -18,9 +18,11 @@ only when its exit check passes; append a one-line result note.
 - [ ] **A0.2** Seed data: 5k synthetic + 500 real memories imported from the
   bot-memory repo (content-hash dedup). _Exit: row counts match._
   _Partial 2026-09-28: 5 001 synthetic MiniLM-384 rows seeded on Neon `p0-spike`
-  (legacy schema). 500 real from `BIMLabz/bot-memory` NOT done (no repo access).
-  Re-seed against v1.sql is follow-up; scripts under `spikes/A0/scripts/` need
-  adaptation (see that README)._
+  (legacy schema). Real export DONE: `spikes/A0/real-corpus.jsonl` — 204 unique
+  atomic memories from `BIMLabz/bot-memory` (89 YAML learnings → 267 claims,
+  63 content-hash dupes dropped; repo yields 204, not 500). Seeding to Neon
+  still needs a connection string. Re-seed against v1.sql is follow-up; scripts
+  under `spikes/A0/scripts/` need adaptation (see that README)._
 - [x] **A0.3** Eval harness: 50 hand-built queries; measure recall@10, p50/p95
   latency. _Exit: harness runs; numbers in `memory/spikes/A0/RESULTS.md`._
   _2026-09-28: hybrid RRF recall@10=0.94, p95=5.13 ms (kw 0.72 / vec 0.72)._
