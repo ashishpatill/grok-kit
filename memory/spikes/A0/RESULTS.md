@@ -164,3 +164,17 @@ HNSW: `m=16`, `ef_construction=128`, ops **`halfvec_cosine_ops`**.
 ## CEO one-liner
 
 **STAY.** At 5 001 MiniLM-384 halfvec rows on Neon `p0-spike`, hybrid RRF recall@10 = **0.94** (kw 0.72 / vec 0.72), p95 = **~5 ms** (<< 500 ms). Schema/index shape is sound; next risk is real-corpus recall, not latency or operators.
+
+## Real corpus confirm (2026-09-28, after Ashish A0.2 export)
+
+**Setup:** Imported all 204 rows from `real-corpus.jsonl` into Neon `p0-spike` (legacy schema) alongside the prior 5 001 synthetic rows (total 5 206). MiniLM-L6-v2 embeddings. 50 gold queries = distinctive 10-word windows from the gold row text (not hand paraphrases). Hybrid RRF k=60, recall@10.
+
+| Retriever | recall@10 | p50 ms | p95 ms |
+|-----------|----------:|-------:|-------:|
+| **Hybrid RRF** | **1.00** | 7.67 | **11.48** |
+| Keyword (tsvector) | 0.84 | 3.48 | 4.03 |
+| Vector (HNSW) | 0.82 | 3.52 | 4.35 |
+
+Artifact: `spikes/A0/out/a0-real-bench.json`. Script: `spikes/A0/scripts/seed_real_and_bench.mjs` (legacy). v1 seeder ready at `spikes/A0/scripts/seed_real_v1.mjs` (needs a v1 Neon branch).
+
+**Caveat:** window-from-gold queries are easier than adversarial paraphrases; still shows hybrid recovering keyword-only and vector-only misses on real BIMLabz learnings. STAY gate still passes with room.

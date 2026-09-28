@@ -17,12 +17,11 @@ only when its exit check passes; append a one-line result note.
   connection string is available._
 - [ ] **A0.2** Seed data: 5k synthetic + 500 real memories imported from the
   bot-memory repo (content-hash dedup). _Exit: row counts match._
-  _Partial 2026-09-28: 5 001 synthetic MiniLM-384 rows seeded on Neon `p0-spike`
-  (legacy schema). Real export DONE: `spikes/A0/real-corpus.jsonl` — 204 unique
-  atomic memories from `BIMLabz/bot-memory` (89 YAML learnings → 267 claims,
-  63 content-hash dupes dropped; repo yields 204, not 500). Seeding to Neon
-  still needs a connection string. Re-seed against v1.sql is follow-up; scripts
-  under `spikes/A0/scripts/` need adaptation (see that README)._
+  _Partial 2026-09-28: 5 001 synthetic MiniLM-384 on Neon `p0-spike` (legacy).
+  Real export DONE (`spikes/A0/real-corpus.jsonl` — 204 unique, not 500).
+  Real seed DONE on same Neon branch (204 rows, `author=import:real-corpus`;
+  total 5 206). Re-seed against v1.sql still open — use
+  `spikes/A0/scripts/seed_real_v1.mjs` when a v1 branch exists._
 - [x] **A0.3** Eval harness: 50 hand-built queries; measure recall@10, p50/p95
   latency. _Exit: harness runs; numbers in `memory/spikes/A0/RESULTS.md`._
   _2026-09-28: hybrid RRF recall@10=0.94, p95=5.13 ms (kw 0.72 / vec 0.72)._
@@ -36,6 +35,8 @@ only when its exit check passes; append a one-line result note.
 - [x] **A0.6** Stay/kill decision: stay if recall@10 ≥ 0.7 AND p95 < 500ms;
   kill if < 0.6 on both. _Exit: `memory/spikes/A0/DECISION.md` written._
   _2026-09-28: **STAY** — hybrid 0.94 / p95 ~5 ms. Caveat: synthetic corpus._
+  _Real confirm 2026-09-28: hybrid recall@10=1.00 / p95=11.48 ms on 50 gold
+  windows from the 204-row real corpus (see DECISION.md + RESULTS.md)._
 
 _Needs: Neon API access (branch + connection string). Fallback: local
 Postgres+pgvector validates schema/queries, not Neon specifics._
