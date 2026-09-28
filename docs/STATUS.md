@@ -7,7 +7,7 @@
 
 - Phase 0 plan: Graph of bots (`docs/PLAN-graph-of-bots.md`) — nested org graph (node can become a subgraph), multi-bot edges, memory store contract. Plan only; not implemented
 - Phase 4 memory research pack (`docs/research/graph-of-bots-memory/`) — recommendation published; informed store decision
-- Binding v2 build plan (`docs/PLAN-bot-memory-graph-v2.md`) — **store locked: Neon + pgvector** cloud-primary; ICM local replica candidate; GitHub bot-memory audit export only; MCP-first; event-triggered daemon; no gatekeeping. Plan only; **P0 spikes starting**
+- Binding v2 build plan (`docs/PLAN-bot-memory-graph-v2.md`) — **store locked: Neon + pgvector** cloud-primary; ICM local replica candidate; GitHub bot-memory audit export only; MCP-first; event-triggered daemon; no gatekeeping. IDL v2.1 **frozen 2026-09-28**; **P0 spikes complete** (hybrid recall@10 1.00 / p95 11.48 ms), **P1 prototypes underway** per `memory/TASKS.md`
 - Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets
 - Local plugin symlink + user-layer install script
 - Companion criteria + ICM setup docs
@@ -37,7 +37,7 @@
 
 ## Remaining (ordered)
 
-0. P0 spikes per `docs/PLAN-bot-memory-graph-v2.md` (Neon schema/recall, daemon wake, MCP round-trip) → IDL v2 freeze gate
+0. ~~P0 spikes per `docs/PLAN-bot-memory-graph-v2.md` (Neon schema/recall, daemon wake, MCP round-trip) → IDL v2 freeze gate~~ — DONE 2026-09-28
 0b. Implement Graph of bots Phases 1–5 per `docs/PLAN-graph-of-bots.md` + v2 memory plan (schemas, handoff/expand skills, Neon primary + ICM replica path, bot-memory mirror export)
 1. Submit Cursor Marketplace form (manual account step)
 2. Open Grok Build catalog PR with pinned `main` SHA

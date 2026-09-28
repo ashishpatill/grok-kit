@@ -36,4 +36,4 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).
 
 ## Docs
-- Graph of bots (plan): `docs/PLAN-graph-of-bots.md` — nested nodes, multi-bot edges, memory store contract; Phase 4 store choice OPEN — see `docs/research/graph-of-bots-memory/`
+- Graph of bots (plan): `docs/PLAN-graph-of-bots.md` — nested nodes, multi-bot edges, memory store contract. Store locked: Neon + pgvector (IDL v2.1 frozen 2026-09-28); research pack at `docs/research/graph-of-bots-memory/`
