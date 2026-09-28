@@ -13,4 +13,5 @@ bots share.
 Stack: Neon Postgres + pgvector (primary) · event-triggered daemon + pg-boss workers ·
 MCP (`memory-mcp`) for bot access · Tailscale mesh · local replica (ICM candidate).
 
-Status: P0 spikes in progress. Freeze gate (Ashish signs IDL v2.1) required before P1.
+Status: P0 spikes complete (STAY). IDL v2.1 **FROZEN** — signed by Ashish 2026-09-28.
+P1 prototypes underway per `memory/TASKS.md`.
