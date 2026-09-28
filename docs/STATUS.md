@@ -28,6 +28,7 @@
 - README maps how grok-kit uses Cursor (skills, agents, rules, MCP, hooks, plugin, Optimize For) and Grok Build (same plugin tree, `grok plugin install`, CLI, no plugin-root MCP dump)
 - README "What grok-kit is good at" explains the harness in plain language (commands, subset load, consent, cheap models, dual-host, prove-then-stop) without naming other kits
 - Phase 0 Graph of bots plan (`docs/PLAN-graph-of-bots.md`): nested org graph + memory store contract (plan only)
+- **2026-09-28:** Graph-of-bots Phase 4 memory research pack landed in `docs/research/graph-of-bots-memory/` (README, MEMORY-RECOMMENDATION, PHASE4-ADDENDUM, SOURCE-MAP). **Awaiting Ashish store choice** (ICM/SQLite vs Neon+pgvector vs hybrid vs other); pack recommendation is candidate only.
 
 ## In progress
 
