@@ -6,7 +6,7 @@ Personal harness kit for Cursor (interactive SoT) and Grok Build (terminal). Pla
 
 - Skills: `project-bootstrap` (`grok-kit apply` adapts per repo), `plan-execute`, `orchestrate-rlm`, `session-handoff`, `flagship`, `overview`, `visualise`, `code-hygiene`, `rsi`, `memory-sync`, `cost-check`, `refine-harness`, `skill-curator-manual`, `usage-learn`, `verify-aci`, `watch-ci`, `rubric-verify`, `route-task`
 - Agents: `verifier`, `debugger`, `researcher`
-- Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`, `docs/PLAN-graph-of-bots.md` (org graph + memory store — plan only)
+- Docs: `docs/icm-setup.md`, `docs/mcp-snippets/`, `docs/companion-agent.md`
 
 ## Run / test
 
@@ -34,3 +34,6 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - Usage observation is opt-in (`install --learn`). Harness tweaks to `grok-kit.json` need `--improve` or `grok-kit learn apply --i-consent`. Never auto-rewrite User Rules or `SKILL.md`.
 - Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once). Session start/end: `/flagship` (overview + visualise). Drift: `/code-hygiene` (human decides scrap/keep/fix). Before ship: `/rsi`.
 - After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).
+
+## Docs
+- Graph of bots (plan): `docs/PLAN-graph-of-bots.md` — nested nodes, multi-bot edges, memory store contract; Phase 4 store choice OPEN — see `docs/research/graph-of-bots-memory/`

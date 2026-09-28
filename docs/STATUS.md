@@ -5,6 +5,8 @@
 
 ## Done
 
+- Phase 0 plan: Graph of bots (`docs/PLAN-graph-of-bots.md`) — nested org graph (node can become a subgraph), multi-bot edges, memory store contract (ICM/SQLite + GitHub craft as audit view). Plan only; not implemented
+- Phase 4 memory research pack (`docs/research/graph-of-bots-memory/`) — recommendation published; **store choice OPEN** for Ashish (ICM vs Neon+pgvector vs hybrid); no lock-in
 - Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets
 - Local plugin symlink + user-layer install script
 - Companion criteria + ICM setup docs
@@ -27,8 +29,6 @@
 - PR #5 reviewed and merged to `main` (verify ACI, watch-ci, rubric, PATH CLI)
 - README maps how grok-kit uses Cursor (skills, agents, rules, MCP, hooks, plugin, Optimize For) and Grok Build (same plugin tree, `grok plugin install`, CLI, no plugin-root MCP dump)
 - README "What grok-kit is good at" explains the harness in plain language (commands, subset load, consent, cheap models, dual-host, prove-then-stop) without naming other kits
-- Phase 0 Graph of bots plan (`docs/PLAN-graph-of-bots.md`): nested org graph + memory store contract (plan only)
-- **2026-09-28:** Graph-of-bots Phase 4 memory research pack landed in `docs/research/graph-of-bots-memory/` (README, MEMORY-RECOMMENDATION, PHASE4-ADDENDUM, SOURCE-MAP). **Awaiting Ashish store choice** (ICM/SQLite vs Neon+pgvector vs hybrid vs other); pack recommendation is candidate only.
 
 ## In progress
 
@@ -36,7 +36,8 @@
 
 ## Remaining (ordered)
 
-0. Implement Phases 1–5 per `docs/PLAN-graph-of-bots.md` (schemas, skills, memory contract, optional remote store research, end-to-end demo)
+0. Ashish chooses Phase 4 primary store after reading `docs/research/graph-of-bots-memory/` (OPEN: ICM/SQLite vs Neon+pgvector vs hybrid)
+0b. Implement Graph of bots Phases 1–5 per `docs/PLAN-graph-of-bots.md` (schemas, handoff/expand skills, ICM store wrapper, optional remote vector only after store pick)
 1. Submit Cursor Marketplace form (manual account step)
 2. Open Grok Build catalog PR with pinned `main` SHA
 3. Soft-verify reload / slash skills (machine-local)
