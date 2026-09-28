@@ -34,3 +34,6 @@ node scripts/grok-kit.mjs verify-aci --root . --phase doctor
 - Usage observation is opt-in (`install --learn`). Harness tweaks to `grok-kit.json` need `--improve` or `grok-kit learn apply --i-consent`. Never auto-rewrite User Rules or `SKILL.md`.
 - Route with `/route-task`. Prove with `/verify-aci`. PR merge-state with `/watch-ci` (status-once). Session start/end: `/flagship` (overview + visualise). Drift: `/code-hygiene` (human decides scrap/keep/fix). Before ship: `/rsi`.
 - After install, `grok-kit` is on PATH (`~/.local/bin/grok-kit`).
+
+## Docs
+- Graph of bots (plan): `docs/PLAN-graph-of-bots.md` — nested nodes, multi-bot edges, memory store contract. Store locked: Neon + pgvector (IDL v2.1 frozen 2026-09-28); research pack at `docs/research/graph-of-bots-memory/`
