@@ -1,0 +1,473 @@
+{
+  "summary": {
+    "corpus_rows_imported": 204,
+    "total_db_rows": 5206,
+    "n_queries": 50,
+    "recall_at_10": {
+      "hybrid": 1,
+      "keyword": 0.84,
+      "vector": 0.82
+    },
+    "latency_ms": {
+      "hybrid_p50": 7.67,
+      "hybrid_p95": 11.48,
+      "keyword_p50": 3.48,
+      "keyword_p95": 4.03,
+      "vector_p50": 3.52,
+      "vector_p95": 4.35
+    },
+    "notes": "Real corpus seeded into legacy Neon p0-spike alongside synthetic 5k. Queries are distinctive windows from gold row text (not hand paraphrases)."
+  },
+  "details": [
+    {
+      "id": "rq-1",
+      "query": "Mac write-only b55b2062 wrote small-write.txt Wait ended Allow run finished.",
+      "gold": "8574b647-1b86-579f-803c-82a40fb50cee",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 29.42
+    },
+    {
+      "id": "rq-2",
+      "query": "Hang was already closed. Worked Live OpenCode laguna-s-2.1-free. File disk",
+      "gold": "7d7b9043-a466-5b6f-a3a6-080d6cd0ce30",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 11.48
+    },
+    {
+      "id": "rq-3",
+      "query": "evals green. not sit the console again for this proof.",
+      "gold": "ecf659f7-27ed-5345-b413-c1aaa8d8dcb6",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 9.42
+    },
+    {
+      "id": "rq-4",
+      "query": "Two-track lock is DeepHarness/OpenHarness and Tell Proof only.",
+      "gold": "26914299-118e-583f-91ab-fc399715a0af",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.54
+    },
+    {
+      "id": "rq-5",
+      "query": "track EvidenceLoom steals finish. Worked Park EvidenceLoom including open drafts.",
+      "gold": "821fb40c-e206-5c08-af48-dce5b816dc1c",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 9.38
+    },
+    {
+      "id": "rq-6",
+      "query": "Next: Do not open a third track.",
+      "gold": "b9f31801-c0d4-5b28-9bab-e70ee7c7ca9f",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.67
+    },
+    {
+      "id": "rq-7",
+      "query": "Ashish said Grok 4.6 means Cursor cloud agents Grok 4.6.",
+      "gold": "9242c2b9-8da1-5a98-90b4-9a8535b9a9c2",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.98
+    },
+    {
+      "id": "rq-8",
+      "query": "chat the Mac console model Grok 4.6. Worked Pin model",
+      "gold": "ebf58d30-127d-5d4c-97d4-44a428bd8d05",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.98
+    },
+    {
+      "id": "rq-9",
+      "query": "Next Console live pin OpenCode currently laguna-s-2.1-free. Alpha dead.",
+      "gold": "af568298-b204-58b3-82bd-260d989d16d8",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.03
+    },
+    {
+      "id": "rq-10",
+      "query": "Studio wasted Ashish time. Product Cursor Grok Build MCP.",
+      "gold": "13be2ffc-f8e9-5c81-8273-392c74791277",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.39
+    },
+    {
+      "id": "rq-11",
+      "query": "him studio. Worked MCP tools multi-session steer. Studio demo only.",
+      "gold": "effb5b57-488a-594a-9fb5-23147d9a8730",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.49
+    },
+    {
+      "id": "rq-12",
+      "query": "One generate not done. Plan across sessions until studio-grade site.",
+      "gold": "fa5335a9-5dde-533d-83fe-b6949fe30b9e",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.32
+    },
+    {
+      "id": "rq-13",
+      "query": "Week ship met. Mac write-only b55b2062 wrote OpenHarness-pr28 small-write.txt",
+      "gold": "bba876f2-d41a-51d0-9e4b-736a550d830a",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 7.88
+    },
+    {
+      "id": "rq-14",
+      "query": "then Alpha 404 then OpenRouter 402. Worked Wait ended Allow",
+      "gold": "ba2d851a-075a-5472-99e6-86ae3967cc1f",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 7.33
+    },
+    {
+      "id": "rq-15",
+      "query": "claim evals green public release. second sit for this proof.",
+      "gold": "6a277c2d-ec87-598b-8acf-8e844fd85007",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.38
+    },
+    {
+      "id": "rq-16",
+      "query": "holds digested SuperLearn expert craft only. AI-notes loads craft YAML",
+      "gold": "7e6936d8-8a90-59f0-ae5f-f4fddcc113f5",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 7.28
+    },
+    {
+      "id": "rq-17",
+      "query": "bodies quiz banks setup plans full outlines into bot-memory. Loading",
+      "gold": "73e2306b-747a-5fab-b026-7de01e316e6d",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 12.72
+    },
+    {
+      "id": "rq-18",
+      "query": "craft blocks before AI-notes lesson work. Speak without leftover reconstruction",
+      "gold": "8b40c0b4-0921-5b7b-8ae0-0dfe0e0c4748",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.62
+    },
+    {
+      "id": "rq-19",
+      "query": "names Strang Khan Sanderson and Sam Rose samwho.dev 3B1B the",
+      "gold": "17a6d9e7-e357-5125-a16d-1eb0d3317d26",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 10.4
+    },
+    {
+      "id": "rq-20",
+      "query": "Khan Sanderson and naming only Sam Rose. Detached labs outside",
+      "gold": "c79c9d33-fb2c-5a5d-a248-a946360ade34",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 7.44
+    },
+    {
+      "id": "rq-21",
+      "query": "Sanderson and Sam Rose samwho.dev Match 3B1B Manim floor. Put",
+      "gold": "39b05702-9513-5bca-a2e7-e952956f41e1",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 7.63
+    },
+    {
+      "id": "rq-22",
+      "query": "Algebra course Strang 18.06 not 18.065. SGD. CNN. Learn course",
+      "gold": "a691a759-8754-5830-96d6-4e61951c2008",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 9.25
+    },
+    {
+      "id": "rq-23",
+      "query": "SGD CNN this first course. Nesting Learn under DL. Freezing",
+      "gold": "ae3aa75f-6ee3-5cd1-b15b-4e66c5f9a09f",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 7.07
+    },
+    {
+      "id": "rq-24",
+      "query": "Keep Learn beside DL. Hold Probability open until all lessons",
+      "gold": "dfceaacf-05e2-5b84-828f-afa1ade15469",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 6.96
+    },
+    {
+      "id": "rq-25",
+      "query": "Computed tip Tip-to-tail the add story. Shape-fail not fold dot",
+      "gold": "6bf9abcd-ddae-51d3-a01f-0c88fc9275c0",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.51
+    },
+    {
+      "id": "rq-26",
+      "query": "260 130 into Lesson Breaking default when adding VOE dual-mode.",
+      "gold": "a6836aaa-1e03-5a16-8cf2-f000d9bb3e0a",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 9.88
+    },
+    {
+      "id": "rq-27",
+      "query": "computed tip Show shape-fail Ship VOE dual-mode without breaking default.",
+      "gold": "26bf0f32-d384-550e-9e3b-518c4f8e4cb7",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.8
+    },
+    {
+      "id": "rq-28",
+      "query": "lessons. Student page order explanation prose then readable figure then",
+      "gold": "de3eb68c-44bf-5842-915f-23f87276e0d2",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.34
+    },
+    {
+      "id": "rq-29",
+      "query": "course page. Fake-complete later lessons. Stills with overlapping axes and",
+      "gold": "58cf2ff7-762f-54cc-ab6b-2994757f4f94",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 6.94
+    },
+    {
+      "id": "rq-30",
+      "query": "Figure with margins and reserved gutters labels never sit axes.",
+      "gold": "ff47ce89-cd42-5d6a-b5b4-8f5a18d40dca",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 8.14
+    },
+    {
+      "id": "rq-31",
+      "query": "Ashish Mac SuperLearn manim Manim Community Intel Homebrew Python 3.12",
+      "gold": "4e4c592e-6529-5d06-b291-d4d92a290e03",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.45
+    },
+    {
+      "id": "rq-32",
+      "query": "with arrows. Stock Manim tips that are not computed. Manim",
+      "gold": "9367cc6d-235b-55b8-99e1-531d51da4244",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 6.91
+    },
+    {
+      "id": "rq-33",
+      "query": "theme. Copy the mp4 onto the open path. Update the",
+      "gold": "cfa11af7-ec07-5f19-8c09-c42e823ead9d",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.16
+    },
+    {
+      "id": "rq-34",
+      "query": "talk lives the Superlearn group not CEO One lesson time",
+      "gold": "3d9ca805-dc64-5504-a780-1bd2bbb97c19",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 10.97
+    },
+    {
+      "id": "rq-35",
+      "query": "SuperLearn lesson. Parallel lesson branches. Grok Bot chat writing the",
+      "gold": "ff4c8e3e-ea21-5424-8c86-b14970722b0a",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.07
+    },
+    {
+      "id": "rq-36",
+      "query": "main. Ship-loop. Merge when the live page actually teaches. Stay",
+      "gold": "85fc033b-250b-52ec-8802-50796d156a74",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 8.6
+    },
+    {
+      "id": "rq-37",
+      "query": "not look like pass. the run claims done must have",
+      "gold": "076314d3-622e-5f21-b2a9-7ccc6ec7e3cd",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.07
+    },
+    {
+      "id": "rq-38",
+      "query": "model. Calling save-point the change picture. Claiming evals green. Restarting",
+      "gold": "b82094c3-4f9e-5842-91a0-21ee24cf44d0",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.28
+    },
+    {
+      "id": "rq-39",
+      "query": "what broken whether can ship the next real job. Close",
+      "gold": "1cffe3b8-e94a-5c8e-b1b6-2ffc19a5168e",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.73
+    },
+    {
+      "id": "rq-40",
+      "query": "and fail-path miss log are bot-memory main. Compile-after-measured-close gated draft",
+      "gold": "18e8d3ba-df81-5144-a755-02064b246be7",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 7.64
+    },
+    {
+      "id": "rq-41",
+      "query": "lessons raw traces into the wiki. Auto-merging better try without",
+      "gold": "72078891-4f8c-5cda-9f29-977a030d1ce1",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.35
+    },
+    {
+      "id": "rq-42",
+      "query": "compile-time. Live console mounts skills only. Don Pareto until real",
+      "gold": "c20f97c7-a884-5b32-931b-3f075afdcf02",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 6.96
+    },
+    {
+      "id": "rq-43",
+      "query": "for IDEs and harnesses Cursor Grok Build that steers many",
+      "gold": "35a0241f-3c27-5746-9c6c-fa1c14515630",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.08
+    },
+    {
+      "id": "rq-44",
+      "query": "Studio the product. One-shot session generate done. Dumping untested PRs",
+      "gold": "8c983a3c-ef59-5f0e-852a-0f476f09d634",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.5
+    },
+    {
+      "id": "rq-45",
+      "query": "learn from the last pass next command. Distinctiveness suite before",
+      "gold": "a1c92921-bc14-53d9-9d90-cdbfa903130c",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 7.33
+    },
+    {
+      "id": "rq-46",
+      "query": "Bots orchestrate and Cursor agents the code. grok-kit ashishpatill grok-kit",
+      "gold": "ab618b1b-eb64-521c-9ee1-a389c270b312",
+      "hybrid": true,
+      "kw": false,
+      "vec": true,
+      "hybrid_ms": 7.59
+    },
+    {
+      "id": "rq-47",
+      "query": "Cursor tokens when Grok not needed. Omitting grok-4.6 SuperLearn lessons",
+      "gold": "45a6c32f-f33b-535d-9d17-f2bd4d898f88",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.98
+    },
+    {
+      "id": "rq-48",
+      "query": "grok-4.6. Everything else cheap OSS kimi-k3 unless names another using",
+      "gold": "406b2fde-0ffe-5e1e-af6b-d00020f1106b",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.35
+    },
+    {
+      "id": "rq-49",
+      "query": "research Pins only not third product. Paper2Agent donor not merge.",
+      "gold": "e1bfdc3e-cea1-5448-a3e9-a9dfc3ad1974",
+      "hybrid": true,
+      "kw": true,
+      "vec": false,
+      "hybrid_ms": 6.87
+    },
+    {
+      "id": "rq-50",
+      "query": "Studio Paper2Agent.sh the 18-step pipeline MCP wrap launch_remote_mcp success Docker",
+      "gold": "bd018835-6fa1-5ed8-94da-a4444fdd1ab0",
+      "hybrid": true,
+      "kw": true,
+      "vec": true,
+      "hybrid_ms": 7.18
+    }
+  ]
+}
