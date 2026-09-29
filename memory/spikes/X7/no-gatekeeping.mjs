@@ -13,6 +13,13 @@
  *   node spikes/X7/no-gatekeeping.mjs
  *   DATABASE_URL=... MEMORY_BACKEND=pg node spikes/X7/no-gatekeeping.mjs
  */
+import dns from 'node:dns';
+import net from 'node:net';
+dns.setDefaultResultOrder('ipv4first');
+if (typeof net.setDefaultAutoSelectFamily === 'function') {
+  net.setDefaultAutoSelectFamily(false);
+}
+
 import { randomUUID } from 'node:crypto';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';

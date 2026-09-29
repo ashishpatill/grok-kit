@@ -8,6 +8,13 @@
  *   node spikes/X4/kill9-sweeper.mjs
  *   MEMORY_BACKEND=pg DATABASE_URL=... node spikes/X4/kill9-sweeper.mjs  # only on main when allowed
  */
+import dns from 'node:dns';
+import net from 'node:net';
+dns.setDefaultResultOrder('ipv4first');
+if (typeof net.setDefaultAutoSelectFamily === 'function') {
+  net.setDefaultAutoSelectFamily(false);
+}
+
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { writeFileSync, mkdirSync } from 'node:fs';
