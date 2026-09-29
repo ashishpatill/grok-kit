@@ -35,6 +35,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { PgBoss } from 'pg-boss';
 import { buildRecallContract } from '../lib/cold-start-contract.mjs';
+import { shapeRecallResult, withVisibleRecall } from '../lib/visible-recall.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -244,7 +245,7 @@ server.registerTool(
   'recall',
   {
     description:
-      'Recall top-k memories in a namespace (hybrid RRF: keyword tsvector leg + halfvec vector leg, RRF k=60). Staged rows contribute keyword-only. Filters approval=live. Returns cold_start|thin|ok plus contract {index,daemon,last_seq,replica_lag} (P1.M9).',
+      'Recall top-k memories in a namespace (hybrid RRF: keyword tsvector leg + halfvec vector leg, RRF k=60). Staged rows contribute keyword-only. Filters approval=live. Returns cold_start|thin|ok plus contract {index,daemon,last_seq,replica_lag} (P1.M9). Each result includes id, short provenance, and a removal path note (P3.V1 visible recall).',
     inputSchema: {
       namespace: z.string().describe('Namespace to search within'),
       query: z.string().describe('Search query'),
@@ -289,7 +290,7 @@ server.registerTool(
              FROM kw FULL OUTER JOIN vec ON kw.id = vec.id
            )
            SELECT m.id, m.namespace, m.text, m.index_status, m.approval, m.type,
-                  m.importance, m.created_at, f.rrf, f.kw_rnk, f.vec_rnk
+                  m.importance, m.pinned, m.provenance, m.created_at, f.rrf, f.kw_rnk, f.vec_rnk
            FROM fused f JOIN memories m ON m.id = f.id
            ORDER BY f.rrf DESC
            LIMIT $4`,
@@ -300,7 +301,7 @@ server.registerTool(
         legs.vector = rows.filter((x) => x.vec_rnk != null).length;
       } else {
         const r = await client.query(
-          `SELECT id, namespace, text, index_status, approval, type, importance, created_at,
+          `SELECT id, namespace, text, index_status, approval, type, importance, pinned, provenance, created_at,
                   ts_rank_cd(text_tsv, plainto_tsquery('english', $2)) AS rrf,
                   NULL::int AS kw_rnk, NULL::int AS vec_rnk
            FROM memories
@@ -342,7 +343,7 @@ server.registerTool(
         replicaLag: null,
       });
 
-      const payload = {
+      const payload = withVisibleRecall({
         status,
         namespace,
         query,
@@ -351,17 +352,8 @@ server.registerTool(
         hybrid: Boolean(qEmb),
         count: rows.length,
         contract,
-        results: rows.map((row) => ({
-          id: row.id,
-          text: row.text,
-          index_status: row.index_status,
-          approval: row.approval,
-          type: row.type,
-          importance: row.importance,
-          rrf: Number(row.rrf),
-          created_at: row.created_at,
-        })),
-      };
+        results: rows.map((row) => shapeRecallResult(row)),
+      });
       return { content: [{ type: 'text', text: JSON.stringify(payload, null, 2) }] };
     } catch (e) {
       return {

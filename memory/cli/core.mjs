@@ -4,6 +4,7 @@
  */
 import { randomUUID } from 'node:crypto';
 import { buildRecallContract } from '../lib/cold-start-contract.mjs';
+import { shapeRecallResult, withVisibleRecall } from '../lib/visible-recall.mjs';
 
 export const MEMORY_TYPES = new Set([
   'working',
@@ -164,7 +165,7 @@ export async function recall(adapter, namespace, query, k = 8) {
         daemon: recalled.daemon ?? null,
       });
 
-    return {
+    return withVisibleRecall({
       status,
       namespace,
       query,
@@ -173,17 +174,8 @@ export async function recall(adapter, namespace, query, k = 8) {
       hybrid: Boolean(hybrid),
       count: rows.length,
       contract,
-      results: rows.map((row) => ({
-        id: row.id,
-        text: row.text,
-        index_status: row.index_status,
-        approval: row.approval,
-        type: row.type,
-        importance: row.importance,
-        rrf: Number(row.rrf),
-        created_at: row.created_at,
-      })),
-    };
+      results: rows.map((row) => shapeRecallResult(row)),
+    });
   } catch (e) {
     return errorEnvelope(e.message || e);
   }

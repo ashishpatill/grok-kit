@@ -26,7 +26,10 @@
     "x7:spike": "node spikes/X7/no-gatekeeping.mjs",
     "bus:smoke": "node bus/smoke.mjs",
     "consolidate": "node workers/run-consolidate.mjs",
-    "consolidate:smoke": "node workers/consolidate-smoke.mjs"
+    "consolidate:smoke": "node workers/consolidate-smoke.mjs",
+    "export:hot-pin": "node export/index.mjs",
+    "export:smoke": "node export/smoke.mjs",
+    "visible-recall:smoke": "node --test lib/visible-recall.test.mjs"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +45,7 @@
   "type": "module",
   "bin": {
     "memory-cli": "./cli/index.mjs",
-    "memory-import": "./import/index.mjs"
+    "memory-import": "./import/index.mjs",
+    "memory-export-hot-pin": "./export/index.mjs"
   }
 }
