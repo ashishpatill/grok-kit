@@ -116,8 +116,8 @@ One subtask = one commit. Check only when exit passes.
   _Blocked 2026-09-29: no always-on daemon host / Tailscale serve target yet._
 - [ ] **P1.X2** systemd unit + timer self-wake on daemon host.
   _Blocked 2026-09-29: same as X1 — no daemon host._
-- [ ] **P1.X3** Conformance suite green.
-  _Open: per-track smokes exist; no unified conformance suite yet._
+- [x] **P1.X3** Conformance suite green.
+  _2026-09-29: `ops/conformance.mjs` wraps contract/cli/import/workers/graph/curator/nodes/demo:stuck-debug → `npm run conformance` ALL GREEN 8/8 (~1.6s stub-only). See ITER-005._
 - [ ] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
   _Open: not exercised this session._
 - [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
