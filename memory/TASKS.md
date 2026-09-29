@@ -153,7 +153,10 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
 - [x] **P2.K3** Verify-loop outcomes (`rubric-verify` / `verify-aci`) auto-emit episodic records.
   _2026-09-30: auto-emit episodic `errors-resolved-<slug>`; Neon main smoke
   ALL GREEN (`skills/verify-aci/scripts/episodic-smoke.mjs`)._
-- [ ] **P2.K4** `refine-harness` cites memory IDs in generated patches.
+- [x] **P2.K4** `refine-harness` cites memory IDs in generated patches.
+  _2026-09-30: SKILL.md requires `memory_ids` on each ≤3 patch; `cite-patches.mjs`
+  validates opaque TEXT ids (UUID/ULID/`real_`/`syn_`); unit 11/11; Neon main
+  recall cite smoke ALL GREEN (`cite-smoke.mjs`, ns=`project-grok-kit`, read-only)._
 
 ### Cross-system
 - [ ] **P2.C1** Moose onboards behind the frozen IDL v2.1 contract (needs X6); first real cross-system learning promoted and reused.
@@ -168,3 +171,14 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
   in memories. Left unchecked until Ashish live reject/approve closes the gate._
 
 ## P3 — Consolidation + hardening (ongoing) — per plan §14, tracked after P2 gates.
+
+
+### Thin inter-bot bus (research → TASKS only; no full A2A stack)
+_Primitives from research: presence / message / task / wake. Reuse existing daemon
+presence + `/wake` scaffolds where they fit. Do **not** invent a full A2A protocol
+or multi-vendor agent-to-agent stack in this phase._
+
+- [ ] **P3.B1** `presence.heartbeat` — formalize bot/daemon heartbeat surface (align with `memory/daemon/presence.mjs` / PR #21); online check for peers.
+- [ ] **P3.B2** `message.send` — thin contracted message/handoff send (payload: from/to/ask/evidence/`memory_refs`); fail closed on missing evidence; no free-form chat bus.
+- [ ] **P3.B3** `task.request` / `task.update` / `task.cancel` — minimal task lifecycle on existing blackboard/outbox (004); ids + status only; no workflow engine.
+- [ ] **P3.B4** `wake.request` — authenticated daemon wake (`POST /wake` + `WAKE_TOKEN`, X2 launchd); document as the cross-bot nudge primitive.
