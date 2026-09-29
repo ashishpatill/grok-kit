@@ -67,3 +67,18 @@ rm -f ~/Library/LaunchAgents/ai.botmemory.daemon*.plist
 ## Linux note
 
 `memory/daemon/systemd/` units remain for a future Linux host. This Mac uses **launchd only**.
+
+## Cross-bot nudge (P3.B4 `wake.request`)
+
+Any bot (or graph node) can nudge this daemon awake without speaking MCP:
+
+```js
+import { accept } from '../../bus/index.mjs';
+await accept(null, { type: 'wake.request', source: 'bot-nudge', from: 'grok-coder-01' }, {
+  wake: { url: 'http://127.0.0.1:8787/wake', token: process.env.WAKE_TOKEN },
+});
+```
+
+Same contract as launchd `wake.sh`: `Authorization: Bearer $WAKE_TOKEN` → `POST /wake`.
+Still localhost until X1 Tailscale serve lands — do not claim public/tailnet wake here.
+
