@@ -1,0 +1,106 @@
+{
+  "demo": "stuck-debug-round-trip",
+  "task": "P1.G4",
+  "when": "2026-09-29T16:51:18.271Z",
+  "run_id": "stuck-debug-1790700678268",
+  "trace_id": "tr-stuck-1790700678268",
+  "namespace": "errors-resolved-debug",
+  "ok": true,
+  "promoted_id": "618fa1eb-98e7-4277-93a4-6911ae4a5fad",
+  "decided_by": "svc:curator",
+  "transcript": [
+    {
+      "step": "blackboard_goal",
+      "at": "2026-09-29T16:51:18.270Z",
+      "run_id": "stuck-debug-1790700678268"
+    },
+    {
+      "step": "emit_task_stuck",
+      "at": "2026-09-29T16:51:18.270Z",
+      "to": "grok-coder-01"
+    },
+    {
+      "step": "drain",
+      "at": "2026-09-29T16:51:18.271Z",
+      "results": [
+        {
+          "handled": true,
+          "node_id": "grok-coder-01",
+          "outbox_id": 1
+        },
+        {
+          "handled": true,
+          "node_id": "verifier-01",
+          "outbox_id": 2
+        },
+        {
+          "handled": true,
+          "node_id": "curator-01",
+          "outbox_id": 3
+        },
+        {
+          "handled": false,
+          "detail": "empty"
+        }
+      ]
+    },
+    {
+      "step": "board_snapshot",
+      "at": "2026-09-29T16:51:18.271Z",
+      "coder_stuck": true,
+      "verdict": "fail",
+      "curator_decision": "approved",
+      "promoted_id": "618fa1eb-98e7-4277-93a4-6911ae4a5fad",
+      "decided_by": "svc:curator"
+    },
+    {
+      "step": "moose_recall",
+      "at": "2026-09-29T16:51:18.271Z",
+      "recall_status": "ok",
+      "recall_count": 1,
+      "hit_promoted": true,
+      "provenance_author": "svc:curator",
+      "provenance_origin": "promote"
+    }
+  ],
+  "drain": [
+    {
+      "handled": true,
+      "node_id": "grok-coder-01",
+      "outbox_id": 1,
+      "handler_result": {
+        "stuck": true
+      }
+    },
+    {
+      "handled": true,
+      "node_id": "verifier-01",
+      "outbox_id": 2,
+      "handler_result": {
+        "verdict": "fail",
+        "propose": {
+          "status": "ok",
+          "decision": "queued_for_review",
+          "reason": "low-evidence",
+          "proposal_id": "d929c6cc-8fc9-4195-a131-bab607ea6fa5"
+        }
+      }
+    },
+    {
+      "handled": true,
+      "node_id": "curator-01",
+      "outbox_id": 3,
+      "handler_result": {
+        "status": "ok",
+        "decision": "approved",
+        "proposal_id": "d929c6cc-8fc9-4195-a131-bab607ea6fa5",
+        "promoted_id": "618fa1eb-98e7-4277-93a4-6911ae4a5fad",
+        "decided_by": "svc:curator"
+      }
+    },
+    {
+      "handled": false,
+      "detail": "empty"
+    }
+  ]
+}

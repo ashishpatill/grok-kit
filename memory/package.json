@@ -15,7 +15,10 @@
     "import:smoke": "node import/smoke.mjs",
     "workers:smoke": "node workers/smoke.mjs",
     "contract:smoke": "node lib/cold-start-contract.test.mjs",
-    "graph:smoke": "node --experimental-strip-types graph/smoke.mjs"
+    "graph:smoke": "node --experimental-strip-types graph/smoke.mjs",
+    "curator:smoke": "node graph/curator-smoke.mjs",
+    "nodes:smoke": "node --experimental-strip-types graph/nodes-smoke.mjs",
+    "demo:stuck-debug": "node --experimental-strip-types graph/demo-stuck-debug.mjs"
   },
   "keywords": [],
   "author": "",

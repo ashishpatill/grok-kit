@@ -21,6 +21,13 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import {
+  reviewList,
+  promoteProposal,
+  rejectProposal,
+  reviewDecide,
+  CURATOR_IDENTITY,
+} from '../lib/curator-decide.mjs';
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { z } from 'zod';
@@ -588,11 +595,115 @@ server.registerTool(
   }
 );
 
+
+// ---- P1.G2 curator / review tools (IDL §8) ---------------------------------
+server.registerTool(
+  'review_list',
+  {
+    description:
+      'List pending proposals and queued review_items for curator/human review (IDL review_list).',
+    inputSchema: {
+      status: z
+        .string()
+        .optional()
+        .describe("Filter: 'pending'/'queued' (default pending proposals + queued review_items)"),
+    },
+  },
+  async ({ status } = {}) => {
+    try {
+      const result = await reviewList(getPool(), { status });
+      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+    } catch (e) {
+      return {
+        isError: true,
+        content: [{ type: 'text', text: JSON.stringify({ status: 'error', error: String(e.message || e) }) }],
+      };
+    }
+  }
+);
+
+server.registerTool(
+  'promote',
+  {
+    description:
+      'Promote a pending proposal into memories as svc:curator (or decided_by). Stamps provenance.author/decided_by.',
+    inputSchema: {
+      proposal_id: z.string().describe('Proposal id to approve and promote'),
+      decided_by: z.string().optional().describe('Default svc:curator'),
+      note: z.string().optional().describe('Optional decision note stored in provenance'),
+    },
+  },
+  async ({ proposal_id, decided_by, note }) => {
+    const result = await promoteProposal(getPool(), {
+      proposal_id,
+      decided_by: decided_by || CURATOR_IDENTITY,
+      note,
+    });
+    const isError = result.status === 'error';
+    return {
+      isError,
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.registerTool(
+  'reject_proposal',
+  {
+    description: 'Reject a pending proposal (curator as svc:curator by default).',
+    inputSchema: {
+      proposal_id: z.string(),
+      decided_by: z.string().optional(),
+      note: z.string().optional(),
+    },
+  },
+  async ({ proposal_id, decided_by, note }) => {
+    const result = await rejectProposal(getPool(), {
+      proposal_id,
+      decided_by: decided_by || CURATOR_IDENTITY,
+      note,
+    });
+    return {
+      isError: result.status === 'error',
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+server.registerTool(
+  'review_decide',
+  {
+    description:
+      'Unified decide API: target proposal|review_item with decision approve|reject|promote|resolve. Default decided_by=svc:curator.',
+    inputSchema: {
+      target: z.enum(['proposal', 'review_item']).describe('Which queue'),
+      id: z.string().describe('proposal_id or review_item id'),
+      decision: z.string().describe('approve|reject|promote|resolve'),
+      decided_by: z.string().optional(),
+      note: z.string().optional(),
+    },
+  },
+  async ({ target, id, decision, decided_by, note }) => {
+    const result = await reviewDecide(getPool(), {
+      target,
+      id,
+      decision,
+      decided_by: decided_by || CURATOR_IDENTITY,
+      note,
+    });
+    return {
+      isError: result.status === 'error',
+      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   // stderr only — stdout is MCP JSON-RPC
-  console.error('[memory-mcp] stdio ready (store, recall[hybrid], list_namespaces, get, ingest_file, propose)');
+  console.error('[memory-mcp] stdio ready (store, recall[hybrid], list_namespaces, get, ingest_file, propose, review_list, promote, reject_proposal, review_decide)');
 }
 
 main().catch((e) => {
