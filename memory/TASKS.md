@@ -94,11 +94,14 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-29: `memory/import/` (hash/parse/ops/apply/CLI) + migration 003 (`review_items` + `memories_content_hash_uq`); stub smoke ALL GREEN (`npm run import:smoke`); Neon apply of 003 still ops step on p1-v1._
 - [x] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
   _2026-09-29: `memory/workers/` (embed MiniLM halfvec, score heuristic|OpenRouter, dedup ADD/UPDATE→review) + `lib/embed.mjs`; daemon wake = reconcile NULL embeddings → drain batch via dispatch; stub smoke `npm run workers:smoke`. Neon backfill of staged import rows = ops wake against p1-v1._
-- [ ] **P1.M8** `full` replica plan on daemon host + weekly pg_dump dry-run notes.
-- [ ] **P1.M9** Cold-start contract live in recall envelope (already stubbed; conformance tests).
+- [x] **P1.M8** `full` replica plan on daemon host + weekly pg_dump dry-run notes.
+  _2026-09-29: `ops/replica-and-backup.md` + `ops/pg-dump-dry-run.sh`; Neon p1-v1 dump 9 470 271 B / 54 TOC / sha256 0206b8c4…; PITR documented as 6h incident-only; host full-replica install blocked on X1/X2. See ITER-003._
+- [x] **P1.M9** Cold-start contract live in recall envelope (already stubbed; conformance tests).
+  _2026-09-29: recall MCP/CLI envelope gains `contract` {version,source,index,daemon,last_seq,replica_lag,pending_embeddings}; `npm run contract:smoke` + `cli:smoke` ALL GREEN. See ITER-003._
 
 ### Graph track
-- [ ] **P1.G1** TS orchestrator + blackboard/outbox tables on Neon.
+- [x] **P1.G1** TS orchestrator + blackboard/outbox tables on Neon.
+  _2026-09-29: migration `004-blackboard-outbox.sql` applied to Neon p1-v1 (blackboard+outbox verified); `memory/graph/` Orchestrator scaffold + `npm run graph:smoke` ALL GREEN. See ITER-003._
 - [ ] **P1.G2** Curator client calling memory MCP as `svc:curator`.
 - [ ] **P1.G3** 3 nodes (grok-coder-01, verifier-01, curator-01) + scripted Moose stand-in.
 - [ ] **P1.G4** Stuck-debug round-trip demo recorded.

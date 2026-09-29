@@ -1,3 +1,4 @@
+import { buildRecallContract } from '../lib/cold-start-contract.mjs';
 /**
  * Postgres + pgvector adapter mirroring memory-mcp store/recall/list_namespaces.
  */
@@ -169,16 +170,37 @@ export function createPgAdapter(databaseUrl = process.env.DATABASE_URL) {
           legs.keyword = rows.length;
         }
 
-        const cnt = await client.query(
-          `SELECT count(*)::int AS n FROM memories
-           WHERE namespace = $1 AND approval = 'live' AND index_status IN ('indexed','staged')`,
+        const meta = await client.query(
+          `SELECT
+             (SELECT count(*)::int FROM memories
+               WHERE namespace = $1 AND approval = 'live'
+                 AND index_status IN ('indexed','staged')) AS live,
+             (SELECT count(*)::int FROM memories
+               WHERE namespace = $1 AND approval = 'live'
+                 AND index_status = 'indexed' AND embedding IS NOT NULL) AS indexed,
+             (SELECT count(*)::int FROM memories
+               WHERE namespace = $1 AND approval = 'live' AND embedding IS NULL) AS pending,
+             (SELECT coalesce(max(seq), 0)::bigint FROM sync_log) AS last_seq`,
           [namespace]
         );
+        const m = meta.rows[0];
         return {
           rows,
           legs,
           hybrid: Boolean(qEmb),
-          liveCount: cnt.rows[0].n,
+          liveCount: m.live,
+          source: 'neon',
+          indexedCount: m.indexed,
+          pendingEmbeddings: m.pending,
+          lastSeq: Number(m.last_seq),
+          replicaLag: null,
+          contract: buildRecallContract({
+            source: 'neon',
+            indexedCount: m.indexed,
+            pendingEmbeddings: m.pending,
+            lastSeq: Number(m.last_seq),
+            replicaLag: null,
+          }),
         };
       } finally {
         client.release();

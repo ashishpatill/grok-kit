@@ -3,6 +3,7 @@
  * Same JSON envelopes as memory-mcp tools. Adapters supply persistence.
  */
 import { randomUUID } from 'node:crypto';
+import { buildRecallContract } from '../lib/cold-start-contract.mjs';
 
 export const MEMORY_TYPES = new Set([
   'working',
@@ -27,7 +28,9 @@ export function errorEnvelope(error) {
  * @property {(row: object) => Promise<object>} insertMemory
  * @property {(memoryId: string) => Promise<{jobId: *, enqueue_error: *}>} [enqueueEmbed]
  * @property {(args: {namespace:string,query:string,k:number}) => Promise<{
- *   rows: object[], legs: {keyword:number,vector:number}, hybrid: boolean, liveCount: number
+ *   rows: object[], legs: {keyword:number,vector:number}, hybrid: boolean, liveCount: number,
+ *   contract?: object, indexedCount?: number, pendingEmbeddings?: number, lastSeq?: number|null,
+ *   source?: string, replicaLag?: number|null, daemon?: string|null
  * }>} recall
  * @property {() => Promise<{namespace:string,n:number}[]>} listNamespaces
  */
@@ -138,16 +141,28 @@ export async function recall(adapter, namespace, query, k = 8) {
   }
 
   try {
-    const { rows, legs, hybrid, liveCount } = await adapter.recall({
+    const recalled = await adapter.recall({
       namespace,
       query,
       k: kk,
     });
+    const { rows, legs, hybrid, liveCount } = recalled;
 
     let status = 'ok';
     if (rows.length === 0) {
       status = liveCount === 0 ? 'cold_start' : 'thin';
     }
+
+    const contract =
+      recalled.contract ||
+      buildRecallContract({
+        source: recalled.source || adapter.source || 'stub',
+        indexedCount: recalled.indexedCount ?? 0,
+        pendingEmbeddings: recalled.pendingEmbeddings ?? 0,
+        lastSeq: recalled.lastSeq ?? null,
+        replicaLag: recalled.replicaLag ?? null,
+        daemon: recalled.daemon ?? null,
+      });
 
     return {
       status,
@@ -157,6 +172,7 @@ export async function recall(adapter, namespace, query, k = 8) {
       legs: legs || { keyword: 0, vector: 0 },
       hybrid: Boolean(hybrid),
       count: rows.length,
+      contract,
       results: rows.map((row) => ({
         id: row.id,
         text: row.text,
@@ -173,10 +189,6 @@ export async function recall(adapter, namespace, query, k = 8) {
   }
 }
 
-/**
- * list_namespaces() → MCP list_namespaces envelope
- * @param {MemoryAdapter} adapter
- */
 export async function listNamespaces(adapter) {
   try {
     const namespaces = await adapter.listNamespaces();

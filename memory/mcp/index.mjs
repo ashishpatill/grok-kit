@@ -27,6 +27,7 @@ import { z } from 'zod';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { PgBoss } from 'pg-boss';
+import { buildRecallContract } from '../lib/cold-start-contract.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -236,7 +237,7 @@ server.registerTool(
   'recall',
   {
     description:
-      'Recall top-k memories in a namespace (hybrid RRF: keyword tsvector leg + halfvec vector leg, RRF k=60). Staged rows contribute keyword-only. Filters approval=live. Returns cold_start|thin|ok.',
+      'Recall top-k memories in a namespace (hybrid RRF: keyword tsvector leg + halfvec vector leg, RRF k=60). Staged rows contribute keyword-only. Filters approval=live. Returns cold_start|thin|ok plus contract {index,daemon,last_seq,replica_lag} (P1.M9).',
     inputSchema: {
       namespace: z.string().describe('Namespace to search within'),
       query: z.string().describe('Search query'),
@@ -307,15 +308,32 @@ server.registerTool(
         legs.keyword = rows.length;
       }
 
+      const meta = await client.query(
+        `SELECT
+           (SELECT count(*)::int FROM memories
+             WHERE namespace = $1 AND approval = 'live'
+               AND index_status IN ('indexed','staged')) AS live,
+           (SELECT count(*)::int FROM memories
+             WHERE namespace = $1 AND approval = 'live'
+               AND index_status = 'indexed' AND embedding IS NOT NULL) AS indexed,
+           (SELECT count(*)::int FROM memories
+             WHERE namespace = $1 AND approval = 'live' AND embedding IS NULL) AS pending,
+           (SELECT coalesce(max(seq), 0)::bigint FROM sync_log) AS last_seq`,
+        [namespace]
+      );
+      const m = meta.rows[0];
       let status = 'ok';
       if (rows.length === 0) {
-        const cnt = await client.query(
-          `SELECT count(*)::int AS n FROM memories
-           WHERE namespace = $1 AND approval = 'live' AND index_status IN ('indexed','staged')`,
-          [namespace]
-        );
-        status = cnt.rows[0].n === 0 ? 'cold_start' : 'thin';
+        status = m.live === 0 ? 'cold_start' : 'thin';
       }
+
+      const contract = buildRecallContract({
+        source: 'neon',
+        indexedCount: m.indexed,
+        pendingEmbeddings: m.pending,
+        lastSeq: Number(m.last_seq),
+        replicaLag: null,
+      });
 
       const payload = {
         status,
@@ -325,6 +343,7 @@ server.registerTool(
         legs,
         hybrid: Boolean(qEmb),
         count: rows.length,
+        contract,
         results: rows.map((row) => ({
           id: row.id,
           text: row.text,

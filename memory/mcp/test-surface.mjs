@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 import { pipeline } from '@xenova/transformers';
+import { assertContractShape } from '../lib/cold-start-contract.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -138,6 +139,14 @@ assert(rc2.json.status === 'ok' && rc2.json.results.some((r) => r.id === 'seed-p
 assert(rc2.json.legs.vector >= 1, 'vector leg contributed');
 const rcCold = await callTool('recall', { namespace: 'no-such-ns', query: 'anything', k: 5 });
 assert(rcCold.json.status === 'cold_start', 'cold_start on empty namespace');
+assert(assertContractShape(rc.json.contract) === null, 'recall contract shape', assertContractShape(rc.json.contract));
+assert(rc.json.contract.source === 'neon', 'contract source neon');
+assert(['warm','cold'].includes(rc.json.contract.index), 'contract index warm|cold');
+assert(['warm','cold','unknown'].includes(rc.json.contract.daemon), 'contract daemon');
+assert(rcCold.json.contract.index === 'cold', 'empty ns index=cold');
+assert(rcCold.json.contract.replica_lag === null, 'primary replica_lag null');
+assert(typeof rc.json.contract.last_seq === 'number', 'last_seq present');
+
 
 // ---- 5. get -----------------------------------------------------------------
 console.log('get:');
