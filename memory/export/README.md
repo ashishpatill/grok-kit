@@ -46,3 +46,15 @@ Outputs: `MEMORY.md`, `USER.md`, optional `TOPICS.md`, `stats.json`.
 - Live smoke uses disposable temp dirs; do not commit `export/out/` with live content.
 
 See also: `ops/hot-pin-export.md` (ops pointer).
+
+## mirror_export dry-run (P3.M1)
+
+Craft-log shaped dump for private `BIMLabz/bot-memory` (happened/wrong/worked/next).
+
+```bash
+npm run export:mirror -- --fixture export/fixtures/craft-sample.json --out-dir /tmp/mirror
+npm run mirror:smoke
+```
+
+- Dry-run default; `--push` is **refused** (no secrets to GitHub).
+- See `ops/mirror-export.md`.

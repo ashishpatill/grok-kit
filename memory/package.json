@@ -31,7 +31,10 @@
     "export:smoke": "node export/smoke.mjs",
     "visible-recall:smoke": "node --test lib/visible-recall.test.mjs",
     "propose-route:smoke": "node lib/propose-route.test.mjs",
-    "poison:smoke": "node spikes/P3P1/poison-redteam.mjs"
+    "poison:smoke": "node spikes/P3P1/poison-redteam.mjs",
+    "reflective:smoke": "node spikes/P3R2/reflective-expel.mjs",
+    "export:mirror": "node export/mirror-cli.mjs",
+    "mirror:smoke": "node export/mirror-smoke.mjs"
   },
   "keywords": [],
   "author": "",
@@ -48,6 +51,7 @@
   "bin": {
     "memory-cli": "./cli/index.mjs",
     "memory-import": "./import/index.mjs",
-    "memory-export-hot-pin": "./export/index.mjs"
+    "memory-export-hot-pin": "./export/index.mjs",
+    "memory-export-mirror": "./export/mirror-cli.mjs"
   }
 }
