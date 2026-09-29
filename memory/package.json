@@ -18,7 +18,9 @@
     "graph:smoke": "node --experimental-strip-types graph/smoke.mjs",
     "curator:smoke": "node graph/curator-smoke.mjs",
     "nodes:smoke": "node --experimental-strip-types graph/nodes-smoke.mjs",
-    "demo:stuck-debug": "node --experimental-strip-types graph/demo-stuck-debug.mjs"
+    "demo:stuck-debug": "node --experimental-strip-types graph/demo-stuck-debug.mjs",
+    "conformance": "node ops/conformance.mjs",
+    "conformance:quiet": "node ops/conformance.mjs --quiet"
   },
   "keywords": [],
   "author": "",
