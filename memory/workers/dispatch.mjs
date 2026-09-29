@@ -1,9 +1,10 @@
 /**
- * P1.M7 job dispatcher — routes pg-boss job.data.kind to handlers.
+ * P1.M7 / P3.C1 job dispatcher — routes pg-boss job.data.kind to handlers.
  */
 import { handleEmbed } from './embed.mjs';
 import { handleScore } from './score.mjs';
 import { handleDedup } from './dedup.mjs';
+import { handleConsolidate } from './consolidate.mjs';
 
 const HANDLERS = {
   embed: handleEmbed,
@@ -12,6 +13,8 @@ const HANDLERS = {
   score_importance: handleScore,
   dedup: handleDedup,
   dedup_check: handleDedup,
+  consolidate: handleConsolidate,
+  consolidate_memories: handleConsolidate,
 };
 
 export async function dispatchJob(db, jobData = {}) {

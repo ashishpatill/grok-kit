@@ -24,7 +24,9 @@
     "evidence-weigh:smoke": "node lib/evidence-weigh.test.mjs",
     "x4:kill9": "node spikes/X4/kill9-sweeper.mjs",
     "x7:spike": "node spikes/X7/no-gatekeeping.mjs",
-    "bus:smoke": "node bus/smoke.mjs"
+    "bus:smoke": "node bus/smoke.mjs",
+    "consolidate": "node workers/run-consolidate.mjs",
+    "consolidate:smoke": "node workers/consolidate-smoke.mjs"
   },
   "keywords": [],
   "author": "",
