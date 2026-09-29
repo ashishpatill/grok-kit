@@ -208,8 +208,18 @@ _Export-only hot pin from Neon; recall cites like Referenced-Chats. Do **not** c
 - [x] **P3.V1** Visible recall: MCP/CLI recall envelopes include provenance + memory IDs + short removal path note (Referenced-Chats style). Minimal extend of existing recall surface; smoke green.
   _2026-09-30: `lib/visible-recall.mjs`; MCP + CLI twin shape results with `provenance`/`removal`/`removal_note`; `npm run cli:smoke` + `visible-recall:smoke` ALL GREEN. No X1/X6/A0.4._
 
-### Deferred P3 (not this PR)
-- [ ] **P3.R1** Reflective / ExpeL extraction stub (deepen only after H1/V1 solid).
-- [ ] **P3.P1** Poisoning red-team smoke (AgentPoison / MINJA-inspired); after H1/V1.
+### Poison red-team + light reflective stub
+_Never silent auto-promote into pinned/identity. Do **not** claim X1/X6/A0.4/G.2._
+
+- [x] **P3.P1** Poisoning red-team smoke (AgentPoison / MINJA-inspired).
+  _2026-09-30: `lib/propose-route.mjs` (identity-ns harden: `preferences` →
+  `identity-ns-human-always` even unpinned); `spikes/P3P1/poison-redteam.mjs`
+  injects adversarial pinned/preferences/procedural/low-evidence candidates →
+  human queue; consolidate near-pinned → NOOP; expired poison → DELETE; never
+  gains `pinned=true`. Stub ALL GREEN (`npm run poison:smoke`); live Neon **main**
+  (`br-wandering-queen-b8sx7y0a`) disposable ns + cleanup. No X1/X6/A0.4/G.2._
+- [x] **P3.R1** Light reflective / ExpeL extraction stub (deepen later).
+  _2026-09-30: `lib/reflective-stub.mjs` — pure extract; `must_human_gate=true`;
+  routed through propose-route (preferences → queued). Not full ExpeL/Voyager._
 
 

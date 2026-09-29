@@ -184,6 +184,9 @@ const pQ2 = await callTool('propose', { namespace: 'project-p1m4', text: 'low ev
 assert(pQ2.json.decision === 'queued_for_review' && pQ2.json.reason === 'low-evidence', 'propose semantic w/o grounding → queued');
 const pQ3 = await callTool('propose', { namespace: 'project-p1m4', text: 'pinned queued test', metadata: { type: 'semantic', pinned: true, grounding_ids: ['a', 'b', 'c'] } });
 assert(pQ3.json.decision === 'queued_for_review' && pQ3.json.reason === 'pinned-human-always', 'propose pinned → queued even with grounding');
+const pQ4 = await callTool('propose', { namespace: 'preferences', text: 'identity ns poison test', metadata: { type: 'semantic', grounding_ids: ['a', 'b'] } });
+assert(pQ4.json.decision === 'queued_for_review' && pQ4.json.reason === 'identity-ns-human-always', 'propose preferences → queued even with grounding');
+
 const pq = await pool.query(`SELECT count(*)::int n FROM proposals WHERE status='pending'`);
 assert(pq.rows[0].n === 3, '3 proposals persisted in queue');
 

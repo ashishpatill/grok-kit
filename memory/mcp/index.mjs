@@ -13,10 +13,10 @@
  *         + vector leg (halfvec cosine, indexed only); RRF k=60 (A0 winner).
  * get: fetch one memory by id.
  * ingest_file: base64 file → paragraph chunks → one staged memory per chunk.
- * propose: write-gate routing — episodic/node-local auto-approve (stored);
- *          procedural/pinned → human-always; global semantic auto-approves
- *          iff grounding_ids >= 2 (IDL min_evidence_auto), else queued in
- *          proposals table for curator/human review.
+ * propose: write-gate routing via lib/propose-route.mjs — episodic/node-local
+ *          auto-approve (stored); procedural/pinned/preferences(identity) →
+ *          human-always; global semantic auto-approves iff grounding_ids >= 2
+ *          (IDL min_evidence_auto), else queued in proposals for curator/human.
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,6 +36,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { PgBoss } from 'pg-boss';
 import { buildRecallContract } from '../lib/cold-start-contract.mjs';
 import { shapeRecallResult, withVisibleRecall } from '../lib/visible-recall.mjs';
+import { routePropose } from '../lib/propose-route.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -507,13 +508,12 @@ server.registerTool(
   }
 );
 
-const MIN_EVIDENCE_AUTO = 2; // IDL §12 config: min_evidence_auto
 
 server.registerTool(
   'propose',
   {
     description:
-      'Propose a memory through the write gates (IDL §12): episodic/node_local auto-approve (stored immediately); procedural or pinned → human-always (queued in proposals); global semantic auto-approves iff grounding_ids >= 2, else queued for curator/human review.',
+      'Propose a memory through the write gates (IDL §12 / propose-route): episodic/node_local auto-approve (stored immediately); procedural, pinned, or preferences(identity) → human-always (queued); global semantic auto-approves iff grounding_ids >= 2, else queued for curator/human review.',
     inputSchema: {
       namespace: z.string().describe('Canonical namespace'),
       text: z.string().describe('Atomic fact / learning text'),
@@ -531,29 +531,15 @@ server.registerTool(
     if (!MEMORY_TYPES.has(type)) return validationError(`type must be one of ${[...MEMORY_TYPES].join(',')}`);
     if (!MEMORY_SCOPES.has(scope)) return validationError(`scope must be one of ${[...MEMORY_SCOPES].join(',')}`);
 
-    // Gate 1: episodic / node-local → automatic
-    if (type === 'episodic' || scope === 'node_local') {
+    const routed = routePropose({ type, scope, pinned, grounding_ids, namespace });
+    if (routed.decision === 'auto_approved') {
       const r = await insertMemory(namespace, text, { ...metadata, origin: metadata.origin || 'propose-auto' });
       if (!r.ok) return r.response;
       return {
-        content: [{ type: 'text', text: JSON.stringify({ status: 'ok', decision: 'auto_approved', reason: 'episodic-or-node_local', id: r.id }, null, 2) }],
+        content: [{ type: 'text', text: JSON.stringify({ status: 'ok', decision: 'auto_approved', reason: routed.reason, id: r.id }, null, 2) }],
       };
     }
-
-    // Gate 2: procedural / pinned → human-always
-    let route_reason = null;
-    if (type === 'procedural') route_reason = 'procedural-human-always';
-    else if (pinned) route_reason = 'pinned-human-always';
-    else if (grounding_ids.length < MIN_EVIDENCE_AUTO) route_reason = 'low-evidence';
-
-    // Gate 3: global semantic with enough cited grounding → auto-approve
-    if (!route_reason) {
-      const r = await insertMemory(namespace, text, { ...metadata, origin: metadata.origin || 'propose-auto' });
-      if (!r.ok) return r.response;
-      return {
-        content: [{ type: 'text', text: JSON.stringify({ status: 'ok', decision: 'auto_approved', reason: `grounding_ids>=${MIN_EVIDENCE_AUTO}`, id: r.id }, null, 2) }],
-      };
-    }
+    const route_reason = routed.reason;
 
     // Queue for curator/human review (proposals table, migration 002)
     const id = metadata.id || randomUUID();
