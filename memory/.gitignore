@@ -4,3 +4,7 @@ node_modules/
 **/node_modules/
 *.log
 .DS_Store
+# local dump dry-run artifacts (never commit dumps / secrets)
+ops/backups/
+*.dump
+*.sql.gz
