@@ -1,0 +1,10 @@
+[Unit]
+Description=Bot memory daemon self-wake timer (every 15 minutes)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=15min
+Unit=bot-memory-daemon-wake.service
+
+[Install]
+WantedBy=timers.target
