@@ -10,7 +10,9 @@
     "mcp:roundtrip": "node mcp/roundtrip.mjs",
     "b0:bench": "node daemon/bench-wake.mjs",
     "cli": "node cli/index.mjs",
-    "cli:smoke": "node cli/smoke.mjs"
+    "cli:smoke": "node cli/smoke.mjs",
+    "import": "node import/index.mjs",
+    "import:smoke": "node import/smoke.mjs"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +27,7 @@
   },
   "type": "module",
   "bin": {
-    "memory-cli": "./cli/index.mjs"
+    "memory-cli": "./cli/index.mjs",
+    "memory-import": "./import/index.mjs"
   }
 }
