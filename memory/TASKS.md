@@ -131,4 +131,23 @@ One subtask = one commit. Check only when exit passes.
   resolution. `npm run x7:spike` + `evidence-weigh:smoke`. Artifacts:
   `spikes/X7/out/x7-no-gatekeeping-stub.json`, ITER-006. Also live on Neon **main**: `x7-no-gatekeeping-pg.json`._
 
-## P2 / P3 — per plan §14, tracked after P1 gates.
+## P2 — Integrations (2–3 weeks, serial on P1 gates)
+
+_P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · restore drill ✓ · no-gatekeeping ✓ (live Neon main, #18) · Moose real onboarding (X6) open._
+
+### GrokKit integrations
+- [ ] **P2.K1** `memory-sync` writes via MCP `propose()` (human-gated; never silent identity writes).
+- [ ] **P2.K2** `session-handoff` emits episodic records on session close.
+- [ ] **P2.K3** Verify-loop outcomes (`rubric-verify` / `verify-aci`) auto-emit episodic records.
+- [ ] **P2.K4** `refine-harness` cites memory IDs in generated patches.
+
+### Cross-system
+- [ ] **P2.C1** Moose onboards behind the frozen IDL v2.1 contract (needs X6); first real cross-system learning promoted and reused.
+
+### Replicas
+- [ ] **P2.R1** Per-device replica profiles (`hot`/`standard`) live; dynamic sync verified (phone pulls hot-set over Tailscale). Needs X1/X2.
+
+### Safety drill
+- [ ] **P2.S1** Wrong-learning drill: deliberately propose a plausible-but-false learning → must land in the human queue, never auto-promote. **Exit:** drill passes + Ashish approves gate behavior live.
+
+## P3 — Consolidation + hardening (ongoing) — per plan §14, tracked after P2 gates.
