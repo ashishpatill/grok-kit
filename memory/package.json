@@ -12,7 +12,8 @@
     "cli": "node cli/index.mjs",
     "cli:smoke": "node cli/smoke.mjs",
     "import": "node import/index.mjs",
-    "import:smoke": "node import/smoke.mjs"
+    "import:smoke": "node import/smoke.mjs",
+    "workers:smoke": "node workers/smoke.mjs"
   },
   "keywords": [],
   "author": "",

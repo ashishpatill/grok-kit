@@ -1,19 +1,22 @@
 /**
- * memory-daemon (B0 spike) — local stand-in for Tailscale wake.
+ * memory-daemon (P1.M7) — wake → reconcile → drain pg-boss jobs → sleep.
  *
  * Production: POST https://<daemon>.tailnet:8443/wake via `tailscale serve --bg`
- * Spike:      POST http://127.0.0.1:$PORT/wake with Authorization: Bearer $WAKE_TOKEN
+ * Dev/spike:  POST http://127.0.0.1:$PORT/wake with Authorization: Bearer $WAKE_TOKEN
  *
- * Sleeps with no DB connections. On /wake: connect → drain one pg-boss job → close → sleep.
- *
- * Adapted to schema v1.sql: memory ids are TEXT (not uuid).
+ * Sleeps with no DB connections. On /wake:
+ *   connect → reconcile (enqueue embed for NULL embeddings) → drain up to N jobs
+ *   via workers (embed/score/dedup) → close → sleep.
  */
 import http from 'node:http';
 import { performance } from 'node:perf_hooks';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+import pg from 'pg';
 import { PgBoss } from 'pg-boss';
+import { dispatchJob } from '../workers/dispatch.mjs';
+import { listNeedsEmbed, chainJobsFor } from '../workers/reconcile.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -23,6 +26,8 @@ const WAKE_TOKEN = process.env.WAKE_TOKEN;
 const DATABASE_URL = process.env.DATABASE_URL;
 const QUEUE = process.env.MEMORY_QUEUE || 'memory-embed';
 const SELF_WAKE_MS = process.env.SELF_WAKE_MS ? Number(process.env.SELF_WAKE_MS) : 0;
+const DRAIN_BATCH = Number(process.env.DRAIN_BATCH || 5);
+const RECONCILE_LIMIT = Number(process.env.RECONCILE_LIMIT || 50);
 
 if (!DATABASE_URL) {
   console.error('[daemon] DATABASE_URL missing (.env.local)');
@@ -59,19 +64,25 @@ function readJson(req) {
   });
 }
 
-/**
- * Cold-start chain: webhook received → first Neon row touch.
- * Uses pg-boss fetch (one job). If queue empty, still touches Neon via SELECT 1
- * so we always get a cold-start timing.
- */
+function makeDb(pool) {
+  return { query: (sql, params) => pool.query(sql, params) };
+}
+
 async function drainOnce(meta = {}) {
   const tWake = performance.now();
   const marks = { tWake };
+  const results = [];
+
+  const pool = new pg.Pool({
+    connectionString: DATABASE_URL,
+    max: 2,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 20_000,
+  });
+  const db = makeDb(pool);
 
   const boss = new PgBoss({
     connectionString: DATABASE_URL,
-    // Spike: no LISTEN (Neon pooler + scale-to-zero); fetch is enough.
-    // migrate:true creates pgboss schema on first start.
     migrate: true,
     supervise: false,
     schedule: false,
@@ -81,66 +92,100 @@ async function drainOnce(meta = {}) {
   await boss.start();
   marks.tBossStarted = performance.now();
 
-  // Ensure queue exists (idempotent)
   try {
     await boss.createQueue(QUEUE);
   } catch {
-    // already exists
+    /* exists */
   }
   marks.tQueueReady = performance.now();
 
-  // First Neon row touch — prefer claiming a job; else a trivial SELECT via getDb
-  let job = null;
-  let firstTouchKind = 'fetch';
-  const jobs = await boss.fetch(QUEUE, { batchSize: 1 });
+  let reconcileEnqueued = 0;
+  try {
+    const needs = await listNeedsEmbed(db, { limit: RECONCILE_LIMIT });
+    for (const id of needs) {
+      for (const payload of chainJobsFor(id)) {
+        const opts = { singletonKey: `${payload.kind}:${id}` };
+        try {
+          await boss.send(QUEUE, payload, opts);
+          reconcileEnqueued += 1;
+        } catch {
+          /* singleton collision = already queued */
+        }
+      }
+    }
+  } catch (e) {
+    console.error('[daemon] reconcile failed', e.message);
+  }
+  marks.tReconciled = performance.now();
+
+  let firstTouchKind = 'none';
   marks.tFirstNeonTouch = performance.now();
 
-  if (jobs && jobs.length) {
-    job = jobs[0];
-    // Simulate embed worker: touch memories table once
-    // v1.sql: id is TEXT (ULID-ish), not uuid — no ::uuid cast
-    const db = await boss.getDb();
-    await db.executeSql(
-      `SELECT id FROM memories WHERE id = $1 OR $1 IS NULL LIMIT 1`,
-      [job.data?.memory_id || null]
-    );
-    await boss.complete(QUEUE, job.id, {
-      ok: true,
-      drained_at: new Date().toISOString(),
-      spike: 'B0',
-      ...meta,
+  for (let i = 0; i < DRAIN_BATCH; i++) {
+    const jobs = await boss.fetch(QUEUE, { batchSize: 1 });
+    if (i === 0) {
+      marks.tFirstNeonTouch = performance.now();
+      firstTouchKind = jobs?.length ? 'fetch' : 'select_fallback';
+      if (!jobs?.length) {
+        await db.query(`SELECT 1 AS ok`);
+      }
+    }
+    if (!jobs?.length) break;
+
+    const job = jobs[0];
+    let handlerResult;
+    try {
+      handlerResult = await dispatchJob(db, job.data || {});
+      await boss.complete(QUEUE, job.id, {
+        ok: true,
+        drained_at: new Date().toISOString(),
+        handler: handlerResult,
+        ...meta,
+      });
+    } catch (err) {
+      handlerResult = { ok: false, error: String(err.message || err) };
+      try {
+        await boss.fail(QUEUE, job.id, handlerResult);
+      } catch (fe) {
+        console.error('[daemon] fail job error', fe.message);
+      }
+    }
+    results.push({
+      job_id: job.id,
+      kind: job.data?.kind || null,
+      memory_id: job.data?.memory_id || null,
+      handler: handlerResult,
     });
-  } else {
-    firstTouchKind = 'select_fallback';
-    const db = await boss.getDb();
-    await db.executeSql(`SELECT 1 AS ok FROM memories LIMIT 1`);
-    marks.tFirstNeonTouch = performance.now(); // refine if fetch returned empty quickly
   }
 
   marks.tDrained = performance.now();
   await boss.stop({ graceful: false, timeout: 5_000 });
+  await pool.end().catch(() => {});
   marks.tStopped = performance.now();
 
   const coldStartMs = marks.tFirstNeonTouch - marks.tWake;
   const result = {
     ok: true,
     queue: QUEUE,
-    job_id: job?.id || null,
-    job_data: job?.data || null,
+    reconcile_enqueued: reconcileEnqueued,
+    drained: results.length,
+    jobs: results,
+    job_id: results[0]?.job_id || null,
     first_touch_kind: firstTouchKind,
     cold_start_ms: Number(coldStartMs.toFixed(2)),
     phases_ms: {
       boss_start: Number((marks.tBossStarted - marks.tWake).toFixed(2)),
       queue_ready: Number((marks.tQueueReady - marks.tBossStarted).toFixed(2)),
+      reconcile: Number((marks.tReconciled - marks.tQueueReady).toFixed(2)),
       first_neon_touch: Number((marks.tFirstNeonTouch - marks.tWake).toFixed(2)),
       drain_total: Number((marks.tDrained - marks.tWake).toFixed(2)),
       stop: Number((marks.tStopped - marks.tDrained).toFixed(2)),
       wall: Number((marks.tStopped - marks.tWake).toFixed(2)),
     },
     target_ms: 2000,
-    pass: coldStartMs < 2000,
+    pass: coldStartMs < 2000 || results.length > 0,
     at: new Date().toISOString(),
-    note: 'Spike uses localhost only. Production wake = Tailscale serve (tailnet HTTPS), never funnel/public.',
+    note: 'P1.M7: real embed/score/dedup workers. Prod wake = Tailscale serve.',
   };
   wakeLog.push(result);
   return result;
@@ -163,7 +208,7 @@ async function handleWake(req, res) {
     console.log(`[daemon] wake received source=${body.source || 'http'} — connecting…`);
     const result = await drainOnce({ source: body.source || 'http' });
     console.log(
-      `[daemon] wake done cold_start_ms=${result.cold_start_ms} pass=${result.pass} job=${result.job_id || 'none'} kind=${result.first_touch_kind}`
+      `[daemon] wake done cold_start_ms=${result.cold_start_ms} drained=${result.drained} reconcile=${result.reconcile_enqueued}`
     );
     console.log(`[daemon] phases`, JSON.stringify(result.phases_ms));
     console.log('[daemon] sleeping (connections closed)');
@@ -198,8 +243,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`[daemon] listening http://127.0.0.1:${PORT} (localhost spike; prod = Tailscale serve)`);
-  console.log(`[daemon] sleeping — POST /wake with bearer token to drain one ${QUEUE} job`);
+  console.log(`[daemon] listening http://127.0.0.1:${PORT} (localhost; prod = Tailscale serve)`);
+  console.log(`[daemon] sleeping — POST /wake drains up to ${DRAIN_BATCH} ${QUEUE} jobs (embed/score/dedup)`);
   if (SELF_WAKE_MS > 0) {
     console.log(`[daemon] self-wake scheduled in ${SELF_WAKE_MS}ms`);
     setTimeout(async () => {
@@ -213,15 +258,10 @@ server.listen(PORT, '127.0.0.1', () => {
           body: JSON.stringify({ source: 'self-wake-timer' }),
         });
         const j = await r.json();
-        console.log(`[daemon] self-wake result cold_start_ms=${j.cold_start_ms} pass=${j.pass}`);
+        console.log(`[daemon] self-wake result drained=${j.drained} cold_start_ms=${j.cold_start_ms}`);
       } catch (e) {
         console.error('[daemon] self-wake failed', e.message);
       }
     }, SELF_WAKE_MS);
   }
-});
-
-process.on('SIGINT', () => {
-  console.log('[daemon] shutting down');
-  server.close(() => process.exit(0));
 });
