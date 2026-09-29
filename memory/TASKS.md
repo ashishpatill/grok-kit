@@ -90,7 +90,8 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-29: 6 tools live (store, recall[hybrid RRF k=60], list_namespaces, get, ingest_file, propose). Propose routing: episodic/node_local auto; procedural/pinned human-always; semantic auto iff grounding_ids>=2 else queued (proposals table, migration 002; v1.sql untouched). Verified 23/23 green via `mcp/test-surface.mjs` against local PG16 + pgvector 0.8.1 seeded with the 204-row real corpus (MiniLM-384). Daemon-facing promote/supersede/review/decide/stats → M6/M7/G2._
 - [x] **P1.M5** CLI twin for store/recall/list_namespaces (same contract as MCP).
   _2026-09-29: `memory/cli/` twin (store/recall/list_namespaces) + stub smoke green (`npm run cli:smoke`); envelopes match MCP._
-- [ ] **P1.M6** Import pipeline: bot-memory JSONL + content-hash dedup → review queue for contradictions.
+- [x] **P1.M6** Import pipeline: bot-memory JSONL + content-hash dedup → review queue for contradictions.
+  _2026-09-29: `memory/import/` (hash/parse/ops/apply/CLI) + migration 003 (`review_items` + `memories_content_hash_uq`); stub smoke ALL GREEN (`npm run import:smoke`); Neon apply of 003 still ops step on p1-v1._
 - [ ] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
 - [ ] **P1.M8** `full` replica plan on daemon host + weekly pg_dump dry-run notes.
 - [ ] **P1.M9** Cold-start contract live in recall envelope (already stubbed; conformance tests).
