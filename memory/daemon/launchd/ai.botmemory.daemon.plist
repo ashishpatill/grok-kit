@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>ai.botmemory.daemon</string>
+  <!-- install: copy to ~/Library/LaunchAgents/, edit paths, then
+       launchctl load ~/Library/LaunchAgents/ai.botmemory.daemon.plist -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/opt/bot-memory/grok-kit/memory/daemon/index.mjs</string>
+  </array>
+  <key>WorkingDirectory</key><string>/opt/bot-memory/grok-kit</string>
+  <!-- env comes from memory/.env.local next to the daemon (dotenv) -->
+  <key>KeepAlive</key><true/>
+  <key>RunAtLoad</key><true/>
+  <key>StandardOutPath</key><string>/opt/bot-memory/logs/daemon.log</string>
+  <key>StandardErrorPath</key><string>/opt/bot-memory/logs/daemon.err</string>
+</dict>
+</plist>

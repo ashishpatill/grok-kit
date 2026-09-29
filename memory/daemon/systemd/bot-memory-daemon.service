@@ -1,0 +1,21 @@
+[Unit]
+Description=Bot memory daemon (wake-on-ping + self-wake + replica sync)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# -- install: copy this file to /etc/systemd/system/, edit the paths below,
+#    then: systemctl daemon-reload && systemctl enable --now bot-memory-daemon
+User=botmemory
+WorkingDirectory=/opt/bot-memory/grok-kit
+EnvironmentFile=/opt/bot-memory/grok-kit/memory/.env.local
+ExecStart=/usr/bin/node memory/daemon/index.mjs
+Restart=always
+RestartSec=10
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

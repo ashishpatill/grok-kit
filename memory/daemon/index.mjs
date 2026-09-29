@@ -17,6 +17,8 @@ import pg from 'pg';
 import { PgBoss } from 'pg-boss';
 import { dispatchJob } from '../workers/dispatch.mjs';
 import { runReconcileSweep } from '../workers/reconcile.mjs';
+import { beat } from './presence.mjs';
+import { pull, push } from './sync.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -28,6 +30,14 @@ const QUEUE = process.env.MEMORY_QUEUE || 'memory-embed';
 const SELF_WAKE_MS = process.env.SELF_WAKE_MS ? Number(process.env.SELF_WAKE_MS) : 0;
 const DRAIN_BATCH = Number(process.env.DRAIN_BATCH || 5);
 const RECONCILE_LIMIT = Number(process.env.RECONCILE_LIMIT || 50);
+// X1+X2: one account = one always-on store (Neon), N daemons each with a local
+// replica. REMOTE_DATABASE_URL is the store; DATABASE_URL is this daemon's
+// replica (defaults to single-DB mode when unset).
+const REMOTE_DATABASE_URL = process.env.REMOTE_DATABASE_URL || DATABASE_URL;
+const SYNC_ENABLED = REMOTE_DATABASE_URL !== DATABASE_URL;
+const DAEMON_NODE = process.env.DAEMON_NODE ||
+  `daemon-${(process.env.HOSTNAME || 'local').replace(/[^a-zA-Z0-9-]/g, '')}`;
+const DAEMON_VERSION = process.env.DAEMON_VERSION || 'x1x2-iter008';
 
 if (!DATABASE_URL) {
   console.error('[daemon] DATABASE_URL missing (.env.local)');
@@ -190,6 +200,41 @@ async function drainOnce(meta = {}) {
   return result;
 }
 
+/**
+ * X1+X2 sync phase: heartbeat (presence on the always-on store) + bidirectional
+ * replica sync. Runs before the job drain on every wake (ping or self-wake).
+ * Single-DB mode (no REMOTE_DATABASE_URL): heartbeat only, no sync.
+ */
+async function syncPhase() {
+  const summary = { sync_enabled: SYNC_ENABLED, node: DAEMON_NODE };
+  const mkPool = (cs) => new pg.Pool({
+    connectionString: cs, max: 2,
+    idleTimeoutMillis: 10_000, connectionTimeoutMillis: 20_000,
+  });
+  const remote = mkPool(REMOTE_DATABASE_URL);
+  const local = SYNC_ENABLED ? mkPool(DATABASE_URL) : remote;
+  try {
+    await beat(remote, DAEMON_NODE, DAEMON_VERSION, { sync_enabled: SYNC_ENABLED });
+    summary.beat = 'ok';
+    if (SYNC_ENABLED) {
+      const pr = await pull(remote, local);
+      const pu = await push(local, remote);
+      summary.pull = pr;
+      summary.push = pu;
+      console.log(`[daemon] sync pull scanned=${pr.scanned} applied=${pr.applied} ` +
+        `push scanned=${pu.scanned} applied=${pu.applied}`);
+    }
+    await beat(remote, DAEMON_NODE, DAEMON_VERSION, { sync_enabled: SYNC_ENABLED });
+  } catch (e) {
+    summary.error = String(e.message || e);
+    console.error('[daemon] sync phase error', summary.error);
+  } finally {
+    await local.end().catch(() => {});
+    if (local !== remote) await remote.end().catch(() => {});
+  }
+  return summary;
+}
+
 async function handleWake(req, res) {
   if (!authOk(req)) {
     res.writeHead(401, { 'content-type': 'application/json' });
@@ -205,7 +250,9 @@ async function handleWake(req, res) {
   try {
     const body = await readJson(req).catch(() => ({}));
     console.log(`[daemon] wake received source=${body.source || 'http'} — connecting…`);
+    const sync = await syncPhase();
     const result = await drainOnce({ source: body.source || 'http' });
+    result.sync = sync;
     console.log(
       `[daemon] wake done cold_start_ms=${result.cold_start_ms} drained=${result.drained} reconcile=${result.reconcile_enqueued}`
     );
@@ -243,7 +290,7 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`[daemon] listening http://127.0.0.1:${PORT} (localhost; prod = Tailscale serve)`);
-  console.log(`[daemon] sleeping — POST /wake drains up to ${DRAIN_BATCH} ${QUEUE} jobs (embed/score/dedup)`);
+  console.log(`[daemon] node=${DAEMON_NODE} sync=${SYNC_ENABLED ? 'replica<->store' : 'single-db'} version=${DAEMON_VERSION}`);
   if (SELF_WAKE_MS > 0) {
     console.log(`[daemon] self-wake scheduled in ${SELF_WAKE_MS}ms`);
     setTimeout(async () => {

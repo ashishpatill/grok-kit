@@ -1,0 +1,10 @@
+[Unit]
+Description=Bot memory daemon self-wake (X2 schedule)
+Requires=bot-memory-daemon.service
+After=bot-memory-daemon.service
+
+[Service]
+Type=oneshot
+User=botmemory
+EnvironmentFile=/opt/bot-memory/grok-kit/memory/.env.local
+ExecStart=/opt/bot-memory/grok-kit/memory/daemon/systemd/wake.sh
