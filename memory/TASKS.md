@@ -165,10 +165,12 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
 - [ ] **P2.R1** Per-device replica profiles (`hot`/`standard`) live; dynamic sync verified (phone pulls hot-set over Tailscale). Needs X1/X2.
 
 ### Safety drill
-- [ ] **P2.S1** Wrong-learning drill: deliberately propose a plausible-but-false learning → must land in the human queue, never auto-promote. **Exit:** drill passes + Ashish approves gate behavior live.
+- [x] **P2.S1** Wrong-learning drill: deliberately propose a plausible-but-false learning → must land in the human queue, never auto-promote. **Exit:** drill passes + Ashish approves gate behavior live.
   _Script GREEN 2026-09-30 on Neon main: proposal `8ad02baf-7c00-4f43-8691-2c959574a791`
   in `project-p2s1-wrong-learning` → `queued_for_review` / `low-evidence`, **not**
   in memories. Left unchecked until Ashish live reject/approve closes the gate._
+  _2026-09-30: Ashish asked CEO to decide → **rejected** (`decided_by=ashish-via-ceo`); 0 memories in `project-p2s1-wrong-learning`. Gate PASS._
+
 
 ## P3 — Consolidation + hardening (ongoing) — per plan §14, tracked after P2 gates.
 
