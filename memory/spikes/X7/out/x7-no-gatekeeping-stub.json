@@ -1,0 +1,218 @@
+{
+  "gate": "P1.X7",
+  "backend": "stub",
+  "namespace": "feature-auth-x7-mumxadaa",
+  "started_at": "2026-09-29T17:00:47.170Z",
+  "identity_gatekeeping": false,
+  "pure_weigh": {
+    "winner_id": "a",
+    "loser_ids": [
+      "b"
+    ],
+    "margin": 0.18666,
+    "confidence": "high",
+    "reason": "evidence_weigh",
+    "scores": [
+      {
+        "id": "a",
+        "bot_id": "bot-zzz-low-privilege",
+        "total": 0.874993,
+        "parts": {
+          "recency": 0.999977,
+          "reliability": 0.7,
+          "corroboration": 1,
+          "importance": 0.8,
+          "strength": 0.7,
+          "pinned_bonus": 0
+        },
+        "source_key": "bot-coder-01",
+        "identity_used": false
+      },
+      {
+        "id": "b",
+        "bot_id": "bot-aaa-ceo-tier",
+        "total": 0.688333,
+        "parts": {
+          "recency": 1,
+          "reliability": 0.7,
+          "corroboration": 0.333333,
+          "importance": 0.7,
+          "strength": 0.6,
+          "pinned_bonus": 0
+        },
+        "source_key": "bot-verifier-01",
+        "identity_used": false
+      }
+    ],
+    "identity_gatekeeping": false,
+    "at": "2026-09-29T17:00:47.171Z"
+  },
+  "identity_swap": {
+    "winner": "a2",
+    "scores": [
+      {
+        "id": "a2",
+        "bot_id": "bot-aaa-ceo-tier",
+        "total": 0.874993,
+        "parts": {
+          "recency": 0.999977,
+          "reliability": 0.7,
+          "corroboration": 1,
+          "importance": 0.8,
+          "strength": 0.7,
+          "pinned_bonus": 0
+        },
+        "source_key": "bot-coder-01",
+        "identity_used": false
+      },
+      {
+        "id": "b2",
+        "bot_id": "bot-zzz-low-privilege",
+        "total": 0.688333,
+        "parts": {
+          "recency": 1,
+          "reliability": 0.7,
+          "corroboration": 0.333333,
+          "importance": 0.7,
+          "strength": 0.6,
+          "pinned_bonus": 0
+        },
+        "source_key": "bot-verifier-01",
+        "identity_used": false
+      }
+    ]
+  },
+  "writes": {
+    "bot_a": {
+      "id": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+      "bot_id": "bot-coder-01",
+      "grounding": 3
+    },
+    "bot_b": {
+      "id": "1e6efc14-0cff-49de-a8e6-f03875996cd1",
+      "bot_id": "bot-verifier-01",
+      "grounding": 1
+    }
+  },
+  "resolution": {
+    "status": "ok",
+    "winner_id": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+    "winner_version": 2,
+    "superseded": [
+      {
+        "id": "1e6efc14-0cff-49de-a8e6-f03875996cd1",
+        "superseded_by": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+        "approval": "retired"
+      }
+    ],
+    "review_item_id": "resolution-466e996f-f418-4ef4-9511-d7222a305049",
+    "weighing": {
+      "winner_id": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+      "loser_ids": [
+        "1e6efc14-0cff-49de-a8e6-f03875996cd1"
+      ],
+      "margin": 0.18666,
+      "confidence": "high",
+      "reason": "feature_concurrent_conflict",
+      "scores": [
+        {
+          "id": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+          "bot_id": "bot-coder-01",
+          "total": 0.874993,
+          "parts": {
+            "recency": 0.999977,
+            "reliability": 0.7,
+            "corroboration": 1,
+            "importance": 0.8,
+            "strength": 0.7,
+            "pinned_bonus": 0
+          },
+          "source_key": "bot-coder-01",
+          "identity_used": false
+        },
+        {
+          "id": "1e6efc14-0cff-49de-a8e6-f03875996cd1",
+          "bot_id": "bot-verifier-01",
+          "total": 0.688333,
+          "parts": {
+            "recency": 1,
+            "reliability": 0.7,
+            "corroboration": 0.333333,
+            "importance": 0.7,
+            "strength": 0.6,
+            "pinned_bonus": 0
+          },
+          "source_key": "bot-verifier-01",
+          "identity_used": false
+        }
+      ],
+      "identity_gatekeeping": false,
+      "at": "2026-09-29T17:00:47.172Z"
+    },
+    "decided_by": "svc:resolver",
+    "identity_gatekeeping": false
+  },
+  "live_rows": [
+    {
+      "id": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+      "namespace": "feature-auth-x7-mumxadaa",
+      "type": "semantic",
+      "bot_id": "bot-coder-01",
+      "text": "feature-auth: session tokens must use RS256 JWT; HS256 is not allowed in production.",
+      "grounding_ids": [
+        "g-security-review-1",
+        "g-owasp-jwt-2",
+        "g-incident-2026-03"
+      ],
+      "importance": 8,
+      "strength": 7.5,
+      "created_at": "2026-09-29T16:59:47.171Z",
+      "provenance": {
+        "author": "bot-coder-01",
+        "origin": "spike-x7",
+        "bot_id": "bot-coder-01",
+        "created_at": "2026-09-29T16:59:47.171Z",
+        "last_resolution": {
+          "at": "2026-09-29T17:00:47.172Z",
+          "decided_by": "svc:resolver",
+          "margin": 0.18666,
+          "confidence": "high",
+          "loser_ids": [
+            "1e6efc14-0cff-49de-a8e6-f03875996cd1"
+          ],
+          "identity_gatekeeping": false
+        }
+      },
+      "version": 2,
+      "superseded_by": null,
+      "approval": "live"
+    },
+    {
+      "id": "1e6efc14-0cff-49de-a8e6-f03875996cd1",
+      "namespace": "feature-auth-x7-mumxadaa",
+      "type": "semantic",
+      "bot_id": "bot-verifier-01",
+      "text": "feature-auth: HS256 HMAC sessions are fine for production; RS256 is not required.",
+      "grounding_ids": [
+        "g-legacy-note"
+      ],
+      "importance": 7,
+      "strength": 6,
+      "created_at": "2026-09-29T17:00:47.171Z",
+      "provenance": {
+        "author": "bot-verifier-01",
+        "origin": "spike-x7",
+        "bot_id": "bot-verifier-01",
+        "created_at": "2026-09-29T17:00:47.171Z",
+        "superseded_reason": "evidence_weigh_resolution",
+        "superseded_at": "2026-09-29T17:00:47.172Z",
+        "decided_by": "svc:resolver"
+      },
+      "version": 1,
+      "superseded_by": "81eae7d7-34a4-4cb9-bc47-5f44af0668fe",
+      "approval": "retired"
+    }
+  ],
+  "pass": true,
+  "finished_at": "2026-09-29T17:00:47.172Z"
+}
