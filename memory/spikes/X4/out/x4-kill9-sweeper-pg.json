@@ -1,0 +1,95 @@
+{
+  "gate": "P1.X4",
+  "backend": "pg",
+  "namespace": "feature-x4-sweeper-mumxflzb",
+  "n": 6,
+  "started_at": "2026-09-29T17:04:51.719Z",
+  "neon_note": "Live Neon writes paused until CEO promotes p1-v1 → main. Side branches not used as permanent store.",
+  "steps": {
+    "committed": {
+      "ids": [
+        "542eea2a-4bbb-4096-8ab1-32d213bb1c4a",
+        "ea313670-febe-467d-a07e-5ef11de3cb07",
+        "a8fa08d5-ffcc-4780-bba7-e033c4a518fb",
+        "57b52224-d793-48f4-a393-7ecaa95492e9",
+        "5e2e08e3-b4da-4097-8603-d3fe8e64057a",
+        "41c565c7-e59b-4c61-9a0e-8a68d8305987"
+      ],
+      "count": 6
+    },
+    "pending_after_commit": 6,
+    "kill9": {
+      "signal": "SIGKILL",
+      "code": null,
+      "child_log_tail": [
+        "- If you want the current behavior, explicitly use 'sslmode=verify-full'",
+        "- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'",
+        "",
+        "See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.",
+        "(Use `node --trace-warnings ...` to show where the warning was created)"
+      ]
+    },
+    "after_kill": {
+      "found": 6,
+      "missing": [],
+      "rows": [
+        {
+          "id": "542eea2a-4bbb-4096-8ab1-32d213bb1c4a",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "ea313670-febe-467d-a07e-5ef11de3cb07",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "a8fa08d5-ffcc-4780-bba7-e033c4a518fb",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "57b52224-d793-48f4-a393-7ecaa95492e9",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "5e2e08e3-b4da-4097-8603-d3fe8e64057a",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "41c565c7-e59b-4c61-9a0e-8a68d8305987",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        }
+      ]
+    },
+    "sync_log_rows": 6,
+    "reconcile": {
+      "needs_count": 6,
+      "cohort_needs": 6,
+      "enqueued": 18
+    },
+    "backfill": {
+      "embedded": 6,
+      "model": "stub-halfvec@x4-sweeper"
+    },
+    "checkpoint": {
+      "clean": true,
+      "pending_embeddings": 0,
+      "dead_letter": null,
+      "dead_letter_empty": true,
+      "at": "2026-09-29T17:05:02.368Z",
+      "pending_for_cohort": 0
+    }
+  },
+  "pass": true,
+  "finished_at": "2026-09-29T17:05:02.368Z"
+}

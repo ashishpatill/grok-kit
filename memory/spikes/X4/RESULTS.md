@@ -2,17 +2,21 @@
 
 **When:** 2026-09-29 IST  
 **Plan:** FINAL-PLAN-V2 §13  
-**Evidence backend:** **stub** (default). Live Neon writes paused until CEO promotes `p1-v1` → bimlabz-bot-memory **`main`**. Side branches (`p1-x4-*`, `p1-x5-*`, etc.) are **not** the permanent store — do not leave production data only there.
+**Neon target:** bimlabz-bot-memory branch **`main`** only (`br-wandering-queen-b8sx7y0a`, default+primary). Do **not** create side branches. Ignore empty root archive `main-empty-20260929`.
 
-## Verdict: PASS (stub)
+## Verdict: PASS (stub + Neon main)
 
 ```
 MEMORY_BACKEND=stub npm run x4:kill9
-# ALL GREEN — P1.X4 kill -9 sweeper zero-loss
-# evidence → spikes/X4/out/x4-kill9-sweeper-stub.json
+# → spikes/X4/out/x4-kill9-sweeper-stub.json
+
+NODE_OPTIONS=--no-network-family-autoselection \
+MEMORY_BACKEND=pg DATABASE_URL=… npm run x4:kill9
+# → spikes/X4/out/x4-kill9-sweeper-pg.json
+# Neon main: 6/6 survive SIGKILL; sweeper backfill; checkpoint clean
 ```
 
-Also covered by `npm run workers:smoke` (reconcile/adminCheckpoint/backfill helpers).
+Also: `npm run workers:smoke` (reconcile/adminCheckpoint helpers).
 
 ## What was implemented
 
@@ -20,19 +24,16 @@ Also covered by `npm run workers:smoke` (reconcile/adminCheckpoint/backfill help
 |------|------|
 | `memory/workers/reconcile.mjs` | `runReconcileSweep`, `backfillEmbeddings`, `countPendingEmbeddings`, `adminCheckpoint` |
 | `memory/daemon/index.mjs` | wake uses `runReconcileSweep` |
-| `memory/spikes/X4/kill9-sweeper.mjs` | commit staged → child `SIGKILL` → zero-loss assert → sweeper backfill → checkpoint |
+| `memory/spikes/X4/kill9-sweeper.mjs` | staged commit → child `SIGKILL` → zero-loss → sweeper |
 
-## Protocol (proven on stub)
+## Protocol
 
-1. Commit N staged rows (`embedding NULL`) + sync_log.
+1. Commit N staged rows (`embedding NULL`) + sync_log trigger.
 2. Spawn child mid-backfill; parent `kill -9`.
-3. All committed ids still present (zero loss).
+3. All committed ids still present.
 4. Sweeper discovers `embedding IS NULL`; backfill → `indexed`.
 5. `adminCheckpoint({ ids })` clean.
 
-## Neon / branch policy (2026-09-29 steering)
+## Neon note (Mac node pg)
 
-- Permanent live data target: **`main` only** (after CEO promotion).
-- Do **not** treat `p1-v1` / `p1-x4-*` / `p1-x5-*` as permanent.
-- If disposable branch `p1-x4-x7-20260929` was created earlier, leave it alone — no further writes; finish stub evidence only.
-- Re-run `MEMORY_BACKEND=pg` against **main** only when promotion lands.
+Node Happy-Eyeballs/IPv6 can ETIMEDOUT to Neon; spikes set `ipv4first` + `setDefaultAutoSelectFamily(false)`. Prefer `NODE_OPTIONS=--no-network-family-autoselection` if needed. `psql` works without that flag.

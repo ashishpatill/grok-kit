@@ -120,8 +120,7 @@ One subtask = one commit. Check only when exit passes.
 - [x] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
   _2026-09-29: stub evidence — commit 8 staged → child SIGKILL → 8/8 survive →
   reconcile+backfill → adminCheckpoint clean. `npm run x4:kill9` + workers:smoke.
-  Artifacts: `spikes/X4/out/x4-kill9-sweeper-stub.json`, ITER-006. Live Neon PG
-  re-run deferred until CEO promotes p1-v1 → main (no side-branch permanent store)._
+  Artifacts: `spikes/X4/out/x4-kill9-sweeper-stub.json`, ITER-006. Also live on Neon **main** (`br-wandering-queen-b8sx7y0a`): `x4-kill9-sweeper-pg.json` (6/6)._
 - [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
   _2026-09-29: Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from p1-v1; schema drop + pg_restore M8 dump → memories=5206 sync_log=5208 staged_null_emb=0; 004 re-applied (dump pre-G1). p1-v1/main untouched. See ITER-004._
 - [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
@@ -130,7 +129,6 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-29: stub spike — two bots concurrent `feature-auth-*` writes; evidence-weigh
   picks stronger grounding (identity swap stable); loser superseded + review_items
   resolution. `npm run x7:spike` + `evidence-weigh:smoke`. Artifacts:
-  `spikes/X7/out/x7-no-gatekeeping-stub.json`, ITER-006. Live Neon deferred to main
-  promotion (same policy as X4)._
+  `spikes/X7/out/x7-no-gatekeeping-stub.json`, ITER-006. Also live on Neon **main**: `x7-no-gatekeeping-pg.json`._
 
 ## P2 / P3 — per plan §14, tracked after P1 gates.
