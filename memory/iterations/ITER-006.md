@@ -55,3 +55,14 @@ MEMORY_BACKEND=stub npm run x7:spike
 | G.2 full reconcile | Blocked — PLAN-dh files not in-tree |
 
 Conformance: `npm run conformance:quiet` → **8/8 ALL GREEN**.
+
+---
+
+## Follow-up — live Neon main (same day)
+
+After CEO cleanup: live data is on branch named **`main`** (`br-wandering-queen-b8sx7y0a`, 5206 baseline). Re-ran:
+
+- `MEMORY_BACKEND=pg npm run x4:kill9` → `spikes/X4/out/x4-kill9-sweeper-pg.json` (6/6 zero-loss)
+- `MEMORY_BACKEND=pg npm run x7:spike` → `spikes/X7/out/x7-no-gatekeeping-pg.json`
+
+Post-spike counts: memories **5214** (= 5206 + 6 X4 + 2 X7 spike rows in disposable `feature-*` namespaces). No side branches created. Empty archive `main-empty-20260929` ignored.
