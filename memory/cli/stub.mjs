@@ -93,11 +93,23 @@ export function createStubAdapter(seed = [], opts = {}) {
         rrf: s.hits / (60 + i + 1),
         created_at: s.m.created_at,
       }));
+      const indexedCount = live.filter((m) => m.index_status === 'indexed').length;
+      const pendingEmbeddings = live.filter(
+        (m) => m.embedding == null && m.index_status === 'staged'
+      ).length;
+      // Stub has no sync_log; last_seq tracks in-memory insert count as a stand-in watermark.
+      const lastSeq = memories.size;
       return {
         rows,
         legs: { keyword: rows.length, vector: 0 },
         hybrid: false,
         liveCount: live.length,
+        source: 'stub',
+        indexedCount,
+        pendingEmbeddings,
+        lastSeq,
+        replicaLag: null,
+        daemon: 'unknown',
       };
     },
 

@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { store, recall, listNamespaces } from './core.mjs';
 import { createStubAdapter } from './stub.mjs';
+import { assertContractShape } from '../lib/cold-start-contract.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 let failures = 0;
@@ -48,6 +49,11 @@ assert(rc.hybrid === false && rc.legs.keyword >= 1, 'stub recall keyword-only');
 
 const rcCold = await recall(adapter, 'no-such-ns', 'anything', 5);
 assert(rcCold.status === 'cold_start', 'cold_start on empty namespace');
+assert(rc.contract && assertContractShape(rc.contract) === null, 'recall contract shape', assertContractShape(rc.contract));
+assert(rc.contract.source === 'stub' && rc.contract.daemon === 'unknown', 'stub contract source/daemon');
+assert(rcCold.contract.index === 'cold' && rcCold.contract.replica_lag === null, 'cold_start index=cold lag=null');
+assert(typeof rc.contract.last_seq === 'number', 'stub last_seq watermark');
+
 
 await store(adapter, 'project-p1m5', 'unrelated filler about weather patterns in monsoon season.', {
   type: 'episodic',
