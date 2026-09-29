@@ -1,0 +1,106 @@
+{
+  "gate": "P1.X4",
+  "backend": "stub",
+  "namespace": "feature-x4-sweeper-mumxacn7",
+  "n": 8,
+  "started_at": "2026-09-29T17:00:46.339Z",
+  "neon_note": "Live Neon writes paused until CEO promotes p1-v1 → main. Side branches not used as permanent store.",
+  "steps": {
+    "committed": {
+      "ids": [
+        "616ef2bf-4eb7-4495-8c7d-e806203f0eb5",
+        "0425b98a-c7df-48f9-a357-7f0422f236a0",
+        "3db36dc9-be78-464d-953b-e37b8cdc4854",
+        "e6adda74-ff68-4263-bfd1-c094de180039",
+        "8124239a-e47a-4fee-8f7e-7120cfabb31b",
+        "27f92f8a-70a6-46b7-a648-0d54955f0603",
+        "986200a0-c51d-44dc-a700-fd290e45d88d",
+        "2452052a-c827-4bf0-9b3a-f283c96560b5"
+      ],
+      "count": 8
+    },
+    "pending_after_commit": 8,
+    "kill9": {
+      "signal": "SIGKILL",
+      "code": null,
+      "child_log_tail": [
+        "◇ injected env (0) from .env.local",
+        "child embedding 616ef2bf-4eb7-4495-8c7d-e806203f0eb5"
+      ]
+    },
+    "after_kill": {
+      "found": 8,
+      "missing": [],
+      "rows": [
+        {
+          "id": "616ef2bf-4eb7-4495-8c7d-e806203f0eb5",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "0425b98a-c7df-48f9-a357-7f0422f236a0",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "3db36dc9-be78-464d-953b-e37b8cdc4854",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "e6adda74-ff68-4263-bfd1-c094de180039",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "8124239a-e47a-4fee-8f7e-7120cfabb31b",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "27f92f8a-70a6-46b7-a648-0d54955f0603",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "986200a0-c51d-44dc-a700-fd290e45d88d",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        },
+        {
+          "id": "2452052a-c827-4bf0-9b3a-f283c96560b5",
+          "index_status": "staged",
+          "has_embedding": false,
+          "approval": "live"
+        }
+      ]
+    },
+    "sync_log_rows": 8,
+    "reconcile": {
+      "needs_count": 8,
+      "cohort_needs": 8,
+      "enqueued": 24
+    },
+    "backfill": {
+      "embedded": 8,
+      "model": "stub-halfvec@x4-sweeper"
+    },
+    "checkpoint": {
+      "clean": true,
+      "pending_embeddings": 0,
+      "dead_letter": null,
+      "dead_letter_empty": true,
+      "at": "2026-09-29T17:00:47.017Z",
+      "pending_for_cohort": 0
+    }
+  },
+  "pass": true,
+  "finished_at": "2026-09-29T17:00:47.017Z"
+}
