@@ -82,3 +82,43 @@ await accept(null, { type: 'wake.request', source: 'bot-nudge', from: 'grok-code
 Same contract as launchd `wake.sh`: `Authorization: Bearer $WAKE_TOKEN` → `POST /wake`.
 Still localhost until X1 Tailscale serve lands — do not claim public/tailnet wake here.
 
+
+## 5. Nightly consolidation (P3.C1)
+
+Mem0-style ADD / UPDATE / DELETE / NOOP apply + light episodic decay. Runs **directly**
+against Neon **main** (`br-wandering-queen-b8sx7y0a`) via `workers/run-consolidate.mjs` —
+does **not** need the wake daemon, and does **not** claim Tailscale.
+
+### One-shot (no launchd)
+
+```bash
+cd /path/to/grok-kit/memory
+NODE_OPTIONS=--no-network-family-autoselection node workers/run-consolidate.mjs --limit=50
+# dry-run (classify only, no writes):
+NODE_OPTIONS=--no-network-family-autoselection node workers/run-consolidate.mjs --dry-run
+```
+
+Optional in `.env.local`: `CONSOLIDATE_NAMESPACE=project-…`, `CONSOLIDATE_LIMIT=50`.
+
+### Install calendar timer (02:00 local)
+
+```bash
+cp memory/daemon/launchd/ai.botmemory.consolidate.plist ~/Library/LaunchAgents/
+launchctl unload ~/Library/LaunchAgents/ai.botmemory.consolidate.plist 2>/dev/null || true
+launchctl load ~/Library/LaunchAgents/ai.botmemory.consolidate.plist
+launchctl list | grep botmemory
+```
+
+Logs: `memory/ops/backups/consolidate.log` (+ `.err`). Unload with the same
+`launchctl unload` pattern as the wake agent.
+
+### What it does (honest)
+
+| Op | Effect |
+|----|--------|
+| DELETE | `approval=retired`, close `valid_to` (TTL / expired window) |
+| UPDATE | near-dup (sim≥0.92) → merge into survivor; loser `merged_into` + `valid_to` |
+| ADD / NOOP | no write |
+| decay | episodic strength ×0.95 if not recalled in 30d (best-effort) |
+
+Pinned rows are never auto-merged or retired. No ExpeL / reflective / Voyager loop yet.
