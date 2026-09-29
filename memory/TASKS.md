@@ -187,3 +187,14 @@ or multi-vendor agent-to-agent stack in this phase._
 - [x] **P3.B4** `wake.request` — authenticated daemon wake (`POST /wake` + `WAKE_TOKEN`, X2 launchd); document as the cross-bot nudge primitive.
   _2026-09-30: `bus/wake.mjs` + launchd INSTALL note; mock bearer smoke green. X1 Tailscale serve still unchecked._
 
+### Consolidation (Mem0 op-set — plan §7 / §14)
+_Sleep-time ADD / UPDATE / DELETE / NOOP apply with bi-temporal `valid_from`/`valid_to`.
+Nightly launchd path on Mac; no Tailscale claim. Minimal slice — not ExpeL / Voyager / reflective._
+
+- [x] **P3.C1** Mem0-style ADD / UPDATE / DELETE / NOOP for candidate facts + nightly consolidate path.
+  _2026-09-30: `workers/classify.mjs` (pure classify) + strengthened `dedup.mjs` (apply flag) +
+  `workers/consolidate.mjs` / `run-consolidate.mjs`; bi-temporal `valid_to` close on DELETE/UPDATE;
+  launchd `ai.botmemory.consolidate.plist` @ 02:00 local + INSTALL §5. Stub smoke ALL GREEN
+  (`npm run consolidate:smoke`); live Neon **main** (`br-wandering-queen-b8sx7y0a`) disposable ns
+  smoke + cleanup. No X1/X6/A0.4/S1._
+

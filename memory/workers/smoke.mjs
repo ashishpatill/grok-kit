@@ -55,11 +55,22 @@ function createStubDb() {
                 namespace: row.namespace,
                 text: row.text,
                 embedding: row.embedding,
-                provenance: row.provenance,
+                provenance: row.provenance || {},
                 superseded_by: row.superseded_by,
+                merged_into: row.merged_into ?? null,
+                approval: row.approval || 'live',
+                pinned: !!row.pinned,
+                valid_from: row.valid_from || row.created_at || new Date().toISOString(),
+                valid_to: row.valid_to ?? null,
+                created_at: row.created_at || new Date().toISOString(),
+                importance: row.importance ?? 5,
+                strength: row.strength ?? 5,
               }]
             : [],
         };
+      }
+      if (s.startsWith('SELECT id, text, pinned, 1 - (embedding') || s.startsWith('SELECT id, pinned, 1 - (embedding')) {
+        return { rows: [] };
       }
       if (s.startsWith('SELECT id FROM memories WHERE embedding IS NULL')) {
         const limit = params[0] ?? 50;
