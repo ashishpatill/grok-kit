@@ -92,7 +92,8 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-29: `memory/cli/` twin (store/recall/list_namespaces) + stub smoke green (`npm run cli:smoke`); envelopes match MCP._
 - [x] **P1.M6** Import pipeline: bot-memory JSONL + content-hash dedup → review queue for contradictions.
   _2026-09-29: `memory/import/` (hash/parse/ops/apply/CLI) + migration 003 (`review_items` + `memories_content_hash_uq`); stub smoke ALL GREEN (`npm run import:smoke`); Neon apply of 003 still ops step on p1-v1._
-- [ ] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
+- [x] **P1.M7** Workers: embed, score, dedup (pg-boss); daemon drains on wake.
+  _2026-09-29: `memory/workers/` (embed MiniLM halfvec, score heuristic|OpenRouter, dedup ADD/UPDATE→review) + `lib/embed.mjs`; daemon wake = reconcile NULL embeddings → drain batch via dispatch; stub smoke `npm run workers:smoke`. Neon backfill of staged import rows = ops wake against p1-v1._
 - [ ] **P1.M8** `full` replica plan on daemon host + weekly pg_dump dry-run notes.
 - [ ] **P1.M9** Cold-start contract live in recall envelope (already stubbed; conformance tests).
 
