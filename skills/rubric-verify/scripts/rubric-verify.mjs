@@ -3,6 +3,10 @@ import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { isMainModule } from "../../../scripts/lib/is-main.mjs";
+import {
+  emitEpisodic,
+  memoryEmitEnabled,
+} from "../../lib/bot-memory-propose.mjs";
 
 const DEFAULT_RUBRIC = ".cursor/verify/rubric.json";
 
@@ -10,6 +14,7 @@ const HELP = `rubric-verify — score a short repo-grounded checklist against a 
 
 Usage:
   rubric-verify [--rubric FILE.json] [--diff FILE.patch] [--root DIR] [--dry-run]
+                [--project SLUG] [--no-emit]
 
 Default --rubric is <root>/.cursor/verify/rubric.json.
 Without --diff, the auto-diff is git staged + unstaged + untracked files
@@ -34,6 +39,8 @@ function parseArgs(argv) {
     root: process.cwd(),
     dryRun: false,
     help: false,
+    noEmit: false,
+    project: "grokkit",
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -60,6 +67,12 @@ function parseArgs(argv) {
         out.dryRun = true;
         break;
       case "--json":
+        break;
+      case "--no-emit":
+        out.noEmit = true;
+        break;
+      case "--project":
+        out.project = next();
         break;
       default:
         throw new Error(`unknown argument: ${arg}`);
@@ -309,8 +322,35 @@ export async function runRubricVerify(argv, io = {}) {
     root: options.root,
     dryRun: options.dryRun,
   });
+
+  let memory = { skipped: true, reason: "emit-disabled" };
+  const wantEmit = !options.noEmit && (io.proposeFn || memoryEmitEnabled());
+  if (wantEmit) {
+    const slug = String(options.project || "grokkit")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "grokkit";
+    const summary = verdict.ok
+      ? `rubric-verify ok task=${rubric.task || "-"} mustFail=0 shouldFail=${verdict.score?.shouldFail ?? 0}`
+      : `rubric-verify FAIL task=${rubric.task || "-"} mustFail=${verdict.score?.mustFail ?? "?"} shouldFail=${verdict.score?.shouldFail ?? "?"}`;
+    memory = await emitEpisodic({
+      namespace: `errors-resolved-${slug}`,
+      text: summary.slice(0, 900),
+      metadata: {
+        author: "rubric-verify",
+        origin: "rubric-verify-outcome",
+        importance: verdict.ok ? 5 : 7,
+        source_session: `rubric-verify-${Date.now()}`,
+      },
+      proposeFn: io.proposeFn,
+      databaseUrl: io.databaseUrl,
+    });
+  }
+  verdict.memory = memory;
+
   stdout(`${JSON.stringify(verdict)}\n`);
-  return verdict.ok ? 0 : 1;
+  if (!verdict.ok) return 1;
+  return memory.status === "error" ? 1 : 0;
 }
 
 export { HELP, parseArgs, DEFAULT_RUBRIC };

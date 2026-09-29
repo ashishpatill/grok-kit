@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>ai.botmemory.daemon</string>
+  <!-- Mac daemon host (Ashish): edit WorkingDirectory / ProgramArguments to this checkout -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/ashishpisey/.nvm/versions/node/v22.23.2/bin/node</string>
+    <string>/Volumes/Developer/Workspace/grok-kit/memory/daemon/index.mjs</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Volumes/Developer/Workspace/grok-kit/memory</string>
+  <!-- Secrets live in memory/.env.local (gitignored); dotenv loads it -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>NODE_OPTIONS</key><string>--no-network-family-autoselection</string>
+  </dict>
+  <key>KeepAlive</key><true/>
+  <key>RunAtLoad</key><true/>
+  <key>StandardOutPath</key><string>/Volumes/Developer/Workspace/grok-kit/memory/ops/backups/daemon.log</string>
+  <key>StandardErrorPath</key><string>/Volumes/Developer/Workspace/grok-kit/memory/ops/backups/daemon.err</string>
+</dict>
+</plist>

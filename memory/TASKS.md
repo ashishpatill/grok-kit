@@ -15,20 +15,21 @@ only when its exit check passes; append a one-line result note.
   branch `p0-spike` (see `schema/legacy-neon-spike.sql`) for A0/B0/C0 benches.
   Branch authority remains v1.sql — re-apply v1 on a fresh Neon branch when a
   connection string is available._
-- [ ] **A0.2** Seed data: 5k synthetic + 500 real memories imported from the
-  bot-memory repo (content-hash dedup). _Exit: row counts match._
-  _Partial 2026-09-28: 5 001 synthetic MiniLM-384 on Neon `p0-spike` (legacy).
-  Real export DONE (`spikes/A0/real-corpus.jsonl` — 204 unique, not 500).
-  Real seed DONE on same Neon branch (204 rows, `author=import:real-corpus`;
-  total 5 206). Re-seed against v1.sql still open — use
-  `spikes/A0/scripts/seed_real_v1.mjs` when a v1 branch exists._
+- [x] **A0.2** Seed data: 5k synthetic + real memories imported (content-hash
+  dedup). _Exit: row counts match — honest yield, not invented 500._
+  _Closed 2026-09-30: real corpus yield is **~207** (`spikes/A0/real-corpus-full-2026-09-29.jsonl`
+  = 207 unique; earlier `real-corpus.jsonl` = 204). Never 500 — private repo
+  did not yield that many atomic rows. Seed already on Neon **main**
+  (`br-wandering-queen-b8sx7y0a`): baseline ~5206 (= ~5001 synthetic + 204 real)
+  then 5214 after X4/X7 spike rows (ITER-006). Do not invent a 500-row import._
 - [x] **A0.3** Eval harness: 50 hand-built queries; measure recall@10, p50/p95
   latency. _Exit: harness runs; numbers in `memory/spikes/A0/RESULTS.md`._
   _2026-09-28: hybrid RRF recall@10=0.94, p95=5.13 ms (kw 0.72 / vec 0.72)._
 - [ ] **A0.4** Embedding A/B: MiniLM-384 (local) vs nomic-768.
   _Exit: both indexed, recall@10 + latency compared._
-  _Deferred 2026-09-28: MiniLM-only path run; nomic A/B not executed (plan allows
-  defer unless recall delta > 0.05)._
+  _Still deferred 2026-09-30: schema is `halfvec(384)` (MiniLM); nomic-768 needs
+  a dim/migration change + large model download. No A/B metrics invented.
+  Revisit only if hybrid recall regresses > 0.05 on real corpus._
 - [x] **A0.5** Retrieval A/B: RRF-SQL hybrid vs keyword-only baseline.
   _Exit: winner recorded with numbers._
   _2026-09-28: Hybrid RRF k=60 winner (0.94 vs keyword 0.72). See RESULTS.md._
@@ -112,9 +113,15 @@ One subtask = one commit. Check only when exit passes.
 
 ### Ops / exit gates
 - [ ] **P1.X1** Tailscale serve wake on daemon host (replace localhost).
-  _Blocked 2026-09-29: no always-on daemon host / Tailscale serve target yet._
-- [ ] **P1.X2** systemd unit + timer self-wake on daemon host.
-  _Blocked 2026-09-29: same as X1 — no daemon host._
+  _Blocked 2026-09-30: Mac is the intended daemon host, but `tailscale` is **not
+  on PATH** (no Tailscale CLI/app binary found). Do not claim Tailscale serve.
+  Localhost `/wake` works (see X2). Install Tailscale → then wire serve._
+- [x] **P1.X2** launchd unit + timer self-wake on Mac daemon host (not Linux
+  systemd on this machine).
+  _2026-09-30: `memory/daemon/launchd/` plists + INSTALL.md for checkout
+  `/Volumes/Developer/Workspace/grok-kit`. Smoke: `smoke-wake.mjs` vs Neon main
+  → ok, reconcile_enqueued=3, drained=2, cold_start_ms≈6.5s (artifact
+  `launchd/out/x2-wake-smoke.json`). X1 Tailscale still unchecked._
 - [x] **P1.X3** Conformance suite green.
   _2026-09-29: `ops/conformance.mjs` wraps contract/cli/import/workers/graph/curator/nodes/demo:stuck-debug → `npm run conformance` ALL GREEN 8/8 (~1.6s stub-only). See ITER-005._
 - [x] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
@@ -124,7 +131,9 @@ One subtask = one commit. Check only when exit passes.
 - [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
   _2026-09-29: Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from p1-v1; schema drop + pg_restore M8 dump → memories=5206 sync_log=5208 staged_null_emb=0; 004 re-applied (dump pre-G1). p1-v1/main untouched. See ITER-004._
 - [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
-  _Open: G3 ships scripted stand-in only._
+  _Open 2026-09-30: no real Moose MCP found to onboard. Stand-in docs improved
+  (`memory/graph/MOOSE-ONBOARDING.md`); G3 `moose-standin.mjs` unchanged.
+  Check only when a real Moose MCP round-trip transcript exists._
 - [x] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
   _2026-09-29: stub spike — two bots concurrent `feature-auth-*` writes; evidence-weigh
   picks stronger grounding (identity swap stable); loser superseded + review_items
@@ -136,9 +145,14 @@ One subtask = one commit. Check only when exit passes.
 _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · restore drill ✓ · no-gatekeeping ✓ (live Neon main, #18) · Moose real onboarding (X6) open._
 
 ### GrokKit integrations
-- [ ] **P2.K1** `memory-sync` writes via MCP `propose()` (human-gated; never silent identity writes).
-- [ ] **P2.K2** `session-handoff` emits episodic records on session close.
-- [ ] **P2.K3** Verify-loop outcomes (`rubric-verify` / `verify-aci`) auto-emit episodic records.
+- [x] **P2.K1** `memory-sync` writes via MCP `propose()` (human-gated; never silent identity writes).
+  _2026-09-29: SKILL.md + `propose-smoke.mjs` 8/8; squash-merged #20 (`32b6bd0` / `637fda2`). ITER-007._
+- [x] **P2.K2** `session-handoff` emits episodic records on session close.
+  _2026-09-30: `close` → MCP propose episodic `handoff-<slug>`; unit 4/4;
+  Neon main smoke ALL GREEN (`episodic-smoke.mjs`)._
+- [x] **P2.K3** Verify-loop outcomes (`rubric-verify` / `verify-aci`) auto-emit episodic records.
+  _2026-09-30: auto-emit episodic `errors-resolved-<slug>`; Neon main smoke
+  ALL GREEN (`skills/verify-aci/scripts/episodic-smoke.mjs`)._
 - [ ] **P2.K4** `refine-harness` cites memory IDs in generated patches.
 
 ### Cross-system
@@ -149,5 +163,8 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
 
 ### Safety drill
 - [ ] **P2.S1** Wrong-learning drill: deliberately propose a plausible-but-false learning → must land in the human queue, never auto-promote. **Exit:** drill passes + Ashish approves gate behavior live.
+  _Script GREEN 2026-09-30 on Neon main: proposal `8ad02baf-7c00-4f43-8691-2c959574a791`
+  in `project-p2s1-wrong-learning` → `queued_for_review` / `low-evidence`, **not**
+  in memories. Left unchecked until Ashish live reject/approve closes the gate._
 
 ## P3 — Consolidation + hardening (ongoing) — per plan §14, tracked after P2 gates.
