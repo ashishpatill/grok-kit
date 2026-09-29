@@ -1,0 +1,62 @@
+[
+  {
+    "id": "pin_tz",
+    "namespace": "preferences",
+    "type": "semantic",
+    "text": "Preference: Asia/Calcutta timezone for all reported timestamps and digests. Context tag MEMKEY-02982-preferences. Related: ops.",
+    "importance": 9,
+    "pinned": true,
+    "created_at": "2026-09-29T11:48:54.000Z",
+    "provenance": { "author": "human:ashish", "origin": "internal" }
+  },
+  {
+    "id": "pin_tz_dup",
+    "namespace": "preferences",
+    "type": "semantic",
+    "text": "Preference: Asia/Calcutta timezone for all reported timestamps and digests. Context tag MEMKEY-03066-preferences.",
+    "importance": 8,
+    "pinned": true,
+    "created_at": "2026-09-29T11:48:55.000Z",
+    "provenance": { "author": "human:ashish", "origin": "internal" }
+  },
+  {
+    "id": "pin_shared",
+    "namespace": "preferences",
+    "type": "semantic",
+    "text": "Preference: one shared memory for Grok bot and Moose; daemon is single writer.",
+    "importance": 10,
+    "pinned": true,
+    "created_at": "2026-09-29T11:48:54.086Z",
+    "provenance": { "author": "human:ashish", "origin": "internal" }
+  },
+  {
+    "id": "pin_embed",
+    "namespace": "preferences",
+    "type": "semantic",
+    "text": "Preference: keep embedding computation local MiniLM — zero API cost on the hot path.",
+    "importance": 8,
+    "pinned": true,
+    "created_at": "2026-09-29T11:48:54.208Z",
+    "provenance": { "author": "human:ashish", "origin": "internal" }
+  },
+  {
+    "id": "pin_human",
+    "namespace": "preferences",
+    "type": "semantic",
+    "text": "Preference: human approval always for money, sensitive, breaking, destructive, procedural writes.",
+    "importance": 10,
+    "pinned": true,
+    "created_at": "2026-09-29T11:48:54.208Z",
+    "provenance": { "author": "human:ashish", "origin": "internal" }
+  },
+  {
+    "id": "route_ws",
+    "namespace": "workspace-routing",
+    "type": "semantic",
+    "text": "Workspace routing: grok-kit lives at /Volumes/Developer/Workspace/grok-kit.",
+    "importance": 7,
+    "pinned": false,
+    "created_at": "2026-09-29T12:00:00.000Z",
+    "provenance": { "author": "import", "origin": "seed" }
+  }
+]

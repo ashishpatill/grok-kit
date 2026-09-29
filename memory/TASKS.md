@@ -200,3 +200,16 @@ Nightly launchd path on Mac; no Tailscale claim. Minimal slice — not ExpeL / V
   (`npm run consolidate:smoke`); live Neon **main** (`br-wandering-queen-b8sx7y0a`) disposable ns
   smoke + cleanup. No X1/X6/A0.4/S1._
 
+### Hot-pin export + visible recall (product slices from Muse/Grok/Cursor research)
+_Export-only hot pin from Neon; recall cites like Referenced-Chats. Do **not** claim X1/X6/A0.4._
+
+- [x] **P3.H1** Hot-pin export: generate human-editable `MEMORY.md` (+ optional topic index) from Neon pinned/identity memories — CLI under `memory/export/`; inject-index pattern (index in prompt, full topics on demand). Docs: `export/README.md`, `ops/hot-pin-export.md`.
+  _2026-09-30: `export/hot-pin.mjs` + `export/index.mjs`; stub smoke ALL GREEN (`npm run export:smoke`); live Neon **main** (`br-wandering-queen-b8sx7y0a`) read-only optional via `--live`. Caps 2200/1375; § separators; no dual-write._
+- [x] **P3.V1** Visible recall: MCP/CLI recall envelopes include provenance + memory IDs + short removal path note (Referenced-Chats style). Minimal extend of existing recall surface; smoke green.
+  _2026-09-30: `lib/visible-recall.mjs`; MCP + CLI twin shape results with `provenance`/`removal`/`removal_note`; `npm run cli:smoke` + `visible-recall:smoke` ALL GREEN. No X1/X6/A0.4._
+
+### Deferred P3 (not this PR)
+- [ ] **P3.R1** Reflective / ExpeL extraction stub (deepen only after H1/V1 solid).
+- [ ] **P3.P1** Poisoning red-team smoke (AgentPoison / MINJA-inspired); after H1/V1.
+
+
