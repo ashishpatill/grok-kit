@@ -144,7 +144,7 @@ export function createPgAdapter(databaseUrl = process.env.DATABASE_URL) {
                FROM kw FULL OUTER JOIN vec ON kw.id = vec.id
              )
              SELECT m.id, m.namespace, m.text, m.index_status, m.approval, m.type,
-                    m.importance, m.created_at, f.rrf, f.kw_rnk, f.vec_rnk
+                    m.importance, m.pinned, m.provenance, m.created_at, f.rrf, f.kw_rnk, f.vec_rnk
              FROM fused f JOIN memories m ON m.id = f.id
              ORDER BY f.rrf DESC
              LIMIT $4`,
@@ -155,7 +155,7 @@ export function createPgAdapter(databaseUrl = process.env.DATABASE_URL) {
           legs.vector = rows.filter((x) => x.vec_rnk != null).length;
         } else {
           const r = await client.query(
-            `SELECT id, namespace, text, index_status, approval, type, importance, created_at,
+            `SELECT id, namespace, text, index_status, approval, type, importance, pinned, provenance, created_at,
                     ts_rank_cd(text_tsv, plainto_tsquery('english', $2)) AS rrf,
                     NULL::int AS kw_rnk, NULL::int AS vec_rnk
              FROM memories

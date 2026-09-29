@@ -46,6 +46,12 @@ assert(
   `got ${rc.results[0]?.id}`
 );
 assert(rc.hybrid === false && rc.legs.keyword >= 1, 'stub recall keyword-only');
+assert(typeof rc.removal_note === 'string' && /propose supersede/.test(rc.removal_note), 'recall removal_note');
+assert(
+  rc.results[0].provenance?.author === 'p1m5-smoke' && rc.results[0].removal && rc.results[0].id === st.id,
+  'recall result provenance + removal + id',
+  JSON.stringify(rc.results[0]).slice(0, 180)
+);
 
 const rcCold = await recall(adapter, 'no-such-ns', 'anything', 5);
 assert(rcCold.status === 'cold_start', 'cold_start on empty namespace');
