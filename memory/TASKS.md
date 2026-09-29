@@ -178,7 +178,12 @@ _Primitives from research: presence / message / task / wake. Reuse existing daem
 presence + `/wake` scaffolds where they fit. Do **not** invent a full A2A protocol
 or multi-vendor agent-to-agent stack in this phase._
 
-- [ ] **P3.B1** `presence.heartbeat` — formalize bot/daemon heartbeat surface (align with `memory/daemon/presence.mjs` / PR #21); online check for peers.
-- [ ] **P3.B2** `message.send` — thin contracted message/handoff send (payload: from/to/ask/evidence/`memory_refs`); fail closed on missing evidence; no free-form chat bus.
-- [ ] **P3.B3** `task.request` / `task.update` / `task.cancel` — minimal task lifecycle on existing blackboard/outbox (004); ids + status only; no workflow engine.
-- [ ] **P3.B4** `wake.request` — authenticated daemon wake (`POST /wake` + `WAKE_TOKEN`, X2 launchd); document as the cross-bot nudge primitive.
+- [x] **P3.B1** `presence.heartbeat` — formalize bot/daemon heartbeat surface (align with `memory/daemon/presence.mjs` / PR #21); online check for peers.
+  _2026-09-30: `daemon/presence.mjs` reused from #21 shape; migration `005-inter-bot-bus.sql` → Neon **main** (`br-wandering-queen-b8sx7y0a`) created `daemon_presence`; `bus/accept` + `listOnline`; stub+live smoke ALL GREEN (`npm run bus:smoke`). Sync/X1 not claimed._
+- [x] **P3.B2** `message.send` — thin contracted message/handoff send (payload: from/to/ask/evidence/`memory_refs`); fail closed on missing evidence; no free-form chat bus.
+  _2026-09-30: `bus/messages.mjs` + `bus_messages` table; fail-closed without evidence/`memory_refs`; smoke covers reject + persist._
+- [x] **P3.B3** `task.request` / `task.update` / `task.cancel` — minimal task lifecycle on existing blackboard/outbox (004); ids + status only; no workflow engine.
+  _2026-09-30: `bus/tasks.mjs` + `bus_tasks`; lifecycle submitted→working→input-required|completed|failed|canceled; mirrors to outbox topic; smoke ALL GREEN._
+- [x] **P3.B4** `wake.request` — authenticated daemon wake (`POST /wake` + `WAKE_TOKEN`, X2 launchd); document as the cross-bot nudge primitive.
+  _2026-09-30: `bus/wake.mjs` + launchd INSTALL note; mock bearer smoke green. X1 Tailscale serve still unchecked._
+
