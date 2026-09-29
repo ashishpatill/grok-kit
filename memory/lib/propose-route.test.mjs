@@ -36,6 +36,16 @@ const prefs = routePropose({
 assert.equal(prefs.decision, 'queued_for_review');
 assert.equal(prefs.reason, 'identity-ns-human-always');
 
+
+const reflective = routePropose({
+  type: 'reflective',
+  namespace: 'project-x',
+  grounding_ids: ['g1', 'g2', 'g3'],
+});
+assert.equal(reflective.decision, 'queued_for_review');
+assert.equal(reflective.reason, 'reflective-human-always');
+assert.equal(isHumanGated(reflective), true);
+
 const procedural = routePropose({ type: 'procedural', namespace: 'project-x' });
 assert.equal(procedural.reason, 'procedural-human-always');
 
