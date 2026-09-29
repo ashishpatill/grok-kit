@@ -90,6 +90,8 @@ export function createStubAdapter(seed = [], opts = {}) {
         approval: s.m.approval,
         type: s.m.type,
         importance: s.m.importance,
+        pinned: Boolean(s.m.pinned),
+        provenance: s.m.provenance || null,
         rrf: s.hits / (60 + i + 1),
         created_at: s.m.created_at,
       }));
