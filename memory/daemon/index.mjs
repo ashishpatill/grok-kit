@@ -16,7 +16,7 @@ import dotenv from 'dotenv';
 import pg from 'pg';
 import { PgBoss } from 'pg-boss';
 import { dispatchJob } from '../workers/dispatch.mjs';
-import { listNeedsEmbed, chainJobsFor } from '../workers/reconcile.mjs';
+import { runReconcileSweep } from '../workers/reconcile.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
@@ -101,17 +101,16 @@ async function drainOnce(meta = {}) {
 
   let reconcileEnqueued = 0;
   try {
-    const needs = await listNeedsEmbed(db, { limit: RECONCILE_LIMIT });
-    for (const id of needs) {
-      for (const payload of chainJobsFor(id)) {
-        const opts = { singletonKey: `${payload.kind}:${id}` };
-        try {
-          await boss.send(QUEUE, payload, opts);
-          reconcileEnqueued += 1;
-        } catch {
-          /* singleton collision = already queued */
-        }
-      }
+    const sweep = await runReconcileSweep(
+      db,
+      async (payload, singletonKey) => {
+        await boss.send(QUEUE, payload, { singletonKey });
+      },
+      { limit: RECONCILE_LIMIT }
+    );
+    reconcileEnqueued = sweep.enqueued;
+    if (sweep.errors?.length) {
+      console.error('[daemon] reconcile enqueue errors', sweep.errors.slice(0, 3));
     }
   } catch (e) {
     console.error('[daemon] reconcile failed', e.message);

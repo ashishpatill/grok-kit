@@ -71,10 +71,9 @@ _Needs: daemon host on the tailnet (home mini-PC / Mac)._
 - [x] **G.1** Ashish signs IDL v2.1 (`memory/plan/FINAL-PLAN-V2.md` §12).
   _Signed 2026-09-28 (chat: "Freeze IDL and P1"). Later signature changes need written sign-off (v2.2+)._
 - [ ] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
-  `PLAN-dh-bot-memory-gepa.md`). _Still open: those PLAN-dh-* files are not in this
-  repo (private/export). Authoritative build plan remains `memory/plan/FINAL-PLAN-V2.md`
-  + `docs/PLAN-bot-memory-graph-v2.md`. Light 2026-09-29 note only — full reconcile
-  when PLAN-dh sources are available in-tree._
+  `PLAN-dh-bot-memory-gepa.md`). _Still open: PLAN-dh-* not in-tree. Light link note
+  2026-09-29: `memory/plan/G2-PLAN-dh-link.md` (FINAL-PLAN-V2 authoritative; no invented
+  PLAN-dh content). Full check when sources are exported._
 
 ## P1 — Prototypes (3–4 weeks) — started 2026-09-28
 
@@ -118,13 +117,20 @@ One subtask = one commit. Check only when exit passes.
   _Blocked 2026-09-29: same as X1 — no daemon host._
 - [x] **P1.X3** Conformance suite green.
   _2026-09-29: `ops/conformance.mjs` wraps contract/cli/import/workers/graph/curator/nodes/demo:stuck-debug → `npm run conformance` ALL GREEN 8/8 (~1.6s stub-only). See ITER-005._
-- [ ] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
-  _Open: not exercised this session._
+- [x] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
+  _2026-09-29: stub evidence — commit 8 staged → child SIGKILL → 8/8 survive →
+  reconcile+backfill → adminCheckpoint clean. `npm run x4:kill9` + workers:smoke.
+  Artifacts: `spikes/X4/out/x4-kill9-sweeper-stub.json`, ITER-006. Live Neon PG
+  re-run deferred until CEO promotes p1-v1 → main (no side-branch permanent store)._
 - [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
   _2026-09-29: Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from p1-v1; schema drop + pg_restore M8 dump → memories=5206 sync_log=5208 staged_null_emb=0; 004 re-applied (dump pre-G1). p1-v1/main untouched. See ITER-004._
 - [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
   _Open: G3 ships scripted stand-in only._
-- [ ] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
-  _Open: not started._
+- [x] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
+  _2026-09-29: stub spike — two bots concurrent `feature-auth-*` writes; evidence-weigh
+  picks stronger grounding (identity swap stable); loser superseded + review_items
+  resolution. `npm run x7:spike` + `evidence-weigh:smoke`. Artifacts:
+  `spikes/X7/out/x7-no-gatekeeping-stub.json`, ITER-006. Live Neon deferred to main
+  promotion (same policy as X4)._
 
 ## P2 / P3 — per plan §14, tracked after P1 gates.
