@@ -71,8 +71,10 @@ _Needs: daemon host on the tailnet (home mini-PC / Mac)._
 - [x] **G.1** Ashish signs IDL v2.1 (`memory/plan/FINAL-PLAN-V2.md` §12).
   _Signed 2026-09-28 (chat: "Freeze IDL and P1"). Later signature changes need written sign-off (v2.2+)._
 - [ ] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
-  `PLAN-dh-bot-memory-gepa.md`). _Still open if those docs diverge from FINAL-PLAN;
-  private repo export used for A0.2 corpus only so far._
+  `PLAN-dh-bot-memory-gepa.md`). _Still open: those PLAN-dh-* files are not in this
+  repo (private/export). Authoritative build plan remains `memory/plan/FINAL-PLAN-V2.md`
+  + `docs/PLAN-bot-memory-graph-v2.md`. Light 2026-09-29 note only — full reconcile
+  when PLAN-dh sources are available in-tree._
 
 ## P1 — Prototypes (3–4 weeks) — started 2026-09-28
 
@@ -102,17 +104,27 @@ One subtask = one commit. Check only when exit passes.
 ### Graph track
 - [x] **P1.G1** TS orchestrator + blackboard/outbox tables on Neon.
   _2026-09-29: migration `004-blackboard-outbox.sql` applied to Neon p1-v1 (blackboard+outbox verified); `memory/graph/` Orchestrator scaffold + `npm run graph:smoke` ALL GREEN. See ITER-003._
-- [ ] **P1.G2** Curator client calling memory MCP as `svc:curator`.
-- [ ] **P1.G3** 3 nodes (grok-coder-01, verifier-01, curator-01) + scripted Moose stand-in.
-- [ ] **P1.G4** Stuck-debug round-trip demo recorded.
+- [x] **P1.G2** Curator client calling memory MCP as `svc:curator`.
+  _2026-09-29: CuratorClient + MCP `review_list`/`promote`/`reject_proposal`/`review_decide` (default decided_by=`svc:curator`); `npm run curator:smoke` ALL GREEN. See ITER-004._
+- [x] **P1.G3** 3 nodes (grok-coder-01, verifier-01, curator-01) + scripted Moose stand-in.
+  _2026-09-29: `graph/nodes.mjs` + `moose-standin.mjs`; orchestrator handler dispatch; `npm run nodes:smoke` ALL GREEN. Real Moose = X6._
+- [x] **P1.G4** Stuck-debug round-trip demo recorded.
+  _2026-09-29: `npm run demo:stuck-debug` → `graph/demo/stuck-debug-roundtrip.json` (coder stuck → verifier → curator promote → Moose recall). See ITER-004._
 
 ### Ops / exit gates
 - [ ] **P1.X1** Tailscale serve wake on daemon host (replace localhost).
+  _Blocked 2026-09-29: no always-on daemon host / Tailscale serve target yet._
 - [ ] **P1.X2** systemd unit + timer self-wake on daemon host.
+  _Blocked 2026-09-29: same as X1 — no daemon host._
 - [ ] **P1.X3** Conformance suite green.
+  _Open: per-track smokes exist; no unified conformance suite yet._
 - [ ] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
-- [ ] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
+  _Open: not exercised this session._
+- [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
+  _2026-09-29: Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from p1-v1; schema drop + pg_restore M8 dump → memories=5206 sync_log=5208 staged_null_emb=0; 004 re-applied (dump pre-G1). p1-v1/main untouched. See ITER-004._
 - [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
+  _Open: G3 ships scripted stand-in only._
 - [ ] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
+  _Open: not started._
 
 ## P2 / P3 — per plan §14, tracked after P1 gates.

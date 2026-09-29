@@ -115,7 +115,7 @@ notify('notifications/initialized', {});
 const tools = await rpc('tools/list', {});
 const names = tools.result.tools.map((t) => t.name).sort();
 console.log('tools:', names.join(', '));
-assert(names.join(',') === 'get,ingest_file,list_namespaces,propose,recall,store', 'all 6 tools listed');
+assert(names.join(',') === 'get,ingest_file,list_namespaces,promote,propose,recall,reject_proposal,review_decide,review_list,store', 'all 10 tools listed');
 
 // ---- 3. store -------------------------------------------------------------
 console.log('store:');

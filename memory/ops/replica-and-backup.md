@@ -74,3 +74,11 @@ Plan §7 `backup` pg-boss job = weekly `pg_dump` → local replica host. Wire af
 - [x] Dry-run script / commands that dump Neon `p1-v1` to a local path
 - [x] ITER note with exit evidence (size, TOC listing, exit 0)
 - [ ] Host `full` replica install — **blocked** on daemon host (X1/X2)
+
+## P1.X5 restore drill (2026-09-29)
+
+- Created Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from **p1-v1** only (not `main`).
+- CoW counts matched p1-v1; checkpoint `COUNT(*) WHERE embedding IS NULL` = 0.
+- Destructive restore practiced **only** on that branch: `DROP SCHEMA public CASCADE` → `pg_restore` of M8 custom dump → memories=5206 / sync_log=5208 / staged_null_emb=0 / 0 `pg_restore` errors.
+- Dump TOC lacked blackboard/outbox (pre-G1) → re-applied `004-blackboard-outbox.sql` after restore.
+- Next weekly dump should be taken after G1 so restore brings graph tables without a follow-up migration.
