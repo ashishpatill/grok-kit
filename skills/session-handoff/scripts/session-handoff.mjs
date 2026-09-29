@@ -2,6 +2,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { isMainModule } from "../../../scripts/lib/is-main.mjs";
+import {
+  emitEpisodic,
+  memoryEmitEnabled,
+} from "../../lib/bot-memory-propose.mjs";
 
 const HEADINGS = [
   "Goal",
@@ -20,6 +24,11 @@ const HELP = `session-handoff — write and check a gitignored handoff file
 Usage:
   grok-kit session-handoff init [--root DIR] [--project NAME] [--force]
   grok-kit session-handoff check [--root DIR] [--max-lines N]
+  grok-kit session-handoff close [--root DIR] [--project NAME] [--max-lines N] [--no-emit]
+
+close = check, then emit an episodic handoff record via MCP propose() when
+DATABASE_URL/BOT_MEMORY_URL is set (P2.K2). Pass --no-emit or MEMORY_EMIT=0
+to skip the memory write.
 `;
 
 function parseArgs(argv) {
@@ -30,6 +39,7 @@ function parseArgs(argv) {
     force: false,
     maxLines: 80,
     help: false,
+    noEmit: false,
   };
   for (let i = 1; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -54,6 +64,9 @@ function parseArgs(argv) {
         break;
       case "--max-lines":
         out.maxLines = Number(next());
+        break;
+      case "--no-emit":
+        out.noEmit = true;
         break;
       default:
         throw new Error(`unknown argument: ${arg}`);
@@ -128,7 +141,31 @@ export function checkHandoff(text, { maxLines = 80 } = {}) {
   };
 }
 
-export function runSessionHandoff(argv, io = {}) {
+function summarizeHandoff(body, project) {
+  const lines = String(body || "")
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const pick = (heading) => {
+    const i = lines.findIndex((l) => l === `## ${heading}`);
+    if (i < 0) return "";
+    const out = [];
+    for (let j = i + 1; j < lines.length; j += 1) {
+      if (lines[j].startsWith("## ")) break;
+      out.push(lines[j]);
+    }
+    return out.join(" ").slice(0, 280);
+  };
+  const goal = pick("Goal");
+  const done = pick("Done");
+  const next = pick("Next steps");
+  return `Session handoff for ${project}: goal=${goal || "(none)"}; done=${done || "(none)"}; next=${next || "(none)"}`.slice(
+    0,
+    900
+  );
+}
+
+export async function runSessionHandoff(argv, io = {}) {
   const stdout = io.stdout ?? ((text) => process.stdout.write(text));
   let options;
   try {
@@ -190,6 +227,59 @@ export function runSessionHandoff(argv, io = {}) {
     stdout(`${JSON.stringify({ ...verdict, path: dest })}\n`);
     return verdict.ok ? 0 : 1;
   }
+  if (options.cmd === "close") {
+    const dest = handoffPath(options.root);
+    if (!existsSync(dest)) {
+      stdout(
+        `${JSON.stringify({
+          ok: false,
+          error: "missing-handoff",
+          path: dest,
+          next: "grok-kit session-handoff init",
+        })}\n`
+      );
+      return 2;
+    }
+    const body = readFileSync(dest, "utf8");
+    const verdict = checkHandoff(body, { maxLines: options.maxLines });
+    if (!verdict.ok) {
+      stdout(`${JSON.stringify({ ...verdict, path: dest, action: "close" })}\n`);
+      return 1;
+    }
+    const slug = String(options.project || "project")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "project";
+    const namespace = `handoff-${slug}`;
+    let memory = { skipped: true, reason: "emit-disabled" };
+    const wantEmit = !options.noEmit && (io.proposeFn || memoryEmitEnabled());
+    if (wantEmit) {
+      memory = await emitEpisodic({
+        namespace,
+        text: summarizeHandoff(body, slug),
+        metadata: {
+          author: "session-handoff",
+          origin: "session-handoff-close",
+          scope: "node_local",
+          source_session: `handoff-${slug}-${Date.now()}`,
+          importance: 6,
+        },
+        proposeFn: io.proposeFn,
+        databaseUrl: io.databaseUrl,
+      });
+    }
+    stdout(
+      `${JSON.stringify({
+        schemaVersion: 1,
+        ok: true,
+        action: "close",
+        path: dest,
+        namespace,
+        memory,
+      })}\n`
+    );
+    return memory.status === "error" ? 1 : 0;
+  }
   stdout(
     `${JSON.stringify({ ok: false, error: `unknown command ${options.cmd}` })}\n`
   );
@@ -199,5 +289,10 @@ export function runSessionHandoff(argv, io = {}) {
 export { HELP, HEADINGS };
 
 if (isMainModule(import.meta.url)) {
-  process.exit(runSessionHandoff(process.argv.slice(2)));
+  runSessionHandoff(process.argv.slice(2))
+    .then((code) => process.exit(code))
+    .catch((error) => {
+      process.stderr.write(`${error instanceof Error ? error.stack : error}\n`);
+      process.exit(1);
+    });
 }

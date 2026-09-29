@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "host": "mac-launchd-smoke",
+  "port": 8789,
+  "ms": 8062,
+  "body": {
+    "ok": true,
+    "queue": "memory-embed",
+    "reconcile_enqueued": 3,
+    "drained": 2,
+    "jobs": [
+      {
+        "job_id": "66c45d94-cf81-42aa-ba00-69ca2b2ba3e8",
+        "kind": "embed",
+        "memory_id": "00220a60-bb7e-4703-86ea-4522e058d916",
+        "handler": {
+          "ok": false,
+          "error": "memory_not_found",
+          "memory_id": "00220a60-bb7e-4703-86ea-4522e058d916",
+          "skipped": true
+        }
+      },
+      {
+        "job_id": "13eb4368-9211-4c5c-a3c4-72fa0b6ffd5a",
+        "kind": "embed",
+        "memory_id": "5b6073c5-4851-427b-84b8-17dec72c55f5",
+        "handler": {
+          "ok": false,
+          "error": "memory_not_found",
+          "memory_id": "5b6073c5-4851-427b-84b8-17dec72c55f5",
+          "skipped": true
+        }
+      }
+    ],
+    "job_id": "66c45d94-cf81-42aa-ba00-69ca2b2ba3e8",
+    "first_touch_kind": "fetch",
+    "cold_start_ms": 6554.28,
+    "phases_ms": {
+      "boss_start": 2835.36,
+      "queue_ready": 272.59,
+      "reconcile": 3146.74,
+      "first_neon_touch": 6554.28,
+      "drain_total": 8002.14,
+      "stop": 13.4,
+      "wall": 8015.54
+    },
+    "target_ms": 2000,
+    "pass": true,
+    "at": "2026-09-29T20:16:17.635Z",
+    "note": "P1.M7: real embed/score/dedup workers. Prod wake = Tailscale serve."
+  },
+  "when": "2026-09-29T20:16:17.647Z",
+  "note": "Localhost wake/drain against Neon main. Tailscale serve NOT claimed (tailscale not on PATH)."
+}

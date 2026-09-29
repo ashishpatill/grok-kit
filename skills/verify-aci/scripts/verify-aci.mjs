@@ -4,11 +4,16 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { isMainModule } from "../../../scripts/lib/is-main.mjs";
+import {
+  emitEpisodic,
+  memoryEmitEnabled,
+} from "../../lib/bot-memory-propose.mjs";
 
 const HELP = `verify-aci — run the project's doctor / launch / drive script
 
 Usage:
   verify-aci [--root DIR] [--phase all|doctor|launch|drive] [--surface NAME]
+             [--project SLUG] [--no-emit]
 
 Looks for, in order:
   $VERIFY_SCRIPT
@@ -22,7 +27,7 @@ Exit 0 on success, 2 if the ACI script is missing, otherwise the script's exit.
 `;
 
 function parseArgs(argv) {
-  const out = { root: process.cwd(), phase: "all", surface: null, help: false };
+  const out = { root: process.cwd(), phase: "all", surface: null, help: false, noEmit: false, project: "grokkit" };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const next = () => {
@@ -45,6 +50,12 @@ function parseArgs(argv) {
         out.surface = next();
         break;
       case "--json":
+        break;
+      case "--no-emit":
+        out.noEmit = true;
+        break;
+      case "--project":
+        out.project = next();
         break;
       default:
         throw new Error(`unknown argument: ${arg}`);
@@ -209,9 +220,35 @@ export async function runVerifyAci(argv, io = {}) {
       .join("\n")
   );
 
+  let memory = { skipped: true, reason: "emit-disabled" };
+  const wantEmit = !options.noEmit && (io.proposeFn || memoryEmitEnabled());
+  if (wantEmit) {
+    const slug = String(options.project || "grokkit")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "grokkit";
+    const failed = steps.find((s) => !s.ok);
+    const summary = ok
+      ? `verify-aci ok phase=${options.phase} surface=${surface || "-"} steps=${steps.map((s) => s.phase).join(",")}`
+      : `verify-aci FAIL phase=${failed?.phase || options.phase} exit=${failed?.exit} surface=${surface || "-"}`;
+    memory = await emitEpisodic({
+      namespace: `errors-resolved-${slug}`,
+      text: summary.slice(0, 900),
+      metadata: {
+        author: "verify-aci",
+        origin: "verify-aci-outcome",
+        importance: ok ? 5 : 7,
+        source_session: `verify-aci-${Date.now()}`,
+      },
+      proposeFn: io.proposeFn,
+      databaseUrl: io.databaseUrl,
+    });
+  }
+  verdict.memory = memory;
+
   stdout(`${JSON.stringify(verdict)}\n`);
   if (!ok) return steps.find((step) => !step.ok)?.exit ?? 1;
-  return 0;
+  return memory.status === "error" ? 1 : 0;
 }
 
 export { parseArgs, findScript, HELP };

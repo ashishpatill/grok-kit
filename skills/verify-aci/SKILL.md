@@ -35,6 +35,18 @@ grok-kit verify-aci --root . --phase all
 - `grok-kit rubric-verify` when the change is multi-file or a plan listed acceptance checks.
 - If a PR exists, `grok-kit watch-ci --status-once`.
 
+
+## Bot-memory emit (P2.K3)
+
+After the ACI run, outcomes auto-emit one **episodic** record via MCP `propose()`:
+
+- namespace: `errors-resolved-<slug>` (`--project`, default `grokkit`)
+- type: `episodic` → auto-approved
+- text: compact ok/FAIL summary (phase, surface, exit)
+- skipped when no `DATABASE_URL`/`BOT_MEMORY_URL`, or `--no-emit` / `MEMORY_EMIT=0`
+
+Never uses `store()`.
+
 ## Pitfalls
 
 - Treating unit tests as proof the bug is gone
