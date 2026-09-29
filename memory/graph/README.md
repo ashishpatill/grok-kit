@@ -20,3 +20,5 @@ DATABASE_URL=… npm run graph:smoke -- --live
 
 Schema: `memory/schema/migrations/004-blackboard-outbox.sql` (applied on Neon **p1-v1**).
 MCP curator tools: `review_list`, `promote`, `reject_proposal`, `review_decide` (default `decided_by=svc:curator`).
+
+See also: [MOOSE-ONBOARDING.md](./MOOSE-ONBOARDING.md) (P1.X6 — stand-in until real Moose MCP).

@@ -25,6 +25,18 @@ Default rubric is `.cursor/verify/rubric.json`. Auto-diff includes untracked fil
 
 `ok` is false iff any **must** item failed. `should` failures warn. `--dry-run` skips `command` items.
 
+
+## Bot-memory emit (P2.K3)
+
+After scoring, outcomes auto-emit one **episodic** record via MCP `propose()`:
+
+- namespace: `errors-resolved-<slug>` (`--project`, default `grokkit`)
+- type: `episodic` → auto-approved
+- text: compact ok/FAIL + mustFail/shouldFail counts
+- skipped when no `DATABASE_URL`/`BOT_MEMORY_URL`, or `--no-emit` / `MEMORY_EMIT=0`
+
+Never uses `store()`.
+
 ## Pitfalls
 
 - 40-item style rubrics (use the formatter)
