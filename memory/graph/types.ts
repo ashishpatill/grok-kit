@@ -1,4 +1,4 @@
-/** P1.G1 graph types (FINAL-PLAN-V2.md §11). */
+/** P1.G1–G3 graph types (FINAL-PLAN-V2.md §11). */
 
 export type OutboxStatus = 'pending' | 'claimed' | 'done' | 'dead';
 
@@ -27,12 +27,19 @@ export type OutboxRow = {
   done_at: string | null;
 };
 
+export type NodeHandler = (
+  event: OutboxRow,
+  ctx: { orch: unknown; memoryPort?: unknown }
+) => Promise<unknown> | unknown;
+
 export type NodeDef = {
   node_id: string;
   role?: string;
   capabilities?: string[];
   /** Topics this node may claim from the outbox. */
   topics?: string[];
+  /** Optional handler invoked on dispatch (G3+). */
+  handler?: NodeHandler;
 };
 
 export type DispatchResult = {
@@ -40,4 +47,5 @@ export type DispatchResult = {
   node_id?: string;
   outbox_id?: number;
   detail?: string;
+  handler_result?: unknown;
 };

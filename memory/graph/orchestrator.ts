@@ -1,6 +1,6 @@
 /**
- * Minimal TypeScript orchestrator scaffold (P1.G1).
- * Registry + dispatch + pause/resume placeholders — enough for G2 curator client.
+ * Minimal TypeScript orchestrator scaffold (P1.G1 + G3 handlers).
+ * Registry + dispatch + pause/resume — curator / node handlers for G2+.
  *
  * FINAL-PLAN-V2.md §11: blackboard-first; supervisor = deterministic routing;
  * event bus = outbox table on Neon.
@@ -19,9 +19,11 @@ export class Orchestrator {
   readonly nodes = new Map<string, NodeDef>();
   paused = false;
   db: Queryable;
+  memoryPort: unknown;
 
-  constructor(db: Queryable) {
+  constructor(db: Queryable, opts: { memoryPort?: unknown } = {}) {
     this.db = db;
+    this.memoryPort = opts.memoryPort;
   }
 
   register(node: NodeDef): void {
@@ -55,8 +57,8 @@ export class Orchestrator {
 
   /**
    * Deterministic router: claim one pending outbox row whose topic matches a
-   * registered node's topics (or any node if topics empty), mark done.
-   * Consent-gate pause: when paused, returns handled=false without claiming.
+   * registered node's topics (or any node if topics empty), invoke handler, mark done.
+   * Prefer to_node when set. Consent-gate pause: when paused, returns handled=false.
    */
   async dispatchOnce(): Promise<DispatchResult> {
     if (this.paused) {
@@ -66,7 +68,6 @@ export class Orchestrator {
       return { handled: false, detail: 'no-nodes' };
     }
 
-    // Prefer nodes with explicit topic subscriptions; fall back to first node.
     const topicSet = new Set<string>();
     for (const n of this.nodes.values()) {
       for (const t of n.topics || []) topicSet.add(t);
@@ -76,10 +77,14 @@ export class Orchestrator {
     if (!row) return { handled: false, detail: 'empty' };
 
     let handler: NodeDef | undefined;
-    for (const n of this.nodes.values()) {
-      if (!n.topics?.length || n.topics.includes(row.topic)) {
-        handler = n;
-        break;
+    if (row.to_node && this.nodes.has(row.to_node)) {
+      handler = this.nodes.get(row.to_node);
+    } else {
+      for (const n of this.nodes.values()) {
+        if (!n.topics?.length || n.topics.includes(row.topic)) {
+          handler = n;
+          break;
+        }
       }
     }
     if (!handler) {
@@ -87,16 +92,54 @@ export class Orchestrator {
       return { handled: false, outbox_id: row.id, detail: 'no-handler' };
     }
 
-    // G1 scaffold: mark done. G2+ will invoke node handlers / curator MCP.
+    let handler_result: unknown;
+    if (typeof handler.handler === 'function') {
+      try {
+        handler_result = await handler.handler(row, {
+          orch: this,
+          memoryPort: this.memoryPort,
+        });
+      } catch (e) {
+        await outboxComplete(this.db, row.id, 'dead');
+        return {
+          handled: false,
+          node_id: handler.node_id,
+          outbox_id: row.id,
+          detail: `handler-error:${(e as Error).message || e}`,
+        };
+      }
+    }
+
     await outboxComplete(this.db, row.id, 'done');
     await blackboardPut(this.db, {
       run_id: row.run_id || 'global',
       key: `last_dispatch:${row.topic}`,
-      value: { outbox_id: row.id, node_id: handler.node_id, at: new Date().toISOString() },
+      value: {
+        outbox_id: row.id,
+        node_id: handler.node_id,
+        at: new Date().toISOString(),
+        handler_result: handler_result ?? null,
+      },
       updated_by: 'orchestrator',
     });
 
-    return { handled: true, node_id: handler.node_id, outbox_id: row.id };
+    return {
+      handled: true,
+      node_id: handler.node_id,
+      outbox_id: row.id,
+      handler_result,
+    };
+  }
+
+  /** Drain up to `n` pending events (G3/G4 scripts). */
+  async drain(n = 16): Promise<DispatchResult[]> {
+    const out: DispatchResult[] = [];
+    for (let i = 0; i < n; i++) {
+      const r = await this.dispatchOnce();
+      out.push(r);
+      if (!r.handled && (r.detail === 'empty' || r.detail === 'paused' || r.detail === 'no-nodes')) break;
+    }
+    return out;
   }
 }
 
