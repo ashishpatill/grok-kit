@@ -1,0 +1,69 @@
+{
+  "task": "P2.R1",
+  "when": "2026-09-30T11:35:43.216Z",
+  "host": "mac-dry-run",
+  "phone": false,
+  "profiles": [
+    {
+      "name": "hot",
+      "includes": [
+        "pinned",
+        "episodic_last_30d",
+        "active project-*"
+      ],
+      "vectors": false,
+      "for": "phone / low-storage"
+    },
+    {
+      "name": "standard",
+      "includes": [
+        "hot",
+        "semantic",
+        "procedural"
+      ],
+      "vectors": false,
+      "for": "laptop / fast text search"
+    },
+    {
+      "name": "full",
+      "includes": [
+        "everything",
+        "vectors"
+      ],
+      "vectors": true,
+      "for": "daemon host (P1.M8)",
+      "note": "P1.M8 — not re-claimed by P2.R1"
+    }
+  ],
+  "fixture": {
+    "hot_applied": 5,
+    "hot_skipped": 4,
+    "hot_last_token": 10,
+    "standard_applied": 7,
+    "dry_run_applied": 5
+  },
+  "live": {
+    "ran": true,
+    "source_kind": "neon",
+    "deltas_seen": 800,
+    "applied": 800,
+    "skipped": 0,
+    "retired": 0,
+    "last_token_after": 800,
+    "source_max_seq": 5249,
+    "replica_lag": 4449,
+    "stats": {
+      "total": 800,
+      "pinned": 0,
+      "episodic": 246,
+      "project": 800,
+      "semantic": 271,
+      "procedural": 68,
+      "last_token": 800,
+      "profile": "hot"
+    },
+    "note": "Mac dry-run + live Neon pull; no physical phone. Phone Tailscale path = same pull over mesh when device present."
+  },
+  "secrets": false,
+  "status": "GREEN"
+}
