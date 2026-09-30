@@ -37,3 +37,18 @@ Live Neon: first 800 `sync_log` deltas → hot local cache; watermark advanced; 
 - Physical phone Tailscale pull (same code path; device not required for this slice)
 - `full` replica host install (P1.M8 / X1–X2 host)
 - A0.4 embedding A/B · G.2 WikiSkill/GEPA · P1.X6 / P2.C1 Moose real onboarding
+
+## Follow-up — FTS5 portability (same PR)
+
+**Why Mac was green / cloud was not:** official macOS Node 22 builds typically
+compile bundled sqlite with `ENABLE_FTS5=1`, so `CREATE VIRTUAL TABLE … USING fts5`
+succeeds. Some Cursor cloud Node 22 images ship `ENABLE_FTS5=0` →
+`error: no such module: fts5` on open/schema. Profile unit asserts never opened
+the DB; fixture smoke did.
+
+**Fix (smallest honest):** detect FTS5 at `openReplicaDb` (compile option +
+create probe). If missing (or `forceLikeSearch` / `GROK_REPLICA_FORCE_LIKE_SEARCH=1`),
+skip FTS virtual table/triggers and serve the same `ftsSearch()` API via LIKE
+over `memories.text|namespace|type`. Hot/standard profile filter behavior
+unchanged. Smoke asserts both default backend and forced-LIKE path.
+

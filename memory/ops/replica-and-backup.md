@@ -89,8 +89,8 @@ Source: plan §6. Implementation: `memory/replica/`.
 
 | Profile | Sync set | Substrate |
 |---------|----------|-----------|
-| `hot` | pinned + last-30d episodic + active `project-*` | SQLite + FTS5 (text) |
-| `standard` | hot + semantic/procedural text | SQLite + FTS5 (text) |
+| `hot` | pinned + last-30d episodic + active `project-*` | SQLite text (FTS5 when available, else LIKE) |
+| `standard` | hot + semantic/procedural text | SQLite text (FTS5 when available, else LIKE) |
 | `full` | everything + vectors | **P1.M8** (not re-claimed) |
 
 **Mechanism:** `pullSync` reads `sync_log WHERE seq > last_token`, filters by
@@ -107,5 +107,9 @@ npm run replica:smoke
 ```
 
 Evidence: `replica/evidence/p2-r1-smoke.json` (counts only — never commit `DATABASE_URL`).
+
+**FTS5 note:** Mac Node often has `ENABLE_FTS5=1`; some Cursor cloud Node builds
+have `ENABLE_FTS5=0`. Replica store detects and uses LIKE fallback so smoke is
+not Mac-only.
 
 Phone-over-Tailscale = same pull once a device can reach Neon/daemon on the mesh.

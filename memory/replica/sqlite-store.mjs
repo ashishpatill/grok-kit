@@ -1,8 +1,12 @@
 /**
- * P2.R1 — local SQLite + FTS5 read-cache substrate (ICM-shaped; node:sqlite).
+ * P2.R1 — local SQLite read-cache substrate (ICM-shaped; node:sqlite).
  *
- * ICM binary is out-of-tree; this minimal module mirrors its SQLite+FTS5 shape
- * for hot/standard profiles (text only). full vectors stay P1.M8.
+ * Prefer FTS5 when the host Node build compiled sqlite with ENABLE_FTS5.
+ * Some Cursor cloud / Node 22 builds ship ENABLE_FTS5=0 ("no such module: fts5").
+ * In that case we keep the same memories table + a portable LIKE text search so
+ * hot/standard profiles and smoke stay green without a Mac-only Node sqlite.
+ *
+ * ICM binary stays out-of-tree. full vectors stay P1.M8.
  *
  * Single-writer discipline: only pull.apply writes here; devices never
  * invent writes into Neon via this path.
@@ -12,7 +16,7 @@ import { mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 
-const SCHEMA = `
+const SCHEMA_BASE = `
 CREATE TABLE IF NOT EXISTS replica_meta (
   key   TEXT PRIMARY KEY,
   value TEXT NOT NULL
@@ -41,7 +45,10 @@ CREATE TABLE IF NOT EXISTS memories (
 CREATE INDEX IF NOT EXISTS memories_ns ON memories (namespace);
 CREATE INDEX IF NOT EXISTS memories_type ON memories (type);
 CREATE INDEX IF NOT EXISTS memories_pinned ON memories (pinned) WHERE pinned = 1;
+CREATE INDEX IF NOT EXISTS memories_text_ns ON memories (namespace, type);
+`;
 
+const SCHEMA_FTS = `
 CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(
   text,
   namespace,
@@ -68,19 +75,97 @@ CREATE TRIGGER IF NOT EXISTS memories_au AFTER UPDATE ON memories BEGIN
 END;
 `;
 
+/** @type {WeakMap<object, 'fts5'|'like'>} */
+const searchBackendByDb = new WeakMap();
+
+/**
+ * Probe whether this process's node:sqlite can create an FTS5 virtual table.
+ * compileoption alone is not enough — some builds advertise oddly; CREATE is truth.
+ * @returns {boolean}
+ */
+/**
+ * Raw compile-option + CREATE probe (ignores GROK_REPLICA_FORCE_LIKE_SEARCH).
+ * @returns {boolean}
+ */
+export function probeFts5CompileOption() {
+  let db;
+  try {
+    db = new DatabaseSync(':memory:');
+    const row = db.prepare("SELECT sqlite_compileoption_used('ENABLE_FTS5') AS v").get();
+    if (Number(row?.v) !== 1) return false;
+    db.exec('CREATE VIRTUAL TABLE __fts5_probe USING fts5(c)');
+    db.exec('DROP TABLE __fts5_probe');
+    return true;
+  } catch {
+    return false;
+  } finally {
+    try {
+      db?.close();
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/**
+ * Whether openReplicaDb will attempt FTS5 (honors force-like env).
+ * @returns {boolean}
+ */
+export function probeFts5Available() {
+  if (process.env.GROK_REPLICA_FORCE_LIKE_SEARCH === '1') return false;
+  return probeFts5CompileOption();
+}
+
 /**
  * @param {string} pathOrMemory  filesystem path or ':memory:'
+ * @param {{ forceLikeSearch?: boolean }} [opts]
  * @returns {DatabaseSync}
  */
-export function openReplicaDb(pathOrMemory = ':memory:') {
+export function openReplicaDb(pathOrMemory = ':memory:', opts = {}) {
   if (pathOrMemory !== ':memory:') {
     mkdirSync(dirname(pathOrMemory), { recursive: true });
   }
   const db = new DatabaseSync(pathOrMemory);
   db.exec('PRAGMA journal_mode = WAL;');
   db.exec('PRAGMA foreign_keys = ON;');
-  db.exec(SCHEMA);
+  db.exec(SCHEMA_BASE);
+
+  const forceLike =
+    opts.forceLikeSearch === true || process.env.GROK_REPLICA_FORCE_LIKE_SEARCH === '1';
+  let backend = 'like';
+  if (!forceLike) {
+    try {
+      const row = db.prepare("SELECT sqlite_compileoption_used('ENABLE_FTS5') AS v").get();
+      if (Number(row?.v) === 1) {
+        db.exec(SCHEMA_FTS);
+        backend = 'fts5';
+      }
+    } catch (err) {
+      const msg = err && typeof err === 'object' && 'message' in err ? String(err.message) : String(err);
+      if (!/no such module:\s*fts5/i.test(msg) && !/fts5/i.test(msg)) throw err;
+      backend = 'like';
+    }
+  }
+
+  searchBackendByDb.set(db, backend);
+  // meta table exists after SCHEMA_BASE
+  db.prepare(
+    `INSERT INTO replica_meta (key, value) VALUES (?, ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+  ).run('search_backend', backend);
+
   return db;
+}
+
+/**
+ * @param {DatabaseSync} db
+ * @returns {'fts5'|'like'}
+ */
+export function getSearchBackend(db) {
+  const cached = searchBackendByDb.get(db);
+  if (cached) return cached;
+  const v = getMeta(db, 'search_backend');
+  return v === 'fts5' ? 'fts5' : 'like';
 }
 
 /**
@@ -199,20 +284,61 @@ export function retireMemory(db, memoryId, seq) {
 }
 
 /**
- * @param {DatabaseSync} db
- * @param {string} matchQuery  FTS5 query
- * @param {number} [limit]
+ * Split a simple FTS5-ish query (`a OR b OR c`) into tokens for LIKE fallback.
+ * @param {string} matchQuery
+ * @returns {string[]}
  */
-export function ftsSearch(db, matchQuery, limit = 20) {
+function tokenizeSearchQuery(matchQuery) {
+  return String(matchQuery || '')
+    .split(/\s+OR\s+/i)
+    .map((t) => t.replace(/^["']|["']$/g, '').trim())
+    .filter(Boolean)
+    .map((t) => t.replace(/[%_]/g, '')); // strip LIKE wildcards from user token
+}
+
+/**
+ * Portable text search for P2.R1 when FTS5 is unavailable.
+ * @param {DatabaseSync} db
+ * @param {string} matchQuery
+ * @param {number} limit
+ */
+function likeSearch(db, matchQuery, limit) {
+  const tokens = tokenizeSearchQuery(matchQuery);
+  if (tokens.length === 0) return [];
+  const clauses = tokens.map(() => `(m.text LIKE ? ESCAPE '\\' OR m.namespace LIKE ? ESCAPE '\\' OR m.type LIKE ? ESCAPE '\\')`);
+  const params = [];
+  for (const t of tokens) {
+    const p = `%${t}%`;
+    params.push(p, p, p);
+  }
   return db
     .prepare(
       `SELECT m.id, m.namespace, m.type, m.text, m.pinned, m.importance, m.last_seq
-       FROM memories_fts f
-       JOIN memories m ON m.rowid = f.rowid
-       WHERE memories_fts MATCH ?
+       FROM memories m
+       WHERE ${clauses.join(' OR ')}
        LIMIT ?`
     )
-    .all(matchQuery, limit);
+    .all(...params, limit);
+}
+
+/**
+ * @param {DatabaseSync} db
+ * @param {string} matchQuery  FTS5 query (or OR-joined tokens for LIKE fallback)
+ * @param {number} [limit]
+ */
+export function ftsSearch(db, matchQuery, limit = 20) {
+  if (getSearchBackend(db) === 'fts5') {
+    return db
+      .prepare(
+        `SELECT m.id, m.namespace, m.type, m.text, m.pinned, m.importance, m.last_seq
+         FROM memories_fts f
+         JOIN memories m ON m.rowid = f.rowid
+         WHERE memories_fts MATCH ?
+         LIMIT ?`
+      )
+      .all(matchQuery, limit);
+  }
+  return likeSearch(db, matchQuery, limit);
 }
 
 /**
@@ -250,6 +376,7 @@ export function snapshotStats(db) {
     procedural,
     last_token: getLastToken(db),
     profile: getMeta(db, 'profile'),
+    search_backend: getSearchBackend(db),
   };
 }
 
