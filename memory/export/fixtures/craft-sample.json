@@ -1,0 +1,42 @@
+[
+  {
+    "id": "m_craft_1",
+    "namespace": "project-deepharness",
+    "type": "episodic",
+    "text": "Happened: shipped P3.P1 poison smoke. Wrong: almost claimed X1 green. Worked: disposable ns cleanup. Next: deepen ExpeL reflective.",
+    "importance": 7,
+    "pinned": false,
+    "created_at": "2026-09-30T00:00:00.000Z",
+    "provenance": {
+      "author": "harness-engineer",
+      "origin": "fixture",
+      "yaml_id": "dh-p3-r2"
+    }
+  },
+  {
+    "id": "m_craft_2",
+    "namespace": "project-deepharness",
+    "type": "semantic",
+    "text": "One write path: Neon propose(); craft log is export-only audit view.",
+    "importance": 8,
+    "pinned": false,
+    "created_at": "2026-09-29T12:00:00.000Z",
+    "provenance": {
+      "author": "ceo",
+      "origin": "fixture"
+    }
+  },
+  {
+    "id": "m_craft_secret",
+    "namespace": "project-deepharness",
+    "type": "episodic",
+    "text": "Leaked DATABASE_URL=postgres://user:pass@host/db by mistake \u2014 must never export.",
+    "importance": 9,
+    "pinned": false,
+    "created_at": "2026-09-28T12:00:00.000Z",
+    "provenance": {
+      "author": "fixture",
+      "origin": "secret-trap"
+    }
+  }
+]
