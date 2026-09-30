@@ -22,4 +22,4 @@
 - Apply v1.sql on Neon branch `p1-v1` (or main when ready); re-seed 204 + synthetic.
 - Hybrid recall in MCP (today keyword-only).
 - Tailscale serve + systemd on daemon host.
-- G.2 WikiSkill/GEPA reconcile still needs those two private docs if they diverge.
+- G.2 WikiSkill/GEPA reconcile **RETIRED 2026-09-30** — PLAN-dh sources never landed; FINAL-PLAN-V2 authoritative (`memory/plan/G2-PLAN-dh-link.md`).
