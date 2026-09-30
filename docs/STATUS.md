@@ -9,6 +9,7 @@
 - Phase 4 memory research pack (`docs/research/graph-of-bots-memory/`) — recommendation published; informed store decision
 - Binding v2 (`docs/PLAN-bot-memory-graph-v2.md`) — **store locked: Neon + pgvector** cloud-primary; ICM local replica candidate; GitHub bot-memory audit export only; MCP-first; event-triggered daemon; no gatekeeping. IDL v2.1 **frozen 2026-09-28**
 - **Single-daemon bot memory is usable on main** — store/recall MCP, human-gated `propose`, episodic write paths, hot-pin + `mirror_export`, presence + launchd wake. P0–P3 in `memory/TASKS.md` landed. #32 / #33 retired paper gates (G.2 PLAN-dh, A0.4 nomic A/B, P1.X6 / P2.C1 Moose real MCP)
+- Bot memory world-ready README + synthetic console screenshots/walkthrough (`memory/README.md`, `docs/assets/bot-memory/`)
 - Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets
 - Local plugin symlink + user-layer install script
 - Companion criteria + ICM setup docs
