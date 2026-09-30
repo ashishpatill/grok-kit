@@ -82,3 +82,34 @@ Plan §7 `backup` pg-boss job = weekly `pg_dump` → local replica host. Wire af
 - Destructive restore practiced **only** on that branch: `DROP SCHEMA public CASCADE` → `pg_restore` of M8 custom dump → memories=5206 / sync_log=5208 / staged_null_emb=0 / 0 `pg_restore` errors.
 - Dump TOC lacked blackboard/outbox (pre-G1) → re-applied `004-blackboard-outbox.sql` after restore.
 - Next weekly dump should be taken after G1 so restore brings graph tables without a follow-up migration.
+
+## P2.R1 — per-device profiles (`hot` / `standard`)
+
+Source: plan §6. Implementation: `memory/replica/`.
+
+| Profile | Sync set | Substrate |
+|---------|----------|-----------|
+| `hot` | pinned + last-30d episodic + active `project-*` | SQLite text (FTS5 when available, else LIKE) |
+| `standard` | hot + semantic/procedural text | SQLite text (FTS5 when available, else LIKE) |
+| `full` | everything + vectors | **P1.M8** (not re-claimed) |
+
+**Mechanism:** `pullSync` reads `sync_log WHERE seq > last_token`, filters by
+profile, upserts into local SQLite. Watermark in `replica_meta.last_token`.
+Single writer remains Neon/daemon — this module is a **read cache only**.
+
+**Verify (Mac dry-run; no physical phone):**
+
+```bash
+cd memory
+npm run replica:smoke
+# optional live Neon:
+# NODE_OPTIONS=--no-network-family-autoselection npm run replica:smoke -- --live
+```
+
+Evidence: `replica/evidence/p2-r1-smoke.json` (counts only — never commit `DATABASE_URL`).
+
+**FTS5 note:** Mac Node often has `ENABLE_FTS5=1`; some Cursor cloud Node builds
+have `ENABLE_FTS5=0`. Replica store detects and uses LIKE fallback so smoke is
+not Mac-only.
+
+Phone-over-Tailscale = same pull once a device can reach Neon/daemon on the mesh.
