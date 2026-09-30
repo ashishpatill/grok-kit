@@ -11,3 +11,8 @@ ops/backups/
 
 # Hot-pin live export artifacts (may contain private prefs)
 export/out/
+
+# P2.R1 local replica DBs / pull artifacts (may contain private memory text)
+replica/out/
+replica/*.db
+replica/*.db-*
