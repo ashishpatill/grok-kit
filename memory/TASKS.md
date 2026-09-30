@@ -112,16 +112,19 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-29: `npm run demo:stuck-debug` → `graph/demo/stuck-debug-roundtrip.json` (coder stuck → verifier → curator promote → Moose recall). See ITER-004._
 
 ### Ops / exit gates
-- [ ] **P1.X1** Tailscale serve wake on daemon host (replace localhost).
-  _Blocked 2026-09-30: Mac is the intended daemon host, but `tailscale` is **not
-  on PATH** (no Tailscale CLI/app binary found). Do not claim Tailscale serve.
-  Localhost `/wake` works (see X2). Install Tailscale → then wire serve._
+- [x] **P1.X1** Tailscale serve wake on daemon host (replace localhost).
+  _2026-09-30: CLI `/Applications/Tailscale.app/Contents/MacOS/Tailscale` (v1.102.4);
+  wrappers `/usr/local/bin/tailscale` + `~/bin/tailscale` (exec, not symlink).
+  `serve --bg --https=443 → http://127.0.0.1:8789`; smoke
+  `https://mac-mini.<tailnet>.ts.net/wake` Bearer WAKE_TOKEN → 200/ok/drained
+  (artifact `daemon/launchd/out/x1-tailscale-serve-wake.json`). Helper
+  `daemon/scripts/tailscale-serve-wake.sh`. Not funnel. Not X6/A0.4/G.2._
 - [x] **P1.X2** launchd unit + timer self-wake on Mac daemon host (not Linux
   systemd on this machine).
   _2026-09-30: `memory/daemon/launchd/` plists + INSTALL.md for checkout
   `/path/to/grok-kit`. Smoke: `smoke-wake.mjs` vs Neon main
   → ok, reconcile_enqueued=3, drained=2, cold_start_ms≈6.5s (artifact
-  `launchd/out/x2-wake-smoke.json`). X1 Tailscale still unchecked._
+  `launchd/out/x2-wake-smoke.json`). X1 Tailscale serve later checked (see P1.X1)._
 - [x] **P1.X3** Conformance suite green.
   _2026-09-29: `ops/conformance.mjs` wraps contract/cli/import/workers/graph/curator/nodes/demo:stuck-debug → `npm run conformance` ALL GREEN 8/8 (~1.6s stub-only). See ITER-005._
 - [x] **P1.X4** `kill -9` mid-write → sweeper zero-loss.
@@ -187,7 +190,7 @@ or multi-vendor agent-to-agent stack in this phase._
 - [x] **P3.B3** `task.request` / `task.update` / `task.cancel` — minimal task lifecycle on existing blackboard/outbox (004); ids + status only; no workflow engine.
   _2026-09-30: `bus/tasks.mjs` + `bus_tasks`; lifecycle submitted→working→input-required|completed|failed|canceled; mirrors to outbox topic; smoke ALL GREEN._
 - [x] **P3.B4** `wake.request` — authenticated daemon wake (`POST /wake` + `WAKE_TOKEN`, X2 launchd); document as the cross-bot nudge primitive.
-  _2026-09-30: `bus/wake.mjs` + launchd INSTALL note; mock bearer smoke green. X1 Tailscale serve still unchecked._
+  _2026-09-30: `bus/wake.mjs` + launchd INSTALL note; mock bearer smoke green. X1 Tailscale serve landed (see P1.X1)._
 
 ### Consolidation (Mem0 op-set — plan §7 / §14)
 _Sleep-time ADD / UPDATE / DELETE / NOOP apply with bi-temporal `valid_from`/`valid_to`.
