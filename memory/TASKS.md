@@ -222,4 +222,18 @@ _Never silent auto-promote into pinned/identity. Do **not** claim X1/X6/A0.4/G.2
   _2026-09-30: `lib/reflective-stub.mjs` — pure extract; `must_human_gate=true`;
   routed through propose-route (preferences → queued). Not full ExpeL/Voyager._
 
+### ExpeL deepen + mirror_export dry-run
+_Never silent auto-promote reflective. Do **not** claim X1/X6/A0.4/G.2._
+
+- [x] **P3.R2** ExpeL / reflective deepen: extraction + usage-voting sketch → propose (human-gated).
+  _2026-09-30: `lib/reflective.mjs` (extractInsights + applyUsageVote + propose payload);
+  `propose-route` gates `type=reflective` → `reflective-human-always`; stub re-export kept;
+  `spikes/P3R2/reflective-expel.mjs` stub ALL GREEN (`npm run reflective:smoke`); optional
+  Neon **main** disposable ns + cleanup via `--live`. Not full Voyager / OpenRouter extract._
+- [x] **P3.M1** `mirror_export` dry-run: craft-log YAML/JSONL dump for private bot-memory.
+  _2026-09-30: `export/mirror.mjs` + `mirror-cli.mjs`; happened/wrong/worked/next; secret
+  rows skipped; `--push` refused; stub smoke ALL GREEN (`npm run mirror:smoke`); docs
+  `export/README.md` + `ops/mirror-export.md`. No push secrets; dry-run default._
+
+
 

@@ -40,9 +40,12 @@ export function routePropose(meta = {}) {
     return { decision: 'auto_approved', reason: 'episodic-or-node_local' };
   }
 
-  // Gate 2: procedural / pinned / identity ns → human-always
+  // Gate 2: procedural / reflective / pinned / identity ns → human-always
   if (type === 'procedural') {
     return { decision: 'queued_for_review', reason: 'procedural-human-always' };
+  }
+  if (type === 'reflective') {
+    return { decision: 'queued_for_review', reason: 'reflective-human-always' };
   }
   if (pinned) {
     return { decision: 'queued_for_review', reason: 'pinned-human-always' };

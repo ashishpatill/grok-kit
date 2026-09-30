@@ -513,7 +513,7 @@ server.registerTool(
   'propose',
   {
     description:
-      'Propose a memory through the write gates (IDL §12 / propose-route): episodic/node_local auto-approve (stored immediately); procedural, pinned, or preferences(identity) → human-always (queued); global semantic auto-approves iff grounding_ids >= 2, else queued for curator/human review.',
+      'Propose a memory through the write gates (IDL §12 / propose-route): episodic/node_local auto-approve (stored immediately); procedural, reflective, pinned, or preferences(identity) → human-always (queued); global semantic auto-approves iff grounding_ids >= 2, else queued for curator/human review.',
     inputSchema: {
       namespace: z.string().describe('Canonical namespace'),
       text: z.string().describe('Atomic fact / learning text'),
