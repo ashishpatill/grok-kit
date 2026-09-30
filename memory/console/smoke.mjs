@@ -44,7 +44,11 @@ assert(promoted.status === 'ok' && promoted.promoted_id, 'promote', JSON.stringi
 
 const hot = await s.hotPinPreview();
 assert(hot.status === 'ok' && hot.memory_md.includes('Hot-pin MEMORY'), 'hot-pin preview');
-assert(!/ashish|\/Users\/|\/Volumes\/Developer|<tailnet>|100\.91\.31/i.test(JSON.stringify(hot)), 'hot-pin has no personal leaks');
+assert(
+  !/\/Users\/|\/Volumes\/|MagicDNS|tailnet_ip|100\.\d+\.\d+\.\d+/i.test(JSON.stringify(hot)) &&
+    !/ashi[\w]*pisey/i.test(JSON.stringify(hot)),
+  'hot-pin has no personal leaks'
+);
 
 console.log(failures === 0 ? '\nALL GREEN — memory-console smoke' : `\n${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);

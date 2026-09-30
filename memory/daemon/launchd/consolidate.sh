@@ -21,7 +21,7 @@ if [[ -z "${DATABASE_URL:-}" ]]; then
 fi
 export NODE_OPTIONS="${NODE_OPTIONS:---no-network-family-autoselection}"
 # Same node as ai.botmemory.daemon.plist (nvm). Override with NODE_BIN.
-NODE_BIN="${NODE_BIN:-/Users/<operator>/.nvm/versions/node/v22.23.2/bin/node}"
+NODE_BIN="${NODE_BIN:-/path/to/node}"
 if [[ ! -x "$NODE_BIN" ]]; then
   NODE_BIN="$(command -v node || true)"
 fi
