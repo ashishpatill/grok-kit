@@ -168,6 +168,6 @@ curl -sk -X POST "https://<MagicDNS>.ts.net/wake" \
 
 Evidence (this host, 2026-09-30 IST): `launchd/out/x1-tailscale-serve-wake.json` —
 `https://mac-mini.<tailnet>.ts.net/wake` → HTTP 200, `ok`, drained jobs vs Neon **main**.
-Status nickname may show `ashish`; MagicDNS for Serve HTTPS is `mac-mini.<tailnet>.ts.net`.
+Tailscale status name / MagicDNS: `mac-mini` / `mac-mini.<tailnet>.ts.net`.
 Tailnet IP `100.64.0.1`. **Not claimed:** X6 / A0.4 / G.2.
 
