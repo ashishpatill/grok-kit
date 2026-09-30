@@ -1,13 +1,14 @@
 # Status — grok-kit
 
-**Updated:** 2026-09-28
+**Updated:** 2026-09-30
 **Authority:** this file (GOAL_AND_LOOP.md for stop rules; SETUP-STATUS.md for machine install)
 
 ## Done
 
-- Phase 0 plan: Graph of bots (`docs/PLAN-graph-of-bots.md`) — nested org graph (node can become a subgraph), multi-bot edges, memory store contract. Plan only; not implemented
+- Phase 0 plan: Graph of bots (`docs/PLAN-graph-of-bots.md`) — nested org graph (node can become a subgraph), multi-bot edges, memory store contract. Plan only; runtime graph not shipped
 - Phase 4 memory research pack (`docs/research/graph-of-bots-memory/`) — recommendation published; informed store decision
-- Binding v2 build plan (`docs/PLAN-bot-memory-graph-v2.md`) — **store locked: Neon + pgvector** cloud-primary; ICM local replica candidate; GitHub bot-memory audit export only; MCP-first; event-triggered daemon; no gatekeeping. IDL v2.1 **frozen 2026-09-28**; **P0 spikes complete** (hybrid recall@10 1.00 / p95 11.48 ms), **P1 prototypes underway** per `memory/TASKS.md`
+- Binding v2 (`docs/PLAN-bot-memory-graph-v2.md`) — **store locked: Neon + pgvector** cloud-primary; ICM local replica candidate; GitHub bot-memory audit export only; MCP-first; event-triggered daemon; no gatekeeping. IDL v2.1 **frozen 2026-09-28**
+- **Single-daemon bot memory is usable on main** — store/recall MCP, human-gated `propose`, episodic write paths, hot-pin + `mirror_export`, presence + launchd wake. P0–P3 in `memory/TASKS.md` landed. #32 / #33 retired paper gates (G.2 PLAN-dh, A0.4 nomic A/B, P1.X6 / P2.C1 Moose real MCP)
 - Kit tree: skills, agents, rules, hooks, templates, scripts, MCP snippets
 - Local plugin symlink + user-layer install script
 - Companion criteria + ICM setup docs
@@ -37,8 +38,6 @@
 
 ## Remaining (ordered)
 
-0. ~~P0 spikes per `docs/PLAN-bot-memory-graph-v2.md` (Neon schema/recall, daemon wake, MCP round-trip) → IDL v2 freeze gate~~ — DONE 2026-09-28
-0b. Implement Graph of bots Phases 1–5 per `docs/PLAN-graph-of-bots.md` + v2 memory plan (schemas, handoff/expand skills, Neon primary + ICM replica path, bot-memory mirror export)
 1. Submit Cursor Marketplace form (manual account step)
 2. Open Grok Build catalog PR with pinned `main` SHA
 3. Soft-verify reload / slash skills (machine-local)
@@ -52,5 +51,6 @@
 
 ## Deferred
 
+- N-daemon bidirectional sync (open PR #21) — leave #21 alone; do not merge or rebase
 - Expanding companion packaging beyond criteria doc
 - Rewriting historical commit subjects with old framing
