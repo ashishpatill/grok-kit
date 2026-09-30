@@ -6,7 +6,7 @@
 
 ## Done
 
-- [x] Kit repo at `/path/to/grok-kit` (local folder name; public repo `ashishpatill/grok-kit`)
+- [x] Kit repo at `/path/to/grok-kit` (local checkout; public repo `ashishpatill/grok-kit`) (local folder name; public repo `ashishpatill/grok-kit`)
 - [x] Symlink `~/.cursor/plugins/local/grok-kit`
 - [x] User MCP slimmed to ICM (`serve --compact`); previous servers archived at `~/.cursor/mcp-servers.archived.json` + `mcp.json.bak.grok-kit.*`
 - [x] ICM binary `~/.local/bin/icm` v0.10.61; `icm init --mode mcp` + `--mode skill`

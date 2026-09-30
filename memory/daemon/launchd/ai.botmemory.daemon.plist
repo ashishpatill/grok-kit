@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
   <key>Label</key><string>ai.botmemory.daemon</string>
-  <!-- Mac daemon host (Ashish): edit WorkingDirectory / ProgramArguments to this checkout -->
+  <!-- Mac daemon host: edit WorkingDirectory / ProgramArguments to this checkout -->
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/<operator>/.nvm/versions/node/v22.23.2/bin/node</string>
+    <string>/path/to/node</string>
     <string>/path/to/grok-kit/memory/daemon/index.mjs</string>
   </array>
   <key>WorkingDirectory</key><string>/path/to/grok-kit/memory</string>

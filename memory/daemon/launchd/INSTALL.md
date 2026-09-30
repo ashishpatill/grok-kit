@@ -40,7 +40,7 @@ Or: `node memory/daemon/launchd/smoke-wake.mjs` (scripted).
 
 ## 3. Install LaunchAgents
 
-Plists in this dir already point at the checkout paths above. Adjust `node` path if nvm moves.
+Plists ship with `/path/to/grok-kit` and `/path/to/node` placeholders — edit those strings to your checkout and Node binary before `launchctl load`.
 
 ```bash
 mkdir -p ~/Library/LaunchAgents
