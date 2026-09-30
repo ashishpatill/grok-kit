@@ -108,7 +108,7 @@ One subtask = one commit. Check only when exit passes.
 - [x] **P1.G2** Curator client calling memory MCP as `svc:curator`.
   _2026-09-29: CuratorClient + MCP `review_list`/`promote`/`reject_proposal`/`review_decide` (default decided_by=`svc:curator`); `npm run curator:smoke` ALL GREEN. See ITER-004._
 - [x] **P1.G3** 3 nodes (grok-coder-01, verifier-01, curator-01) + scripted Moose stand-in.
-  _2026-09-29: `graph/nodes.mjs` + `moose-standin.mjs`; orchestrator handler dispatch; `npm run nodes:smoke` ALL GREEN. Real Moose = X6._
+  _2026-09-29: `graph/nodes.mjs` + `moose-standin.mjs`; orchestrator handler dispatch; `npm run nodes:smoke` ALL GREEN. Stand-in = contract proof; real peer MCP = X6 (retired 2026-09-30 — no product)._
 - [x] **P1.G4** Stuck-debug round-trip demo recorded.
   _2026-09-29: `npm run demo:stuck-debug` → `graph/demo/stuck-debug-roundtrip.json` (coder stuck → verifier → curator promote → Moose recall). See ITER-004._
 
@@ -134,10 +134,13 @@ One subtask = one commit. Check only when exit passes.
   Artifacts: `spikes/X4/out/x4-kill9-sweeper-stub.json`, ITER-006. Also live on Neon **main** (`br-wandering-queen-b8sx7y0a`): `x4-kill9-sweeper-pg.json` (6/6)._
 - [x] **P1.X5** Restore drill: pg_dump → fresh branch → checkpoint clean.
   _2026-09-29: Neon branch `p1-x5-restore-20260929` (`br-restless-grass-b8xikkh4`) from p1-v1; schema drop + pg_restore M8 dump → memories=5206 sync_log=5208 staged_null_emb=0; 004 re-applied (dump pre-G1). p1-v1/main untouched. See ITER-004._
-- [ ] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
-  _Open 2026-09-30: no real Moose MCP found to onboard. Stand-in docs improved
-  (`memory/graph/MOOSE-ONBOARDING.md`); G3 `moose-standin.mjs` unchanged.
-  Check only when a real Moose MCP round-trip transcript exists._
+- [x] **P1.X6** Moose real MCP onboarding recorded (end stand-in).
+  _**RETIRED / closed-with-stand-in 2026-09-30:** “Moose” was a planned peer
+  name, not a product Ashish owns. Searched Cursor mcp.json (icm/tell/dodo/Neon
+  only), Workspace repos, bot-memory agents, ashishpatill GitHub — **no** Moose
+  MCP URL/stdio/secrets. Stand-in (`moose-standin.mjs` + G3/G4 smokes) remains
+  the MemoryPort contract proof. Real third-party onboard deferred until a real
+  peer MCP exists. Evidence: `memory/graph/MOOSE-ONBOARDING.md`. No invented Moose._
 - [x] **P1.X7** No-gatekeeping spike: two bots concurrent writes to one `feature-*`; evidence-weighing resolution.
   _2026-09-29: stub spike — two bots concurrent `feature-auth-*` writes; evidence-weigh
   picks stronger grounding (identity swap stable); loser superseded + review_items
@@ -146,7 +149,7 @@ One subtask = one commit. Check only when exit passes.
 
 ## P2 — Integrations (2–3 weeks, serial on P1 gates)
 
-_P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · restore drill ✓ · no-gatekeeping ✓ (live Neon main, #18) · Moose real onboarding (X6) open._
+_P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · restore drill ✓ · no-gatekeeping ✓ (live Neon main, #18) · Moose X6 retired (stand-in = contract proof; no real peer MCP to onboard)._
 
 ### GrokKit integrations
 - [x] **P2.K1** `memory-sync` writes via MCP `propose()` (human-gated; never silent identity writes).
@@ -163,7 +166,11 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
   recall cite smoke ALL GREEN (`cite-smoke.mjs`, ns=`project-grok-kit`, read-only)._
 
 ### Cross-system
-- [ ] **P2.C1** Moose onboards behind the frozen IDL v2.1 contract (needs X6); first real cross-system learning promoted and reused.
+- [x] **P2.C1** Moose onboards behind the frozen IDL v2.1 contract (needs X6); first real cross-system learning promoted and reused.
+  _**RETIRED / deferred 2026-09-30:** blocked on a missing peer product we do not
+  have — not on Ashish action. IDL v2.1 + stand-in MemoryPort path already prove
+  the contract (G3/G4). Re-open when a real peer MCP exists; then record propose
+  → promote → recall transcript. Not an Ashish-facing blocker. See X6 / MOOSE-ONBOARDING.md._
 
 ### Replicas
 - [x] **P2.R1** Per-device replica profiles (`hot`/`standard`) live; dynamic sync verified (phone pulls hot-set over Tailscale). Needs X1/X2.
