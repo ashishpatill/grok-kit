@@ -44,6 +44,8 @@ assert(promoted.status === 'ok' && promoted.promoted_id, 'promote', JSON.stringi
 
 const hot = await s.hotPinPreview();
 assert(hot.status === 'ok' && hot.memory_md.includes('Hot-pin MEMORY'), 'hot-pin preview');
+assert(hot.memory_md.includes('source: console-stub'), 'hot-pin labels console-stub');
+assert(!/source: neon-pinned/i.test(hot.memory_md), 'hot-pin does not claim neon-pinned');
 assert(
   !/\/Users\/|\/Volumes\/|MagicDNS|tailnet_ip|100\.\d+\.\d+\.\d+/i.test(JSON.stringify(hot)) &&
     !/ashi[\w]*pisey/i.test(JSON.stringify(hot)),

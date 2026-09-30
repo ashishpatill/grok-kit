@@ -15,10 +15,20 @@ npm run console
 # → http://127.0.0.1:7432
 ```
 
-Uses `console/fixtures/demo-seed.json` (OSS-safe synthetic facts). No Neon.
-No production memory text.
+Uses [`fixtures/demo-seed.json`](fixtures/demo-seed.json) (OSS-safe synthetic
+facts). No Neon. No production memory text.
+
+Screenshots + walkthrough:
+[`docs/assets/bot-memory/`](../../docs/assets/bot-memory/).
+
+```bash
+npm run console:smoke
+```
 
 ## Honesty
 
 This is not a metrics dashboard. Every action maps to real IDL paths
 (`propose` / `review_list` / `promote` / `reject` / `recall` / hot-pin export).
+
+Hot-pin preview labels its markdown source as `console-stub` so screenshots
+never imply a live Neon dump.

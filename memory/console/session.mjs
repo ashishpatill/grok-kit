@@ -295,7 +295,7 @@ export function createConsoleSession(opts = {}) {
           m.namespace === 'workspace-routing' ||
           m.namespace === 'models'
       );
-    const built = buildHotPinExport(rows, { topics: true });
+    const built = buildHotPinExport(rows, { topics: true, source: 'console-stub' });
     return {
       status: 'ok',
       source: 'console-stub',
