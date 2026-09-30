@@ -19,7 +19,7 @@
 - Real queries are distinctive windows taken from gold row text (not hand paraphrases) — easier than adversarial paraphrases; still confirms hybrid beats each leg alone on real BIMLabz learnings.
 
 **Still open / deferred:**
-- Embedding A/B vs nomic-768 not run (A0.4).
+- Embedding A/B vs nomic-768 **deferred-closed** (A0.4, 2026-09-30): schema stays MiniLM-384; revisit only if recall regresses.
 - Re-seed + re-bench against authoritative `schema/v1.sql` (script: `spikes/A0/scripts/seed_real_v1.mjs`) when a v1 Neon branch exists.
 - Tailscale wake remains P1.
 

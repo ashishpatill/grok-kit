@@ -25,11 +25,11 @@ only when its exit check passes; append a one-line result note.
 - [x] **A0.3** Eval harness: 50 hand-built queries; measure recall@10, p50/p95
   latency. _Exit: harness runs; numbers in `memory/spikes/A0/RESULTS.md`._
   _2026-09-28: hybrid RRF recall@10=0.94, p95=5.13 ms (kw 0.72 / vec 0.72)._
-- [ ] **A0.4** Embedding A/B: MiniLM-384 (local) vs nomic-768.
+- [x] **A0.4** Embedding A/B: MiniLM-384 (local) vs nomic-768.
   _Exit: both indexed, recall@10 + latency compared._
-  _Still deferred 2026-09-30: schema is `halfvec(384)` (MiniLM); nomic-768 needs
-  a dim/migration change + large model download. No A/B metrics invented.
-  Revisit only if hybrid recall regresses > 0.05 on real corpus._
+  _Deferred-closed 2026-09-30: schema stays `halfvec(384)` (MiniLM). No nomic-768
+  A/B run (would need dim/migration + large model download). No metrics invented.
+  Re-open only if hybrid recall regresses > 0.05 on real corpus._
 - [x] **A0.5** Retrieval A/B: RRF-SQL hybrid vs keyword-only baseline.
   _Exit: winner recorded with numbers._
   _2026-09-28: Hybrid RRF k=60 winner (0.94 vs keyword 0.72). See RESULTS.md._
@@ -71,10 +71,11 @@ _Needs: daemon host on the tailnet (home mini-PC / Mac)._
 ## Freeze gate (serial)
 - [x] **G.1** Ashish signs IDL v2.1 (`memory/plan/FINAL-PLAN-V2.md` §12).
   _Signed 2026-09-28 (chat: "Freeze IDL and P1"). Later signature changes need written sign-off (v2.2+)._
-- [ ] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
-  `PLAN-dh-bot-memory-gepa.md`). _Still open: PLAN-dh-* not in-tree. Light link note
-  2026-09-29: `memory/plan/G2-PLAN-dh-link.md` (FINAL-PLAN-V2 authoritative; no invented
-  PLAN-dh content). Full check when sources are exported._
+- [x] **G.2** WikiSkill/GEPA docs reconciled (`PLAN-dh-bot-memory.md`,
+  `PLAN-dh-bot-memory-gepa.md`). _**RETIRED 2026-09-30:** PLAN-dh-* never landed
+  in-tree (searched grok-kit, local bot-memory, BIMLabz/bot-memory, research folders).
+  Historical path cites only; authoritative plan is FINAL-PLAN-V2. No Ashish action.
+  Evidence: `memory/plan/G2-PLAN-dh-link.md`. No invented PLAN-dh content._
 
 ## P1 — Prototypes (3–4 weeks) — started 2026-09-28
 
