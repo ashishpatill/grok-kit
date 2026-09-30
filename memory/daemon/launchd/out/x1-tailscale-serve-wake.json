@@ -8,20 +8,19 @@
   "tailscale_version": "1.102.4",
   "localhost_port": 8789,
   "serve_cmd": "tailscale serve --bg --https=443 http://127.0.0.1:8789",
-  "also_http_serve": "tailscale serve --bg --http=80 http://127.0.0.1:8789",
   "wake_url": "https://mac-mini.tailf5ca02.ts.net/wake",
-  "wake_url_shape": "https://<MagicDNS>.ts.net/wake",
+  "wake_url_shape": "https://mac-mini.<tailnet>.ts.net/wake",
   "magicdns": "mac-mini.tailf5ca02.ts.net",
+  "tailscale_status_name": "mac-mini",
   "tailnet_ip": "100.91.31.40",
-  "status_nickname": "ashish",
-  "source": "x1-tailscale-serve-smoke-https-macmini",
-  "ts_ist": "2026-09-30T13:10:45.177452+05:30",
+  "source": "x1-tailscale-serve-smoke-mac-mini",
+  "ts_ist": "2026-09-30T13:12:52.113113+05:30",
   "body": {
     "ok": true,
     "queue": "memory-embed",
-    "reconcile_enqueued": 12,
+    "reconcile_enqueued": 0,
     "drained": 5,
-    "cold_start_ms": 10772.5,
+    "cold_start_ms": 5470.94,
     "job_count": 5
   }
 }
