@@ -1,7 +1,7 @@
 # ITER-016 — P1.X1 Tailscale serve wake
 
 **When:** 2026-09-30 IST · base after `#28` (ExpeL/mirror).  
-**Host:** Mac daemon (`100.64.0.1`, MagicDNS `mac-mini.<tailnet>.ts.net`; status nickname `ashish`).
+**Host:** Mac daemon (`100.64.0.1`, Tailscale name `mac-mini`, MagicDNS `mac-mini.<tailnet>.ts.net`).
 
 ## Done
 - Documented CLI path `/Applications/Tailscale.app/Contents/MacOS/Tailscale` + exec wrappers (symlink breaks bundle id).
