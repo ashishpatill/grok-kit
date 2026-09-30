@@ -1,0 +1,104 @@
+{
+  "sync_log": [
+    { "seq": 1, "memory_id": "pin_tz", "op": "insert", "created_at": "2026-09-01T00:00:00.000Z" },
+    { "seq": 2, "memory_id": "epi_recent", "op": "insert", "created_at": "2026-09-28T12:00:00.000Z" },
+    { "seq": 3, "memory_id": "epi_old", "op": "insert", "created_at": "2026-07-01T00:00:00.000Z" },
+    { "seq": 4, "memory_id": "proj_active", "op": "insert", "created_at": "2026-09-20T00:00:00.000Z" },
+    { "seq": 5, "memory_id": "sem_fact", "op": "insert", "created_at": "2026-08-15T00:00:00.000Z" },
+    { "seq": 6, "memory_id": "proc_how", "op": "insert", "created_at": "2026-08-16T00:00:00.000Z" },
+    { "seq": 7, "memory_id": "goals_x", "op": "insert", "created_at": "2026-09-10T00:00:00.000Z" },
+    { "seq": 8, "memory_id": "epi_recent", "op": "update", "created_at": "2026-09-29T08:00:00.000Z" },
+    { "seq": 9, "memory_id": "retired_pin", "op": "insert", "created_at": "2026-09-05T00:00:00.000Z" },
+    { "seq": 10, "memory_id": "retired_pin", "op": "retire", "created_at": "2026-09-29T09:00:00.000Z" }
+  ],
+  "memories": [
+    {
+      "id": "pin_tz",
+      "namespace": "preferences",
+      "type": "semantic",
+      "text": "Timezone preference Asia/Calcutta",
+      "pinned": true,
+      "approval": "live",
+      "importance": 9,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "epi_recent",
+      "namespace": "handoff-p2r1",
+      "type": "episodic",
+      "text": "Session closed after replica profile smoke",
+      "pinned": false,
+      "approval": "live",
+      "importance": 5,
+      "created_at": "2026-09-28T12:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "epi_old",
+      "namespace": "handoff-old",
+      "type": "episodic",
+      "text": "Old episodic outside 30d window",
+      "pinned": false,
+      "approval": "live",
+      "importance": 4,
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "proj_active",
+      "namespace": "project-grok-kit",
+      "type": "semantic",
+      "text": "Active project note for grok-kit replica",
+      "pinned": false,
+      "approval": "live",
+      "importance": 7,
+      "created_at": "2026-09-20T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "sem_fact",
+      "namespace": "decisions-memory",
+      "type": "semantic",
+      "text": "Semantic fact not in hot set",
+      "pinned": false,
+      "approval": "live",
+      "importance": 6,
+      "created_at": "2026-08-15T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "proc_how",
+      "namespace": "errors-resolved-sync",
+      "type": "procedural",
+      "text": "Procedural how-to for sync_log pull",
+      "pinned": false,
+      "approval": "live",
+      "importance": 6,
+      "created_at": "2026-08-16T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "goals_x",
+      "namespace": "org.goals",
+      "type": "goals",
+      "text": "Goals row only in full profile",
+      "pinned": false,
+      "approval": "live",
+      "importance": 5,
+      "created_at": "2026-09-10T00:00:00.000Z",
+      "valid_to": null
+    },
+    {
+      "id": "retired_pin",
+      "namespace": "preferences",
+      "type": "semantic",
+      "text": "Will be retired",
+      "pinned": true,
+      "approval": "live",
+      "importance": 5,
+      "created_at": "2026-09-05T00:00:00.000Z",
+      "valid_to": null
+    }
+  ]
+}
