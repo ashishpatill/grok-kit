@@ -3,31 +3,31 @@
     "id": "pin_tz",
     "namespace": "preferences",
     "type": "semantic",
-    "text": "Preference: Asia/Calcutta timezone for all reported timestamps and digests. Context tag MEMKEY-02982-preferences. Related: ops.",
+    "text": "Preference: Etc/UTC timezone for all reported timestamps and digests. Context tag MEMKEY-02982-preferences. Related: ops.",
     "importance": 9,
     "pinned": true,
     "created_at": "2026-09-29T11:48:54.000Z",
-    "provenance": { "author": "human:ashish", "origin": "internal" }
+    "provenance": { "author": "human:operator", "origin": "demo-fixture" }
   },
   {
     "id": "pin_tz_dup",
     "namespace": "preferences",
     "type": "semantic",
-    "text": "Preference: Asia/Calcutta timezone for all reported timestamps and digests. Context tag MEMKEY-03066-preferences.",
+    "text": "Preference: Etc/UTC timezone for all reported timestamps and digests. Context tag MEMKEY-03066-preferences.",
     "importance": 8,
     "pinned": true,
     "created_at": "2026-09-29T11:48:55.000Z",
-    "provenance": { "author": "human:ashish", "origin": "internal" }
+    "provenance": { "author": "human:operator", "origin": "demo-fixture" }
   },
   {
     "id": "pin_shared",
     "namespace": "preferences",
     "type": "semantic",
-    "text": "Preference: one shared memory for Grok bot and Moose; daemon is single writer.",
+    "text": "Preference: one shared memory for all coding agents; daemon is single writer.",
     "importance": 10,
     "pinned": true,
     "created_at": "2026-09-29T11:48:54.086Z",
-    "provenance": { "author": "human:ashish", "origin": "internal" }
+    "provenance": { "author": "human:operator", "origin": "demo-fixture" }
   },
   {
     "id": "pin_embed",
@@ -37,7 +37,7 @@
     "importance": 8,
     "pinned": true,
     "created_at": "2026-09-29T11:48:54.208Z",
-    "provenance": { "author": "human:ashish", "origin": "internal" }
+    "provenance": { "author": "human:operator", "origin": "demo-fixture" }
   },
   {
     "id": "pin_human",
@@ -47,16 +47,16 @@
     "importance": 10,
     "pinned": true,
     "created_at": "2026-09-29T11:48:54.208Z",
-    "provenance": { "author": "human:ashish", "origin": "internal" }
+    "provenance": { "author": "human:operator", "origin": "demo-fixture" }
   },
   {
     "id": "route_ws",
     "namespace": "workspace-routing",
     "type": "semantic",
-    "text": "Workspace routing: grok-kit lives at /path/to/grok-kit.",
+    "text": "Workspace routing: demo kit checkout lives at /path/to/grok-kit (placeholder — not a real host path).",
     "importance": 7,
     "pinned": false,
     "created_at": "2026-09-29T12:00:00.000Z",
-    "provenance": { "author": "import", "origin": "seed" }
+    "provenance": { "author": "import", "origin": "demo-fixture" }
   }
 ]

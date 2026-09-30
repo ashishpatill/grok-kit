@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "host": "local-launchd-smoke",
+  "port": 8789,
+  "ms": 12,
+  "body": {
+    "ok": true,
+    "queue": "memory-embed",
+    "reconcile_enqueued": 0,
+    "drained": 0,
+    "jobs": []
+  },
+  "note": "Synthetic example. Live localhost wake evidence is gitignored under this directory."
+}
