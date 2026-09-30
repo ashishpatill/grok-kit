@@ -34,7 +34,9 @@
     "poison:smoke": "node spikes/P3P1/poison-redteam.mjs",
     "reflective:smoke": "node spikes/P3R2/reflective-expel.mjs",
     "export:mirror": "node export/mirror-cli.mjs",
-    "mirror:smoke": "node export/mirror-smoke.mjs"
+    "mirror:smoke": "node export/mirror-smoke.mjs",
+    "replica:smoke": "node replica/smoke.mjs",
+    "replica:pull": "node replica/cli.mjs"
   },
   "keywords": [],
   "author": "",
