@@ -1,0 +1,7 @@
+# Local wake/serve smoke evidence — may contain MagicDNS, tailnet IPs, home paths.
+# Keep examples only; never commit live host artifacts.
+*
+!.gitignore
+!README.md
+!example-x1-tailscale-serve-wake.json
+!example-x2-wake-smoke.json

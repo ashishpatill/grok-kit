@@ -29,9 +29,9 @@ console.log('P3.H1 hot-pin export smoke');
 
 console.log('unit:');
 const core = normalizeHotText(
-  'Preference: Asia/Calcutta. Context tag MEMKEY-02982-preferences. Related: x.'
+  'Preference: Etc/UTC. Context tag MEMKEY-02982-preferences. Related: x.'
 );
-assert(core === 'Preference: Asia/Calcutta.', 'normalize strips MEMKEY noise', core);
+assert(core === 'Preference: Etc/UTC.', 'normalize strips MEMKEY noise', core);
 
 const fixture = JSON.parse(readFileSync(join(__dir, 'fixtures/pinned.json'), 'utf8'));
 const deduped = dedupePinned(fixture);

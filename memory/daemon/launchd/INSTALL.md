@@ -166,8 +166,7 @@ curl -sk -X POST "https://<MagicDNS>.ts.net/wake" \
   -d '{"source":"x1-tailscale-serve-smoke"}'
 ```
 
-Evidence (this host, 2026-09-30 IST): `launchd/out/x1-tailscale-serve-wake.json` —
-`https://mac-mini.<tailnet>.ts.net/wake` → HTTP 200, `ok`, drained jobs vs Neon **main**.
-Tailscale status name / MagicDNS: `mac-mini` / `mac-mini.<tailnet>.ts.net`.
-Tailnet IP `100.64.0.1`. **Not claimed:** X6 / A0.4 / G.2.
+Evidence shape (synthetic, committed): `launchd/out/example-x1-tailscale-serve-wake.json`.
+Live host smoke writes gitignored JSON under `launchd/out/` — do not commit MagicDNS,
+tailnet IPs, or home paths. Wake URL shape: `https://<MagicDNS>.ts.net/wake`.
 

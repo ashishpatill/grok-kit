@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bot memory console</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header class="top">
+    <div>
+      <p class="eyebrow">grok-kit · bot memory</p>
+      <h1>Memory console</h1>
+      <p class="lede">Human gate for proposes, visible recall provenance, and hot-pin preview. Local stub by default — no production dump.</p>
+    </div>
+    <div id="statusCard" class="status-card" aria-live="polite">Loading…</div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab active" data-tab="review">Review queue</button>
+    <button type="button" class="tab" data-tab="recall">Recall</button>
+    <button type="button" class="tab" data-tab="propose">Propose</button>
+    <button type="button" class="tab" data-tab="hotpin">Hot-pin</button>
+  </nav>
+
+  <main>
+    <section id="tab-review" class="panel active">
+      <div class="panel-head">
+        <h2>Pending proposals</h2>
+        <button type="button" id="refreshReview" class="btn ghost">Refresh</button>
+      </div>
+      <p class="hint">Identity, procedural, pinned, reflective, and low-evidence proposes land here. Promote writes a live memory; reject leaves the store unchanged.</p>
+      <div id="reviewList" class="stack"></div>
+    </section>
+
+    <section id="tab-recall" class="panel">
+      <div class="panel-head"><h2>Visible recall</h2></div>
+      <form id="recallForm" class="grid-form">
+        <label>Namespace <input name="namespace" value="project-demo" required /></label>
+        <label>Query <input name="query" value="hybrid recall RRF" required /></label>
+        <label>k <input name="k" type="number" min="1" max="50" value="5" /></label>
+        <button type="submit" class="btn">Recall</button>
+      </form>
+      <pre id="recallOut" class="code" hidden></pre>
+      <div id="recallCards" class="stack"></div>
+    </section>
+
+    <section id="tab-propose" class="panel">
+      <div class="panel-head"><h2>Propose (gated)</h2></div>
+      <p class="hint">Uses the same write gates as <code>memory-mcp</code> propose. Prefer this over raw store for durable learnings.</p>
+      <form id="proposeForm" class="grid-form">
+        <label>Namespace <input name="namespace" value="preferences" required /></label>
+        <label>Type
+          <select name="type">
+            <option>semantic</option>
+            <option>procedural</option>
+            <option>episodic</option>
+            <option>reflective</option>
+            <option>goals</option>
+            <option>working</option>
+          </select>
+        </label>
+        <label>Scope
+          <select name="scope">
+            <option>global</option>
+            <option>node_local</option>
+            <option>edge</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="pinned" /> pinned</label>
+        <label class="full">Text
+          <textarea name="text" rows="4" required>Preference: demo-only — reject poison-shaped identity writes without grounding.</textarea>
+        </label>
+        <label class="full">grounding_ids (comma-separated)
+          <input name="grounding_ids" placeholder="mem_rrf_01, mem_gate_01" />
+        </label>
+        <button type="submit" class="btn">Propose</button>
+      </form>
+      <pre id="proposeOut" class="code" hidden></pre>
+    </section>
+
+    <section id="tab-hotpin" class="panel">
+      <div class="panel-head">
+        <h2>Hot-pin export preview</h2>
+        <button type="button" id="refreshHot" class="btn ghost">Rebuild</button>
+      </div>
+      <p class="hint">Export-only preview from pinned / identity rows in this stub session. Caps match MEMORY ≤ 2200 and USER ≤ 1375.</p>
+      <div class="split">
+        <pre id="hotMemory" class="code"></pre>
+        <pre id="hotTopics" class="code"></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Synthetic demo seed · stub backend</span>
+    <span>MCP twin: store / recall / propose / review_list / promote</span>
+  </footer>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

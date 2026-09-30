@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "http_code": "200",
+  "cli_path": "/Applications/Tailscale.app/Contents/MacOS/Tailscale",
+  "cli_wrapper": "/usr/local/bin/tailscale",
+  "cli_wrapper_home": "/home/operator/bin/tailscale",
+  "cli_wrapper_note": "plain symlink to app binary fatals on bundleIdentifier; wrappers exec the binary",
+  "tailscale_version": "1.x.y",
+  "localhost_port": 8789,
+  "serve_cmd": "tailscale serve --bg --https=443 http://127.0.0.1:8789",
+  "wake_url": "https://daemon-host.example.ts.net/wake",
+  "wake_url_shape": "https://<MagicDNS>.ts.net/wake",
+  "magicdns": "daemon-host.example.ts.net",
+  "tailscale_status_name": "daemon-host",
+  "tailnet_ip": "100.64.0.1",
+  "source": "x1-tailscale-serve-smoke-example",
+  "ts_ist": "2026-09-30T00:00:00+00:00",
+  "body": { "ok": true, "drained": 0, "note": "synthetic OSS example — not a real host run" },
+  "note": "Synthetic example for docs/CI shape. Live smoke writes gitignored *.json beside this file."
+}

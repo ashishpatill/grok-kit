@@ -36,7 +36,9 @@
     "export:mirror": "node export/mirror-cli.mjs",
     "mirror:smoke": "node export/mirror-smoke.mjs",
     "replica:smoke": "node replica/smoke.mjs",
-    "replica:pull": "node replica/cli.mjs"
+    "replica:pull": "node replica/cli.mjs",
+    "console": "node console/server.mjs",
+    "console:smoke": "node console/smoke.mjs"
   },
   "keywords": [],
   "author": "",

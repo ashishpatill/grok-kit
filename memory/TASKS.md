@@ -117,7 +117,7 @@ One subtask = one commit. Check only when exit passes.
   _2026-09-30: CLI `/Applications/Tailscale.app/Contents/MacOS/Tailscale` (v1.102.4);
   wrappers `/usr/local/bin/tailscale` + `~/bin/tailscale` (exec, not symlink).
   `serve --bg --https=443 → http://127.0.0.1:8789`; smoke
-  `https://mac-mini.<tailnet>.ts.net/wake` Bearer WAKE_TOKEN → 200/ok/drained
+  `https://<MagicDNS>.ts.net/wake` Bearer WAKE_TOKEN → 200/ok/drained
   (artifact `daemon/launchd/out/x1-tailscale-serve-wake.json`). Helper
   `daemon/scripts/tailscale-serve-wake.sh`. Not funnel. Not X6/A0.4/G.2._
 - [x] **P1.X2** launchd unit + timer self-wake on Mac daemon host (not Linux
