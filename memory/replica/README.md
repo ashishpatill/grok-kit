@@ -12,8 +12,10 @@ source of truth.
 | `standard` | hot + full semantic/procedural text | no |
 | `full` | everything incl. vectors | yes — **P1.M8**, not re-claimed here |
 
-Substrate: minimal SQLite + FTS5 via `node:sqlite` (ICM-shaped; ICM binary stays
-out-of-tree as the Phase-3 long-tail tool).
+Substrate: minimal SQLite via `node:sqlite` (ICM-shaped; ICM binary stays
+out-of-tree as the Phase-3 long-tail tool). Prefer FTS5 when the host Node build
+has `ENABLE_FTS5`; otherwise fall back to portable LIKE text search so smoke is
+not Mac-only (some Cursor cloud Node 22 builds ship `ENABLE_FTS5=0`).
 
 ## Commands
 

@@ -1,8 +1,13 @@
 {
   "task": "P2.R1",
-  "when": "2026-09-30T11:35:43.216Z",
+  "when": "2026-09-30T11:42:10.608Z",
   "host": "mac-dry-run",
   "phone": false,
+  "node": "v22.23.2",
+  "platform": "darwin",
+  "sqlite_fts5_compileoption": true,
+  "search_backend_default": "fts5",
+  "search_backend_forced_like": "like",
   "profiles": [
     {
       "name": "hot",
@@ -32,7 +37,7 @@
       ],
       "vectors": true,
       "for": "daemon host (P1.M8)",
-      "note": "P1.M8 — not re-claimed by P2.R1"
+      "note": "P1.M8 \u2014 not re-claimed by P2.R1"
     }
   ],
   "fixture": {
@@ -62,8 +67,14 @@
       "last_token": 800,
       "profile": "hot"
     },
-    "note": "Mac dry-run + live Neon pull; no physical phone. Phone Tailscale path = same pull over mesh when device present."
+    "note": "Prior Mac live Neon pull retained; fixture re-verified Mac+cloud with FTS5 and forced-LIKE. No physical phone."
   },
   "secrets": false,
-  "status": "GREEN"
+  "note": "Mac Node often ENABLE_FTS5=1 so open+FTS schema succeeds; some Cursor cloud Node 22 builds have ENABLE_FTS5=0 (error: no such module: fts5). Store detects and falls back to LIKE text search; smoke forces LIKE path so green is not Mac-only.",
+  "status": "GREEN",
+  "portability": {
+    "default_backend": "fts5",
+    "forced_like_verified": true,
+    "fts5_compileoption_on_this_host": true
+  }
 }

@@ -166,7 +166,7 @@ _P1 gates: conformance ✓ · kill-9 zero-loss ✓ (live Neon main, #18) · rest
 
 ### Replicas
 - [x] **P2.R1** Per-device replica profiles (`hot`/`standard`) live; dynamic sync verified (phone pulls hot-set over Tailscale). Needs X1/X2.
-  _2026-09-30: `replica/` SQLite+FTS5 read cache; profiles hot/standard (full=P1.M8 not re-claimed);
+  _2026-09-30: `replica/` SQLite read cache (FTS5 or LIKE fallback); profiles hot/standard (full=P1.M8 not re-claimed);
   `pullSync` from `sync_log WHERE seq > last_token`; `npm run replica:smoke` ALL GREEN (fixture +
   live Neon main hot pull). Evidence `replica/evidence/p2-r1-smoke.json`. Mac dry-run stand-in —
   no physical phone. Phone Tailscale = same pull once device on mesh._

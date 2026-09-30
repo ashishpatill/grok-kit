@@ -27,6 +27,9 @@ export {
   ftsSearch,
   countMemories,
   snapshotStats,
+  probeFts5Available,
+  probeFts5CompileOption,
+  getSearchBackend,
 } from './sqlite-store.mjs';
 
 export { createStubSource, createPgSource } from './source.mjs';

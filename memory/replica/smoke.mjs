@@ -30,6 +30,9 @@ import {
   ftsSearch,
   getLastToken,
   snapshotStats,
+  getSearchBackend,
+  probeFts5Available,
+  probeFts5CompileOption,
 } from './index.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
@@ -143,7 +146,23 @@ assert(!db.prepare('SELECT 1 FROM memories WHERE id = ?').get('sem_fact'), 'hot 
 assert(!db.prepare('SELECT 1 FROM memories WHERE id = ?').get('goals_x'), 'hot excludes goals');
 
 const hits = ftsSearch(db, 'Asia OR Calcutta OR replica');
-assert(hits.length >= 1, `FTS5 finds hot text (got ${hits.length})`);
+const backend = getSearchBackend(db);
+assert(hits.length >= 1, `text search finds hot text via ${backend} (got ${hits.length})`);
+
+console.log('portable LIKE fallback (force no FTS5):');
+const dbLike = openReplicaDb(':memory:', { forceLikeSearch: true });
+assert(getSearchBackend(dbLike) === 'like', 'forceLikeSearch → like backend');
+const likePull = await pullSync({
+  db: dbLike,
+  source,
+  profile: 'hot',
+  lastToken: 0,
+  now: NOW,
+});
+assert(likePull.ok, 'like-backend hot pull ok');
+const likeHits = ftsSearch(dbLike, 'Asia OR Calcutta OR replica');
+assert(likeHits.length >= 1, `LIKE search finds hot text (got ${likeHits.length})`);
+closeReplicaDb(dbLike);
 
 console.log('incremental pull (no new deltas):');
 const again = await pullSync({ db, source, profile: 'hot', now: NOW });
@@ -246,11 +265,17 @@ if (live) {
   }
 }
 
+const ftsProbe = probeFts5CompileOption();
 const evidence = {
   task: 'P2.R1',
   when: new Date().toISOString(),
-  host: 'mac-dry-run',
+  host: process.env.GROK_REPLICA_SMOKE_HOST || (process.platform === 'darwin' ? 'mac-dry-run' : 'cloud-node'),
   phone: false,
+  node: process.version,
+  platform: process.platform,
+  sqlite_fts5_compileoption: ftsProbe,
+  search_backend_default: backend,
+  search_backend_forced_like: 'like',
   profiles: PROFILE_NAMES.map((p) => describeProfile(p)),
   fixture: {
     hot_applied: hotResult.applied,
@@ -261,6 +286,8 @@ const evidence = {
   },
   live: liveEvidence,
   secrets: false,
+  note:
+    'Mac Node often ENABLE_FTS5=1 so open+FTS schema succeeds; some Cursor cloud Node 22 builds have ENABLE_FTS5=0 (error: no such module: fts5). Store detects and falls back to LIKE text search; smoke forces LIKE path so green is not Mac-only.',
   status: failures === 0 ? 'GREEN' : 'RED',
 };
 
