@@ -9,7 +9,7 @@ This is not a second IDE and not a model. Cursor is where I write code. Grok Bui
 
 You can clone this anywhere (local folder names like `cursor-kit` are fine). The plugin id is always `grok-kit`.
 
-[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [Graph of bots](#graph-of-bots) · [FAQ](#faq)
+[Install](#install) · [What it is good at](#what-grok-kit-is-good-at) · [Cursor](#how-it-uses-cursor) · [Grok Build](#how-it-uses-grok-build) · [Usage](#usage) · [Bot memory](#graph-of-bots--bot-memory) · [FAQ](#faq)
 
 ## Why it exists
 
@@ -281,11 +281,19 @@ Machine-specific checklist if this host is already applied: [`docs/SETUP-STATUS.
 
 
 
-## Graph of bots
+## Graph of bots / bot memory
 
-Plan only (not shipped): arrange bots as a flexible org graph inside this kit. Each node is ideally a Grok Bot; a node can expand into its own subgraph (a nested crew). Bots may connect to multiple bots. Durable memory: **Neon + pgvector** (cloud-primary, locked); ICM as local replica candidate; GitHub `bot-memory` craft logs as audit export only.
+**Single-daemon bot memory is usable today** — Neon + pgvector cloud-primary, MCP `store` / `recall` / human-gated `propose`, local review console, hot-pin export. Graph-of-bots org orchestration is still plan + scaffold (a node can expand into a nested crew; multi-bot edges). ICM remains a local replica candidate; GitHub craft logs are audit export only.
 
-Binding v2 plan **frozen (IDL v2.1, signed 2026-09-28)** — **P0 spikes complete, P1 prototypes underway**. Authoritative plan: [`memory/plan/FINAL-PLAN-V2.md`](memory/plan/FINAL-PLAN-V2.md). Originals for reference: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md), [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md), research pack [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
+Try the synthetic console (no Neon):
+
+```bash
+cd memory && npm run console   # http://127.0.0.1:7432
+```
+
+![Bot memory console](docs/assets/bot-memory/00-hero-console.png)
+
+World-ready overview, screenshots, and walkthrough: [`memory/README.md`](memory/README.md). Binding plan (IDL v2.1 frozen 2026-09-28): [`memory/plan/FINAL-PLAN-V2.md`](memory/plan/FINAL-PLAN-V2.md). Also: [`docs/PLAN-bot-memory-graph-v2.md`](docs/PLAN-bot-memory-graph-v2.md), [`docs/PLAN-graph-of-bots.md`](docs/PLAN-graph-of-bots.md), research [`docs/research/graph-of-bots-memory/`](docs/research/graph-of-bots-memory/).
 
 ## FAQ
 
